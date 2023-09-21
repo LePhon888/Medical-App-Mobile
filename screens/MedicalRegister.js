@@ -1,7 +1,8 @@
 import React from "react";
+import { Text } from "react-native";
 
 const MedicalRegister = () => {
-  return <div>Đăng ký khám</div>;
+  return <Text>Đăng ký khám</Text>;
 };
 
 export default MedicalRegister;

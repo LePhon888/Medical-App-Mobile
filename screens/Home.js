@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -14,7 +14,8 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import COLORS from "../constants/colors";
-import BottomNavigation from "../components/BottomNavigation";
+import { FloatingAction } from "react-native-floating-action";
+import ChatBot from "./Chatbot";
 // import places from "../../consts/places";
 const { width } = Dimensions.get("screen");
 
@@ -165,7 +166,13 @@ const Home = ({ navigation }) => {
           />
         </View>
       </ScrollView>
-      <BottomNavigation />
+      <FloatingAction
+        iconHeight={70}
+        iconWidth={70}
+        actions={[]}
+        onPressMain={() => navigation.navigate("ChatBot")}
+        overlayColor={"#FFFFF"}
+        floatingIcon={{ uri: 'https://cdn.dribbble.com/userupload/2798813/file/original-a9da6aa3bf061621ab9d8c97a226a358.png' }} />
     </SafeAreaView>
   );
 };

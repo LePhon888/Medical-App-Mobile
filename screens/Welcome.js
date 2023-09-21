@@ -133,7 +133,7 @@ const Welcome = ({ navigation }) => {
 
           <Button
             title="Tham gia"
-            onPress={() => navigation.navigate("Home")}
+            onPress={() => navigation.navigate("MainScreen")}
             style={{
               marginTop: 22,
               width: "100%",
