@@ -6,16 +6,58 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import COLORS from "../constants/colors";
 import { Ionicons } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import Button from "../components/Button";
+import Apis, { authApi, endpoints } from "../config/Apis";
+import { UserContext } from "../App";
+import Home from "../screens/Home";
 
 const Login = ({ navigation }) => {
-  const [isPasswordShown, setIsPasswordShown] = useState(false);
+  const [isPasswordShown, setIsPasswordShown] = useState(true);
   const [isChecked, setIsChecked] = useState(false);
+  const [email, setEmail] = useState(null);
+  const [password, setPassword] = useState();
+  const [user, dispatch] = useContext(UserContext);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const login = () => {
+    const processLogin = async () => {
+      try {
+        setIsLoading(true); // Set loading state to true
+
+        let res = await Apis.post(endpoints["login"], {
+          username: username,
+          password: password,
+        });
+
+        await AsyncStorage.setItem("token", res.data);
+
+        let { data } = await authApi().get(endpoints["currentUser"]);
+        await AsyncStorage.setItem("user", data);
+
+        dispatch({
+          type: "login",
+          payload: data,
+        });
+      } catch (error) {
+        console.error("Login error:", error);
+        alert("An error occurred while logging in. Please try again later.");
+      } finally {
+        setIsLoading(false); 
+      }
+    };
+    processLogin();
+  };
+
+  // if (user !== null) return navigation.navigate("Home");
+
+  console.log("Userrrr " + user);
+  console.log("email " + email);
+  console.log("password   " + password);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
@@ -63,6 +105,8 @@ const Login = ({ navigation }) => {
               style={{
                 width: "100%",
               }}
+              value={email}
+              onChangeText={(text) => setEmail(text)}
             />
           </View>
         </View>
@@ -97,6 +141,8 @@ const Login = ({ navigation }) => {
               style={{
                 width: "100%",
               }}
+              value={password}
+              onChangeText={(text) => setPassword(text)}
             />
 
             <TouchableOpacity
@@ -138,6 +184,7 @@ const Login = ({ navigation }) => {
             marginTop: 18,
             marginBottom: 4,
           }}
+          onPress={() => login()}
         />
 
         <View
@@ -224,6 +271,7 @@ const Login = ({ navigation }) => {
           </Pressable>
         </View>
       </View>
+      {isLoading && <ActivityIndicator size="small" color={COLORS.primary} />}
     </SafeAreaView>
   );
 };

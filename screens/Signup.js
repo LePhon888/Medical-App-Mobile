@@ -17,6 +17,8 @@ const Signup = ({ navigation }) => {
   const [isPasswordShown, setIsPasswordShown] = useState(true);
   const [isConfirmPasswordShown, setIsConfirmPasswordShown] = useState(true);
   const [isChecked, setIsChecked] = useState(false);
+
+  
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <View style={{ flex: 1, marginHorizontal: 22 }}>

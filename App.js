@@ -1,9 +1,18 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+<<<<<<< HEAD
 import { Login, Signup, Welcome, Home } from "./screens";
 import React, { createContext, useReducer } from "react";
 import UserReducer from "./reducers/UserReducer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+=======
+import React from "react";
+import Welcome from "./screens/Welcome";
+import Login from "./screens/Login";
+import Signup from "./screens/Signup";
+import MainScreen from "./screens/MainScreen";
+import ChatBot from "./screens/Chatbot";
+>>>>>>> 8e83a7861b6fe6a3664522d89b28d444c07bdeba
 
 const Stack = createNativeStackNavigator();
 export const UserContext = createContext();
@@ -15,6 +24,7 @@ export default function App() {
   );
 
   return (
+<<<<<<< HEAD
     <UserContext.Provider value={[user, dispatch]}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Welcome">
@@ -49,5 +59,46 @@ export default function App() {
         </Stack.Navigator>
       </NavigationContainer>
     </UserContext.Provider>
+=======
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Welcome">
+        <Stack.Screen
+          name="Welcome"
+          component={Welcome}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="Login"
+          component={Login}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="Signup"
+          component={Signup}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="MainScreen"
+          component={MainScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="ChatBot"
+          component={ChatBot}
+          options={{
+            headerShown: false,
+          }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+>>>>>>> 8e83a7861b6fe6a3664522d89b28d444c07bdeba
   );
 }
