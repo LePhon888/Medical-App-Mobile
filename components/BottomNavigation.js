@@ -1,15 +1,40 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Chat, ChatBot, MedicalRegister } from "../screens";
 import Icon from "react-native-vector-icons/FontAwesome"; // Import an icon library
+import MedicalRegister from "../screens/MedicalRegister";
+import Chat from "../screens/Chat";
+import Home from "../screens/Home";
 
 const Tab = createBottomTabNavigator();
 
 function BottomNavigation({ navigation }) {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+      screenOptions={{
+        tabBarLabelStyle: {
+          fontSize: 15,
+          marginBottom: 5,
+        },
+        tabBarStyle: {
+          height: 60
+        }
+      }}
+    >
       <Tab.Screen
-        name="Đăng ký khám"
+        name="Nhà"
+        component={Home}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="home" size={size} color={color} />
+          ),
+          tabBarPress: () => {
+            navigation.navigate("Home");
+          },
+        }}
+      />
+
+      <Tab.Screen
+        name="Lịch khám "
         component={MedicalRegister}
         options={{
           tabBarIcon: ({ color, size }) => (
@@ -20,15 +45,7 @@ function BottomNavigation({ navigation }) {
           },
         }}
       />
-      <Tab.Screen
-        name="Trợ lý AI"
-        component={ChatBot}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="robot" size={size} color={color} />
-          ),
-        }}
-      />
+
       <Tab.Screen
         name="Chat"
         component={Chat}
@@ -36,6 +53,9 @@ function BottomNavigation({ navigation }) {
           tabBarIcon: ({ color, size }) => (
             <Icon name="comments" size={size} color={color} />
           ),
+          tabBarPress: () => {
+            navigation.navigate("Chat");
+          },
         }}
       />
       <Tab.Screen
