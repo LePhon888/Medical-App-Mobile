@@ -4,6 +4,7 @@ import Icon from "react-native-vector-icons/FontAwesome"; // Import an icon libr
 import MedicalRegister from "../screens/MedicalRegister";
 import Chat from "../screens/Chat";
 import Home from "../screens/Home";
+import Setting from "../screens/Setting";
 
 const Tab = createBottomTabNavigator();
 
@@ -12,12 +13,13 @@ function BottomNavigation({ navigation }) {
     <Tab.Navigator
       screenOptions={{
         tabBarLabelStyle: {
-          fontSize: 15,
+          fontSize: 14,
+          fontWeight: "600",
           marginBottom: 5,
         },
         tabBarStyle: {
-          height: 60
-        }
+          height: 60,
+        },
       }}
     >
       <Tab.Screen
@@ -30,6 +32,7 @@ function BottomNavigation({ navigation }) {
           tabBarPress: () => {
             navigation.navigate("Home");
           },
+          headerShown: false,
         }}
       />
 
@@ -43,6 +46,7 @@ function BottomNavigation({ navigation }) {
           tabBarPress: () => {
             navigation.navigate("MedicalRegister");
           },
+          headerShown: false,
         }}
       />
 
@@ -56,15 +60,17 @@ function BottomNavigation({ navigation }) {
           tabBarPress: () => {
             navigation.navigate("Chat");
           },
+          headerShown: false,
         }}
       />
       <Tab.Screen
         name="Cài đặt"
-        component={MedicalRegister}
+        component={Setting}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Icon name="cog" size={size} color={color} />
           ),
+          headerShown: false,
         }}
       />
     </Tab.Navigator>

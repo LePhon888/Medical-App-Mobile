@@ -1,19 +1,26 @@
-import axios from "axios";
+// Import necessary libraries and modules
 
-const SERVER_CONTEXT = "/Clinic";
-const SERVER = "http://localhost:8080";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+// const SERVER = "http://localhost:8080";
+const SERVER = "http://192.168.1.6:8080";
 
 export const endpoints = {
-  login: `${SERVER_CONTEXT}/api/login/`,
+  login: `${SERVER}/auth/login`,
+  currentUser: `${SERVER}/auth/current-user`,
 };
 
-export const authApi = () => {
-  return axios.create({
+export const authApi = async () => {
+  const token = await AsyncStorage.getItem("token");
+
+  const instance = axios.create({
     baseURL: SERVER,
     headers: {
-      Authorization: "Bearer " + AsyncStorage.getItem("token"),
+      Authorization: `Bearer ${token}`,
     },
   });
+  return instance;
 };
 
 export default axios.create({

@@ -1,3 +1,5 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const UserReducer = async (currentState, action) => {
   switch (action.type) {
     case "login":

@@ -6,7 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import COLORS from "../constants/colors";
 import { Ionicons } from "@expo/vector-icons";
@@ -14,7 +14,13 @@ import Checkbox from "expo-checkbox";
 import Button from "../components/Button";
 import Apis, { authApi, endpoints } from "../config/Apis";
 import { UserContext } from "../App";
-import Home from "../screens/Home";
+import { ActivityIndicator } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+// import {
+//   GoogleSignin,
+//   statusCodes,
+// } from "@react-native-google-signin/google-signin";
 
 const Login = ({ navigation }) => {
   const [isPasswordShown, setIsPasswordShown] = useState(true);
@@ -23,6 +29,7 @@ const Login = ({ navigation }) => {
   const [password, setPassword] = useState();
   const [user, dispatch] = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
+  const [userInfo, setUserInfo] = useState(null);
 
   const login = () => {
     const processLogin = async () => {
@@ -30,34 +37,90 @@ const Login = ({ navigation }) => {
         setIsLoading(true); // Set loading state to true
 
         let res = await Apis.post(endpoints["login"], {
-          username: username,
-          password: password,
+          email,
+          password,
         });
 
         await AsyncStorage.setItem("token", res.data);
 
-        let { data } = await authApi().get(endpoints["currentUser"]);
-        await AsyncStorage.setItem("user", data);
+        const token = res.data;
+        let { data } = await axios.get(endpoints["currentUser"], {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        await AsyncStorage.setItem("user", JSON.stringify(data));
+
+        const userData = await AsyncStorage.getItem("user");
+        const user = JSON.parse(userData);
 
         dispatch({
           type: "login",
           payload: data,
         });
+
+        if (user) navigation.navigate("MainScreen");
       } catch (error) {
-        console.error("Login error:", error);
-        alert("An error occurred while logging in. Please try again later.");
+        // console.error("Login error:", error);
       } finally {
-        setIsLoading(false); 
+        setIsLoading(false);
       }
     };
     processLogin();
   };
 
-  // if (user !== null) return navigation.navigate("Home");
+  // const handleLoginGoogle = async () => {
+  //   try {
+  //     await GoogleSignin.hasPlayServices();
+  //     const userInfo = await GoogleSignin.signIn();
+  //     setUserInfo(userInfo);
+  //   } catch (error) {
+  //     if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+  //       console.log("Google Sign-In Cancelled");
+  //     } else if (error.code === statusCodes.IN_PROGRESS) {
+  //       console.log("Google Sign-In in Progress");
+  //     } else {
+  //       console.error("Google Sign-In Error:", error);
+  //     }
+  //   }
+  // };
 
-  console.log("Userrrr " + user);
-  console.log("email " + email);
-  console.log("password   " + password);
+  // const signout = async () => {
+  //   try {
+  //     await GoogleSignin.signOut();
+  //     setUserInfo(null);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   GoogleSignin.configure({
+  //     webClientId:
+  //       "874102482583-d56ckj9qk1pb7rm3jpifmrb3p0p279bi.apps.googleusercontent.com",
+  //   });
+  // });
+
+  useEffect(() => {
+    const loadStoredCredentials = async () => {
+      try {
+        const storedEmail = await AsyncStorage.getItem("email");
+        const storedPassword = await AsyncStorage.getItem("password");
+
+        if (storedEmail) {
+          setEmail(storedEmail);
+        }
+        if (storedPassword) {
+          setPassword(storedPassword);
+        }
+      } catch (error) {
+        console.error("Error loading stored credentials:", error);
+      }
+    };
+
+    loadStoredCredentials();
+  }, []);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
@@ -220,7 +283,7 @@ const Login = ({ navigation }) => {
           }}
         >
           <TouchableOpacity
-            onPress={() => console.log("Pressed")}
+            // onPress={() => handleLoginGoogle}
             style={{
               flex: 1,
               alignItems: "center",

@@ -1,7 +1,7 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { GiftedChat } from 'react-native-gifted-chat';
-import TypingIndicator from '../components/TypingIndicator';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useState, useCallback, useEffect } from "react";
+import { GiftedChat } from "react-native-gifted-chat";
+import TypingIndicator from "../components/TypingIndicator";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome"; // Import an icon library
 
 const ChatBot = ({ navigation }) => {
@@ -10,16 +10,15 @@ const ChatBot = ({ navigation }) => {
 
   const user = {
     _id: 1,
-    name: "User"
-  }
+    name: "User",
+  };
 
   const bot = {
     _id: 2,
     name: "Bot",
-    avatar: 'https://cdn.dribbble.com/userupload/2798813/file/original-a9da6aa3bf061621ab9d8c97a226a358.png'
-  }
-
-
+    avatar:
+      "https://cdn.dribbble.com/userupload/2798813/file/original-a9da6aa3bf061621ab9d8c97a226a358.png",
+  };
 
   useEffect(() => {
     // Initialize the chat with a welcome message
@@ -28,14 +27,14 @@ const ChatBot = ({ navigation }) => {
         _id: Math.round(Math.random() * 1000000),
         text: `Xin chào, tôi có thể giúp gì cho bạn?`,
         createdAt: new Date(),
-        user: bot
-      }
+        user: bot,
+      },
     ]);
   }, []);
 
   const onSend = useCallback((newMessages = []) => {
     // Append the user's input message to the chat
-    setMessages(previousMessages =>
+    setMessages((previousMessages) =>
       GiftedChat.append(previousMessages, newMessages)
     );
 
@@ -49,7 +48,9 @@ const ChatBot = ({ navigation }) => {
   const fetchReponse = async (message) => {
     setBotIsTyping(true); // Set botIsTyping to true while fetching the response
 
-    const response = await fetch(`http://192.168.1.105:8000/api/get/?msg=${message}`);
+    const response = await fetch(
+      `http://192.168.1.105:8000/api/get/?msg=${message}`
+    );
     const responseData = await response.json();
     const botResponse = responseData.message; // Adjust this based on your API response structure
     setBotIsTyping(false); // Set botIsTyping back to false when the response is received
@@ -59,10 +60,12 @@ const ChatBot = ({ navigation }) => {
       _id: Math.round(Math.random() * 1000000),
       text: botResponse,
       createdAt: new Date(),
-      user: bot
+      user: bot,
     };
 
-    setMessages(previousMessages => GiftedChat.append(previousMessages, [newBotMessage]));
+    setMessages((previousMessages) =>
+      GiftedChat.append(previousMessages, [newBotMessage])
+    );
   };
 
   const renderFooter = (props) => {
@@ -81,7 +84,7 @@ const ChatBot = ({ navigation }) => {
   };
 
   return (
-    <View style={{ backgroundColor: '#ffff', flex: 1 }}>
+    <View style={{ backgroundColor: "#ffff", flex: 1 }}>
       <ChatHeader />
       <GiftedChat
         messages={messages}
@@ -92,21 +95,20 @@ const ChatBot = ({ navigation }) => {
       />
     </View>
   );
-
 };
 
 const styles = StyleSheet.create({
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#1877F2',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#1877F2",
     paddingVertical: 10,
     paddingHorizontal: 16,
   },
   titleText: {
-    color: 'white',
+    color: "white",
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginLeft: 20,
   },
 });

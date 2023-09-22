@@ -172,7 +172,10 @@ const Home = ({ navigation }) => {
         actions={[]}
         onPressMain={() => navigation.navigate("ChatBot")}
         overlayColor={"#FFFFF"}
-        floatingIcon={{ uri: 'https://cdn.dribbble.com/userupload/2798813/file/original-a9da6aa3bf061621ab9d8c97a226a358.png' }} />
+        floatingIcon={{
+          uri: "https://cdn.dribbble.com/userupload/2798813/file/original-a9da6aa3bf061621ab9d8c97a226a358.png",
+        }}
+      />
     </SafeAreaView>
   );
 };
