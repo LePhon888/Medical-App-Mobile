@@ -133,7 +133,9 @@ const Welcome = ({ navigation }) => {
 
           <Button
             title="Tham gia"
-            onPress={() => navigation.navigate("Home")}
+            onPress={() => {
+              navigation.navigate("Login");
+            }}
             style={{
               marginTop: 22,
               width: "100%",
