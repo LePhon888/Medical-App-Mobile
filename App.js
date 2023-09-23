@@ -3,14 +3,25 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React, { createContext, useReducer } from "react";
 import UserReducer from "./reducers/UserReducer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Welcome from "./screens/Welcome";
-import Login from "./screens/Login";
-import Signup from "./screens/Signup";
-import MainScreen from "./screens/MainScreen";
-import ChatBot from "./screens/Chatbot";
-import Home from "./screens/Home";
-import Setting from "./screens/Setting";
+// import Welcome from "./screens/Welcome";
+// import Login from "./screens/Login";
+// import Signup from "./screens/Signup";
+// import MainScreen from "./screens/MainScreen";
+// import ChatBot from "./screens/Chatbot";
+// import Home from "./screens/Home";
+// import Setting from "./screens/Setting";
 
+import {
+  Login,
+  Welcome,
+  Signup,
+  Home,
+  ChatBot,
+  Chat,
+  MedicalRegister,
+  MainScreen,
+  Setting,
+} from "./screens";
 const Stack = createNativeStackNavigator();
 export const UserContext = createContext();
 
@@ -23,7 +34,7 @@ export default function App() {
   return (
     <UserContext.Provider value={[user, dispatch]}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Welcome">
+        <Stack.Navigator initialRouteName="MedicalRegister">
           <Stack.Screen
             name="Welcome"
             component={Welcome}
@@ -69,6 +80,13 @@ export default function App() {
           <Stack.Screen
             name="Setting"
             component={Setting}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="MedicalRegister"
+            component={MedicalRegister}
             options={{
               headerShown: false,
             }}

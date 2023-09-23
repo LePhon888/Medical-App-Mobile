@@ -12,13 +12,66 @@ import COLORS from "../constants/colors";
 import { Ionicons } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import Button from "../components/Button";
+import Apis, { endpoints } from "../config/Apis";
+import { ActivityIndicator } from "react-native";
 
 const Signup = ({ navigation }) => {
   const [isPasswordShown, setIsPasswordShown] = useState(true);
   const [isConfirmPasswordShown, setIsConfirmPasswordShown] = useState(true);
   const [isChecked, setIsChecked] = useState(false);
+  const [firstName, setFirstName] = useState(null);
+  const [lastName, setLastName] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [password, setPassword] = useState(null);
+  const [confirmPassword, setConfirmPassword] = useState(null);
+  const [notification, setNotification] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  
+  const handleSignUp = () => {
+    const signUp = async () => {
+      setError(null);
+
+      if (!firstName || !lastName || !email || !password || !confirmPassword) {
+        setError("Vui lòng điền đầy đủ thông tin.");
+        return;
+      }
+
+      const emailPattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/;
+      if (!emailPattern.test(email)) {
+        setError("Email không hợp lệ.");
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        setError("Mật khẩu và xác nhận mật khẩu không khớp.");
+        return;
+      }
+
+      if (!isChecked) {
+        setError("Vui lòng đồng ý với điều khoản dịch vụ.");
+        return;
+      }
+      try {
+        setLoading(true);
+        const res = await Apis.post(endpoints["signup"], {
+          firstName,
+          lastName,
+          email,
+          password,
+        });
+        setLoading(false);
+        if (res.status === 201) {
+          setNotification(true);
+          navigation.navigate("Login");
+        } else setErr("Error");
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    signUp();
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <View style={{ flex: 1, marginHorizontal: 22 }}>
@@ -33,15 +86,76 @@ const Signup = ({ navigation }) => {
           >
             Đăng ký tài khoản
           </Text>
+        </View>
 
+        <View style={{ marginBottom: 12 }}>
           <Text
             style={{
               fontSize: 16,
-              color: COLORS.black,
+              fontWeight: 400,
+              marginVertical: 8,
             }}
           >
-            Để được hỗ trợ sức khỏe tốt hơn
+            Tên
           </Text>
+
+          <View
+            style={{
+              width: "100%",
+              height: 48,
+              borderColor: COLORS.black,
+              borderWidth: 1,
+              borderRadius: 8,
+              alignItems: "center",
+              justifyContent: "center",
+              paddingLeft: 22,
+            }}
+          >
+            <TextInput
+              placeholder="Nhập tên của bạn"
+              placeholderTextColor={COLORS.black}
+              keyboardType="default"
+              style={{
+                width: "100%",
+              }}
+              onChangeText={(text) => setFirstName(text)}
+            />
+          </View>
+        </View>
+
+        <View style={{ marginBottom: 12 }}>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: 400,
+              marginVertical: 8,
+            }}
+          >
+            Họ và tên lót
+          </Text>
+
+          <View
+            style={{
+              width: "100%",
+              height: 48,
+              borderColor: COLORS.black,
+              borderWidth: 1,
+              borderRadius: 8,
+              alignItems: "center",
+              justifyContent: "center",
+              paddingLeft: 22,
+            }}
+          >
+            <TextInput
+              placeholder="Nhập họ và tên lót của bạn"
+              placeholderTextColor={COLORS.black}
+              keyboardType="default"
+              style={{
+                width: "100%",
+              }}
+              onChangeText={(text) => setLastName(text)}
+            />
+          </View>
         </View>
 
         <View style={{ marginBottom: 12 }}>
@@ -74,53 +188,7 @@ const Signup = ({ navigation }) => {
               style={{
                 width: "100%",
               }}
-            />
-          </View>
-        </View>
-
-        <View style={{ marginBottom: 12 }}>
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: 400,
-              marginVertical: 8,
-            }}
-          >
-            Số điện thoại
-          </Text>
-
-          <View
-            style={{
-              width: "100%",
-              height: 48,
-              borderColor: COLORS.black,
-              borderWidth: 1,
-              borderRadius: 8,
-              alignItems: "center",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              paddingLeft: 22,
-            }}
-          >
-            <TextInput
-              placeholder="+84"
-              placeholderTextColor={COLORS.black}
-              keyboardType="numeric"
-              style={{
-                width: "12%",
-                borderRightWidth: 1,
-                borderLeftColor: COLORS.grey,
-                height: "100%",
-              }}
-            />
-
-            <TextInput
-              placeholder="Nhập số điện thoại"
-              placeholderTextColor={COLORS.black}
-              keyboardType="numeric"
-              style={{
-                width: "80%",
-              }}
+              onChangeText={(text) => setEmail(text)}
             />
           </View>
         </View>
@@ -155,6 +223,7 @@ const Signup = ({ navigation }) => {
               style={{
                 width: "100%",
               }}
+              onChangeText={(text) => setPassword(text)}
             />
 
             <TouchableOpacity
@@ -202,6 +271,7 @@ const Signup = ({ navigation }) => {
               style={{
                 width: "100%",
               }}
+              onChangeText={(text) => setConfirmPassword(text)}
             />
 
             <TouchableOpacity
@@ -243,24 +313,16 @@ const Signup = ({ navigation }) => {
             marginTop: 18,
             marginBottom: 4,
           }}
+          onPress={() => handleSignUp()}
         />
 
         <View
           style={{
             flexDirection: "row",
             alignItems: "center",
-            marginVertical: 20,
+            marginVertical: 10,
           }}
         >
-          <View
-            style={{
-              flex: 1,
-              height: 1,
-              backgroundColor: COLORS.grey,
-              marginHorizontal: 10,
-            }}
-          />
-          <Text style={{ fontSize: 14 }}>Hoặc đăng ký với</Text>
           <View
             style={{
               flex: 1,
@@ -275,41 +337,6 @@ const Signup = ({ navigation }) => {
           style={{
             flexDirection: "row",
             justifyContent: "center",
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => console.log("Pressed")}
-            style={{
-              flex: 1,
-              alignItems: "center",
-              justifyContent: "center",
-              flexDirection: "row",
-              height: 52,
-              borderWidth: 1,
-              borderColor: COLORS.grey,
-              marginRight: 4,
-              borderRadius: 10,
-            }}
-          >
-            <Image
-              source={require("../assets/google.png")}
-              style={{
-                height: 36,
-                width: 36,
-                marginRight: 8,
-              }}
-              resizeMode="contain"
-            />
-
-            <Text>Google</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            marginVertical: 22,
           }}
         >
           <Text style={{ fontSize: 16, color: COLORS.black }}>
@@ -328,6 +355,31 @@ const Signup = ({ navigation }) => {
             </Text>
           </Pressable>
         </View>
+        {loading && <ActivityIndicator size="small" color={COLORS.primary} />}
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          {error && (
+            <Text
+              style={{
+                color: COLORS.red,
+                marginBottom: 10,
+                textAlign: "center",
+              }}
+            >
+              {error}
+            </Text>
+          )}
+        </View>
+        {loading == false && (
+          <View>
+            {notification == true && (
+              <Text style={{ flex: 1, justifyContent: "center" }}>
+                Đăng ký thành công
+              </Text>
+            )}
+          </View>
+        )}
       </View>
     </SafeAreaView>
   );

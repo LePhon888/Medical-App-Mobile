@@ -40,10 +40,19 @@ const Login = ({ navigation }) => {
           email,
           password,
         });
-
-        await AsyncStorage.setItem("token", res.data);
-
+        if (res && res.data) {
+          await AsyncStorage.setItem("token", res.data || "");
+        }
         const token = res.data;
+
+        if (isChecked && email) {
+          await AsyncStorage.setItem("email", email);
+        }
+
+        if (isChecked && password) {
+          await AsyncStorage.setItem("password", password);
+        }
+
         let { data } = await axios.get(endpoints["currentUser"], {
           headers: {
             Authorization: `Bearer ${token}`,
