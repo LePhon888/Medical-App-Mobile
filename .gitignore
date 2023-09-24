@@ -33,3 +33,13 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+# Ignore Android build and generated files
+android/app/build/
+android/gradle/
+android/gradlew
+android/gradlew.bat
+android/local.properties
+android/app/.idea/
+android/app/.gradle/
+android/app/build/
