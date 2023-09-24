@@ -17,10 +17,10 @@ import { UserContext } from "../App";
 import { ActivityIndicator } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-// import {
-//   GoogleSignin,
-//   statusCodes,
-// } from "@react-native-google-signin/google-signin";
+import {
+  GoogleSignin,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
 
 const Login = ({ navigation }) => {
   const [isPasswordShown, setIsPasswordShown] = useState(true);
@@ -79,37 +79,38 @@ const Login = ({ navigation }) => {
     processLogin();
   };
 
-  // const handleLoginGoogle = async () => {
-  //   try {
-  //     await GoogleSignin.hasPlayServices();
-  //     const userInfo = await GoogleSignin.signIn();
-  //     setUserInfo(userInfo);
-  //   } catch (error) {
-  //     if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-  //       console.log("Google Sign-In Cancelled");
-  //     } else if (error.code === statusCodes.IN_PROGRESS) {
-  //       console.log("Google Sign-In in Progress");
-  //     } else {
-  //       console.error("Google Sign-In Error:", error);
-  //     }
-  //   }
-  // };
+  const handleLoginGoogle = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      console.log(userInfo)
+      setUserInfo(userInfo);
+    } catch (error) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        console.log("Google Sign-In Cancelled");
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        console.log("Google Sign-In in Progress");
+      } else {
+        console.error("Google Sign-In Error:", error);
+      }
+    }
+  };
 
-  // const signout = async () => {
-  //   try {
-  //     await GoogleSignin.signOut();
-  //     setUserInfo(null);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  const signout = async () => {
+    try {
+      await GoogleSignin.signOut();
+      setUserInfo(null);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  // useEffect(() => {
-  //   GoogleSignin.configure({
-  //     webClientId:
-  //       "874102482583-d56ckj9qk1pb7rm3jpifmrb3p0p279bi.apps.googleusercontent.com",
-  //   });
-  // });
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        "30139582015-5ftl3a00g106h5pjbj8jr64jucnk038g.apps.googleusercontent.com",
+    });
+  });
 
   useEffect(() => {
     const loadStoredCredentials = async () => {
@@ -292,7 +293,7 @@ const Login = ({ navigation }) => {
           }}
         >
           <TouchableOpacity
-            // onPress={() => handleLoginGoogle}
+            onPress={() => handleLoginGoogle()}
             style={{
               flex: 1,
               alignItems: "center",
