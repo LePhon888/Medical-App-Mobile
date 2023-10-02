@@ -17,6 +17,7 @@ export const endpoints = {
   payment: `${SERVER}/api/payment/create-payment`,
   user: `${SERVER}/api/user`,
   websocket: `${SERVER}/chat`,
+  news: `${SERVER}/api/scrape`,
 };
 
 // export const authApi = async () => {

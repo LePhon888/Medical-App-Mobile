@@ -11,14 +11,15 @@ import {
   FlatList,
   Dimensions,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import COLORS from "../constants/colors";
 import { FloatingAction } from "react-native-floating-action";
 import ChatBot from "./Chatbot";
-// import places from "../../consts/places";
 const { width } = Dimensions.get("screen");
-
+import {} from "react-native";
+import News from "./News";
 const Home = ({ navigation }) => {
   const categoryIcons = [
     <Icon name="flight" size={25} color={COLORS.white} />,
@@ -134,19 +135,19 @@ const Home = ({ navigation }) => {
           }}
         >
           <View style={{ flex: 1 }}>
-            <Text style={style.headerTitle}>Explore the</Text>
-            <Text style={style.headerTitle}>beautiful places</Text>
+            <Text style={style.headerTitle}>Y tế</Text>
+            <Text style={style.headerTitle}>Thông minh</Text>
             <View style={style.inputContainer}>
               <Icon name="search" size={28} />
               <TextInput
-                placeholder="Search place"
+                placeholder="Tìm kiếm"
                 style={{ color: COLORS.grey }}
               />
             </View>
           </View>
         </View>
+        <Text style={style.sectionTitle}>Tiện ích</Text>
         <ListCategories />
-        <Text style={style.sectionTitle}>Places</Text>
         <View>
           <FlatList
             contentContainerStyle={{ paddingLeft: 20 }}
@@ -155,7 +156,8 @@ const Home = ({ navigation }) => {
             // data={places}
             renderItem={({ item }) => <Card place={item} />}
           />
-          <Text style={style.sectionTitle}>Recommended</Text>
+          <Text style={style.sectionTitle}>Tin tức y tế</Text>
+          <News />
           <FlatList
             snapToInterval={width - 20}
             contentContainerStyle={{ paddingLeft: 20, paddingBottom: 20 }}
@@ -206,14 +208,23 @@ const style = StyleSheet.create({
     elevation: 12,
   },
   categoryContainer: {
-    marginTop: 60,
+    marginTop: 18,
     marginHorizontal: 20,
     flexDirection: "row",
     justifyContent: "space-between",
+    backgroundColor: COLORS.white,
+    borderRadius: 10,
+    paddingTop: 20,
+    paddingHorizontal: 40,
+    paddingBottom: 30,
+    shadowColor: "#171717",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
   iconContainer: {
-    height: 60,
-    width: 60,
+    height: 55,
+    width: 55,
     backgroundColor: COLORS.primary,
     justifyContent: "center",
     alignItems: "center",
@@ -221,7 +232,7 @@ const style = StyleSheet.create({
   },
   sectionTitle: {
     marginHorizontal: 20,
-    marginVertical: 20,
+    marginTop: 50,
     fontWeight: "bold",
     fontSize: 20,
   },

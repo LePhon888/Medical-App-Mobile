@@ -21,6 +21,9 @@ import {
   MedicalRegister,
   MainScreen,
   Setting,
+  AppointmentList,
+  News,
+  NewsDetail,
 } from "./screens";
 import DoctorAppointment from "./screens/DoctorAppointment";
 const Stack = createNativeStackNavigator();
@@ -35,7 +38,7 @@ export default function App() {
   return (
     <UserContext.Provider value={[user, dispatch]}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Login">
+        <Stack.Navigator initialRouteName="MainScreen">
           <Stack.Screen
             name="Welcome"
             component={Welcome}
@@ -101,6 +104,27 @@ export default function App() {
               headerShown: false,
             }}
 
+          />
+          <Stack.Screen
+            name="AppointmentList"
+            component={AppointmentList}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="News"
+            component={News}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="NewsDetail"
+            component={NewsDetail}
+            options={{
+              headerShown: false,
+            }}
           />
         </Stack.Navigator>
       </NavigationContainer>
