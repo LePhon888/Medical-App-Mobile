@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "30139582015",
+    "project_id": "reactnativeproject-399908",
+    "storage_bucket": "reactnativeproject-399908.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:30139582015:android:ee27bfbb4cf072833f9a8a",
+        "android_client_info": {
+          "package_name": "com.medicalappfrontend"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "30139582015-5i50r04lc1e5q5ekb9p3nor1embpj8hd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.medicalappfrontend",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "30139582015-5ftl3a00g106h5pjbj8jr64jucnk038g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyARVKTXV6HVxamhL02ozvzqeXPyOokHCR0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "30139582015-5ftl3a00g106h5pjbj8jr64jucnk038g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

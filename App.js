@@ -25,6 +25,7 @@ import {
   News,
   NewsDetail,
 } from "./screens";
+import DoctorAppointment from "./screens/DoctorAppointment";
 const Stack = createNativeStackNavigator();
 export const UserContext = createContext();
 
@@ -93,6 +94,16 @@ export default function App() {
             options={{
               headerShown: false,
             }}
+
+          />
+
+          <Stack.Screen
+            name="DoctorAppointment"
+            component={DoctorAppointment}
+            options={{
+              headerShown: false,
+            }}
+
           />
           <Stack.Screen
             name="AppointmentList"

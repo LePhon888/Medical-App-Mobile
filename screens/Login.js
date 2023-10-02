@@ -17,10 +17,10 @@ import { UserContext } from "../App";
 import { ActivityIndicator } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-// import {
-//   GoogleSignin,
-//   statusCodes,
-// } from "@react-native-google-signin/google-signin";
+import {
+  GoogleSignin,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
 
 const Login = ({ navigation }) => {
   const [isPasswordShown, setIsPasswordShown] = useState(true);
@@ -40,8 +40,9 @@ const Login = ({ navigation }) => {
           email,
           password,
         });
-        await AsyncStorage.setItem("token", res.data);
-
+        if (res && res.data) {
+          await AsyncStorage.setItem("token", res.data || "");
+        }
         const token = res.data;
 
         if (isChecked && email) {
@@ -52,27 +53,64 @@ const Login = ({ navigation }) => {
           await AsyncStorage.setItem("password", password);
         }
 
-        const response = await axios.get(endpoints["currentUser"], {
+        let { data } = await axios.get(endpoints["currentUser"], {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        await AsyncStorage.setItem("user", JSON.stringify(response.data));
+
+        await AsyncStorage.setItem("user", JSON.stringify(data));
+
+        const userData = await AsyncStorage.getItem("user");
+        const user = JSON.parse(userData);
 
         dispatch({
           type: "login",
-          payload: JSON.stringify(response.data),
+          payload: data,
         });
 
-        if (response.data) navigation.navigate("MainScreen");
+        if (user) navigation.navigate("MainScreen");
       } catch (error) {
-        console.error("Login error:", error);
+        // console.error("Login error:", error);
       } finally {
         setIsLoading(false);
       }
     };
     processLogin();
   };
+
+  const handleLoginGoogle = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      console.log(userInfo)
+      setUserInfo(userInfo);
+    } catch (error) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        console.log("Google Sign-In Cancelled");
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        console.log("Google Sign-In in Progress");
+      } else {
+        console.error("Google Sign-In Error:", error);
+      }
+    }
+  };
+
+  const signout = async () => {
+    try {
+      await GoogleSignin.signOut();
+      setUserInfo(null);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        "30139582015-5ftl3a00g106h5pjbj8jr64jucnk038g.apps.googleusercontent.com",
+    });
+  });
 
   useEffect(() => {
     const loadStoredCredentials = async () => {
@@ -255,7 +293,7 @@ const Login = ({ navigation }) => {
           }}
         >
           <TouchableOpacity
-            // onPress={() => handleLoginGoogle}
+            onPress={() => handleLoginGoogle()}
             style={{
               flex: 1,
               alignItems: "center",
