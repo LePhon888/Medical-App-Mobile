@@ -22,6 +22,7 @@ import {
   MainScreen,
   Setting,
 } from "./screens";
+import DoctorAppointment from "./screens/DoctorAppointment";
 const Stack = createNativeStackNavigator();
 export const UserContext = createContext();
 
@@ -34,7 +35,7 @@ export default function App() {
   return (
     <UserContext.Provider value={[user, dispatch]}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Welcome">
+        <Stack.Navigator initialRouteName="Login">
           <Stack.Screen
             name="Welcome"
             component={Welcome}
@@ -90,6 +91,16 @@ export default function App() {
             options={{
               headerShown: false,
             }}
+
+          />
+
+          <Stack.Screen
+            name="DoctorAppointment"
+            component={DoctorAppointment}
+            options={{
+              headerShown: false,
+            }}
+
           />
         </Stack.Navigator>
       </NavigationContainer>
