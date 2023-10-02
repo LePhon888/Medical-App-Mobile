@@ -86,7 +86,6 @@ const MedicalRegister = ({ navigation }) => {
     return `${day}-${month}-${year}`;
   }
 
-  const [user, dispatch] = useContext(UserContext);
   const [selectedGender, setSelectedGender] = useState("Nam");
   const [value, setValue] = useState(0);
   const [open, setOpen] = useState(false);
@@ -197,7 +196,7 @@ const MedicalRegister = ({ navigation }) => {
           },
         });
         setAppointment(res.data);
-        // console.log("appointment " + res.data.id);
+        console.log("appointment " + appointment);
         const resPayment = await Apis.get(
           `${endpoints["payment"]}?orderInfo=${res.data.id}&amount=${res.data.fee.fee}`
         );

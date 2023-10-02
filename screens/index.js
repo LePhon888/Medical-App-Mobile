@@ -7,6 +7,10 @@ import Chat from "./Chat";
 import MedicalRegister from "./MedicalRegister";
 import MainScreen from "./MainScreen";
 import Setting from "./Setting";
+import AppointmentList from "./AppointmentList";
+import News from "./News";
+import NewsDetail from "./NewsDetail";
+
 export {
   Login,
   Welcome,
@@ -17,4 +21,7 @@ export {
   MedicalRegister,
   MainScreen,
   Setting,
+  AppointmentList,
+  News,
+  NewsDetail,
 };
