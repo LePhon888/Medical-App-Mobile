@@ -13,6 +13,8 @@ import FontAwesome from "react-native-vector-icons/FontAwesome5";
 import { useRoute } from "@react-navigation/native";
 import COLORS from "../constants/colors";
 import axios from "axios";
+import 'url-search-params-polyfill';
+
 
 export default function NewsDetail({ navigation: { goBack } }) {
   const route = useRoute();

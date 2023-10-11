@@ -10,7 +10,7 @@ import Setting from "./Setting";
 import AppointmentList from "./AppointmentList";
 import News from "./News";
 import NewsDetail from "./NewsDetail";
-
+// import VoiceCallPage from "./VoiceCallPage";
 export {
   Login,
   Welcome,

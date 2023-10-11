@@ -3,13 +3,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React, { createContext, useReducer } from "react";
 import UserReducer from "./reducers/UserReducer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-// import Welcome from "./screens/Welcome";
-// import Login from "./screens/Login";
-// import Signup from "./screens/Signup";
-// import MainScreen from "./screens/MainScreen";
-// import ChatBot from "./screens/Chatbot";
-// import Home from "./screens/Home";
-// import Setting from "./screens/Setting";
 
 import {
   Login,
@@ -25,6 +18,7 @@ import {
   News,
   NewsDetail,
 } from "./screens";
+
 import DoctorAppointment from "./screens/DoctorAppointment";
 const Stack = createNativeStackNavigator();
 export const UserContext = createContext();
@@ -38,7 +32,7 @@ export default function App() {
   return (
     <UserContext.Provider value={[user, dispatch]}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="MainScreen">
+        <Stack.Navigator initialRouteName="VideoCall">
           <Stack.Screen
             name="Welcome"
             component={Welcome}
@@ -94,7 +88,6 @@ export default function App() {
             options={{
               headerShown: false,
             }}
-
           />
 
           <Stack.Screen
@@ -103,7 +96,6 @@ export default function App() {
             options={{
               headerShown: false,
             }}
-
           />
           <Stack.Screen
             name="AppointmentList"

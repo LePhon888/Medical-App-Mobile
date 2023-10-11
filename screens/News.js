@@ -32,9 +32,6 @@ const News = () => {
     fetchData();
   }, []);
 
-  // const handlePressNews = (selectedNews) => {
-  //   navigation.navigate("NewsDetail", { news: selectedNews });
-  // };
   return (
     <View style={styles.container}>
       {news ? (
@@ -61,7 +58,9 @@ const News = () => {
                       <Image
                         alt=""
                         source={{
-                          uri: news.authorImage ? news.authorImage : news.image,
+                          uri: news.authorImage
+                            ? "https:" + news.authorImage
+                            : news.image,
                         }}
                         style={styles.cardRowItemImg}
                       />

@@ -20,8 +20,9 @@ import DatePicker, { getFormatedDate } from "react-native-modern-datepicker";
 import Apis, { authApi, endpoints } from "../config/Apis";
 import { UserContext } from "../App";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 
-const MedicalRegister = ({ navigation }) => {
+const MedicalRegister = () => {
   const today = new Date();
   const startDate = getFormatedDate(
     today.setDate(today.getDate()),
@@ -85,6 +86,7 @@ const MedicalRegister = ({ navigation }) => {
     const year = dateObj.getFullYear();
     return `${day}-${month}-${year}`;
   }
+  const navigation = useNavigation();
 
   const [selectedGender, setSelectedGender] = useState("Nam");
   const [value, setValue] = useState(0);
@@ -213,6 +215,7 @@ const MedicalRegister = ({ navigation }) => {
         .catch((error) => {
           console.error("URL open error:", error);
         });
+      setValue(0);
     }
   };
 
@@ -667,13 +670,14 @@ const MedicalRegister = ({ navigation }) => {
             <Text>Ngày hẹn: {formatDateToDDMMYYYY(appointment.date)}</Text>
             <Text>Giờ hẹn: {appointment.hour.hour}</Text>
             <Text>Bệnh nhân: {appointment.user.firstName}</Text>
+            <Text>Phí hẹn: {appointment.fee.fee} VNĐ</Text>
             <Text></Text>
             <Text>Chúng tôi sẽ gửi mã phòng qua email của bạn.</Text>
             <Text></Text>
           </View>
         ) : null}
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          {value === 1 || value === 2 ? (
+          {value === 1 ? (
             <Button
               title="Quay lại"
               filled
@@ -694,7 +698,7 @@ const MedicalRegister = ({ navigation }) => {
             style={{
               marginTop: 18,
               marginBottom: 4,
-              width: value === 0 ? "100%" : "48%",
+              width: value === 0 || value === 2 ? "100%" : "48%",
             }}
             onPress={() => handleNextStep()}
           />

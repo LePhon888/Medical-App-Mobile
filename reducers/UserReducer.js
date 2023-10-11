@@ -5,6 +5,8 @@ const UserReducer = async (currentState, action) => {
     case "login":
       return action.payload;
     case "logout":
+      const u = await AsyncStorage.getItem("user");
+      if (u.provider === "GOOGLE") await GoogleSignin.signOut();
       await AsyncStorage.removeItem("token");
       await AsyncStorage.removeItem("user");
       return null;

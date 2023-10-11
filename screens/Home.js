@@ -11,19 +11,28 @@ import {
   FlatList,
   Dimensions,
   TouchableOpacity,
-  Image,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import COLORS from "../constants/colors";
 import { FloatingAction } from "react-native-floating-action";
-import ChatBot from "./Chatbot";
 const { width } = Dimensions.get("screen");
 import {} from "react-native";
 import News from "./News";
-const Home = ({ navigation }) => {
+import { useNavigation } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
+
+const Home = ({ navigation: { goBack } }) => {
+  const navigation = useNavigation();
+  const route = useRoute();
+
   const categoryIcons = [
-    <Icon name="flight" size={25} color={COLORS.white} />,
-    <Icon name="beach-access" size={25} color={COLORS.white} />,
+    <Icon
+      name="list"
+      size={25}
+      color={COLORS.white}
+      onPress={() => navigation.navigate("AppointmentList")}
+    />,
+    <Icon name="duo" size={25} color={COLORS.white} />,
     <Icon name="near-me" size={25} color={COLORS.white} />,
     <Icon name="place" size={25} color={COLORS.white} />,
   ];
@@ -208,15 +217,12 @@ const style = StyleSheet.create({
     elevation: 12,
   },
   categoryContainer: {
-    marginTop: 18,
-    marginHorizontal: 20,
     flexDirection: "row",
     justifyContent: "space-between",
     backgroundColor: COLORS.white,
     borderRadius: 10,
     paddingTop: 20,
     paddingHorizontal: 40,
-    paddingBottom: 30,
     shadowColor: "#171717",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
