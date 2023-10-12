@@ -4,7 +4,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // const SERVER = "http://localhost:8080";
-const SERVER = "http://192.168.1.10:8080";
+const SERVER = "http://192.168.1.105:8080";
 
 export const endpoints = {
   login: `${SERVER}/auth/login`,

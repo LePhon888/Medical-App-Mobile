@@ -8,6 +8,7 @@ import { FloatingAction } from 'react-native-floating-action';
 import ChatDialog from '../components/ChatDialog';
 import { endpoints } from '../config/Apis';
 import COLORS from '../constants/colors';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Chat = () => {
   const [connected, setConnected] = useState(false);
@@ -15,17 +16,36 @@ const Chat = () => {
   const [roomId, setRoomId] = useState('');
   const [messages, setMessages] = useState([]);
   const [visible, setVisible] = useState(false);
+  const [userInfo, setUsetInfo] = useState(null)
+  const [user, setUser] = useState(null);
 
-  const [user, setUser] = useState({
-    _id: 1,
-    name: "User",
-    // Add other user details if needed
-  });
+
+  const getUserAndToken = async () => {
+    try {
+      const userInfo = await AsyncStorage.getItem("user");
+      const tokenInfo = await AsyncStorage.getItem("token");
+      const parsedUser = JSON.parse(userInfo);
+      setUsetInfo(parsedUser);
+      if (parsedUser) {
+        console.log(parsedUser)
+        const newUser = {
+          _id: Math.round(Math.random() * 1000000),
+          name: parsedUser.firstName,
+          avatar: parsedUser.image ? parsedUser.image : ""
+        };
+        setUser(newUser);
+      }
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
 
   useEffect(() => {
     if (connected) {
       const initializeWebSocket = async () => {
-        const socket = new SockJS(endpoints["websocket"]); // Replace with your WebSocket server URL
+        const socket = new SockJS(endpoints["websocket"]);
         const client = Stomp.over(socket);
 
         client.connect({}, () => {
@@ -46,12 +66,6 @@ const Chat = () => {
 
       initializeWebSocket();
 
-      const newUser = {
-        _id: Math.round(Math.random() * 1000000),
-        name: "User",
-      };
-
-      setUser(newUser);
     } else {
       return () => {
         if (stompClient) {
@@ -61,6 +75,7 @@ const Chat = () => {
       };
 
     }
+    getUserAndToken();
   }, [connected]);
 
   const onSend = useCallback((newMessages = []) => {
