@@ -12,7 +12,7 @@ import FeatherIcon from "react-native-vector-icons/Feather";
 import Apis, { endpoints } from "../config/Apis";
 import COLORS from "../constants/colors";
 
-export default function AppointmentList() {
+export default function AppointmentList({ navigation: { goBack } }) {
   const [appointment, setAppointment] = useState(null);
   useEffect(() => {
     const fetchData = async () => {
@@ -29,11 +29,28 @@ export default function AppointmentList() {
     fetchData();
   }, []);
 
-  console.log("appointment " + JSON.stringify(appointment));
-
   return (
     <SafeAreaView style={{ backgroundColor: "#f2f2f2" }}>
       <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.actionWrapper}>
+          <TouchableOpacity
+            onPress={() => goBack()}
+            style={{ marginRight: "auto" }}
+          >
+            <View style={styles.action}>
+              <FeatherIcon color="#242329" name="chevron-left" size={20} />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              // handle onPress
+            }}
+          >
+            <View style={styles.action}>
+              <FeatherIcon color="#242329" name="heart" size={18} />
+            </View>
+          </TouchableOpacity>
+        </View>
         <Text style={styles.title}>Danh sách lịch hẹn </Text>
         {appointment ? (
           appointment.map((item, index) => {
@@ -124,10 +141,9 @@ export default function AppointmentList() {
 const styles = StyleSheet.create({
   container: {
     padding: 24,
-    marginTop: 20,
   },
   title: {
-    fontSize: 32,
+    fontSize: 26,
     fontWeight: "700",
     color: "#1d1d1d",
     marginBottom: 12,
@@ -207,5 +223,28 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "700",
     color: COLORS.secondary,
+  },
+  actions: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+  },
+  actionWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    marginHorizontal: -8,
+    marginBottom: 20,
+  },
+  action: {
+    width: 36,
+    height: 36,
+    backgroundColor: "#ffffff",
+    borderWidth: 1,
+    borderColor: "#e5e5e5",
+    borderStyle: "solid",
+    borderRadius: 12,
+    marginHorizontal: 8,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

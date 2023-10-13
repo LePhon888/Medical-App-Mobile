@@ -55,8 +55,8 @@ export default function Setting({ navigation }) {
     darkMode: true,
     wifi: false,
   });
-  const [user, dispatch] = useState(UserContext)
-  const [userInfo, setUser] = useState(null);
+  const [user, dispatch] = useState(UserContext);
+  const [userInfo, setUserInfo] = useState(null);
   const [token, setToken] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
 
@@ -65,12 +65,12 @@ export default function Setting({ navigation }) {
       try {
         const currentUser = await AsyncStorage.getItem("user");
         const tokenInfo = await AsyncStorage.getItem("token");
-        setUser(JSON.parse(currentUser));
-        setToken(tokenInfo)
+        setUserInfo(JSON.parse(currentUser));
+        setToken(tokenInfo);
+        console.log("userInfo ", userInfo);
         if (currentUser) {
           setSelectedImage(JSON.parse(currentUser).image);
         }
-
       } catch (error) {
         console.error(error);
       }
@@ -80,7 +80,7 @@ export default function Setting({ navigation }) {
 
   const openImagePicker = () => {
     const options = {
-      mediaType: 'photo',
+      mediaType: "photo",
       includeBase64: false,
       maxHeight: 2000,
       maxWidth: 2000,
@@ -88,9 +88,9 @@ export default function Setting({ navigation }) {
 
     launchImageLibrary(options, (response) => {
       if (response.didCancel) {
-        console.log('User cancelled image picker');
+        console.log("User cancelled image picker");
       } else if (response.error) {
-        console.log('Image picker error: ', response.error);
+        console.log("Image picker error: ", response.error);
       } else {
         let imageUri = response.uri || response.assets?.[0]?.uri;
 
@@ -100,28 +100,30 @@ export default function Setting({ navigation }) {
   };
 
   const update = async (imageUri) => {
-    console.log(`Bearer ${token}`)
     try {
       const formData = new FormData();
-      formData.append('user', { "string": JSON.stringify(userInfo), type: 'application/json' })
-      formData.append('file', { uri: imageUri, name: 'image.jpg', type: 'image/jpeg' })
+      formData.append("user", {
+        string: JSON.stringify(userInfo),
+        type: "application/json",
+      });
+      formData.append("file", {
+        uri: imageUri,
+        name: "image.jpg",
+        type: "image/jpeg",
+      });
 
       const e = `${endpoints["user"]}/${userInfo.id}`;
-      console.log(userInfo)
-
-      console.log(formData)
 
       let res = await Apis.post(e, formData, {
-        headers:
-        {
+        headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
-        }
+          "Content-Type": "multipart/form-data",
+        },
       });
       if (res.status === 200) {
         setSelectedImage(imageUri);
       } else {
-        console.log('Error updating user profile:', res.status);
+        console.log("Error updating user profile:", res.status);
       }
     } catch (error) {
       console.error(error);
@@ -132,23 +134,25 @@ export default function Setting({ navigation }) {
     <SafeAreaView style={{ backgroundColor: "#f6f6f6" }}>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.profile}>
-
-          <TouchableOpacity
-            onPress={openImagePicker}
-          >
+          <TouchableOpacity onPress={openImagePicker}>
             <Image
               alt=""
               source={{
-                uri: selectedImage || "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2.5&w=256&h=256&q=80",
+                uri:
+                  selectedImage ||
+                  "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2.5&w=256&h=256&q=80",
               }}
               style={styles.profileAvatar}
             />
           </TouchableOpacity>
 
+          <Text style={styles.profileName}>
+            {userInfo?.firstName || "Vui lòng bổ sung tên"}
+          </Text>
 
-          <Text style={styles.profileName}>John Doe</Text>
-
-          <Text style={styles.profileEmail}>john.doe@mail.com</Text>
+          <Text style={styles.profileEmail}>
+            {userInfo?.email || "Vui lòng bổ sung email"}
+          </Text>
 
           <TouchableOpacity
             onPress={() => {

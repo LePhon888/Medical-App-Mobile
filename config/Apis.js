@@ -4,7 +4,11 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // const SERVER = "http://localhost:8080";
+<<<<<<< HEAD
 const SERVER = "http://192.168.1.105:8080";
+=======
+const SERVER = "http://192.168.1.4:8080";
+>>>>>>> 3e5310d8b9ade743186e3562f251a9f0dedf179c
 
 export const endpoints = {
   login: `${SERVER}/auth/login`,
@@ -18,6 +22,7 @@ export const endpoints = {
   user: `${SERVER}/api/user`,
   websocket: `${SERVER}/chat`,
   news: `${SERVER}/api/scrape`,
+  googleLogin: `${SERVER}/login-google/auth-google`,
 };
 
 // export const authApi = async () => {

@@ -34,14 +34,15 @@ const Login = ({ navigation }) => {
   const login = () => {
     const processLogin = async () => {
       try {
-        setIsLoading(true); // Set loading state to true
+        setIsLoading(true);
 
         let res = await Apis.post(endpoints["login"], {
           email,
           password,
         });
+
         if (res && res.data) {
-          await AsyncStorage.setItem("token", res.data || "");
+          await AsyncStorage.setItem("token", res.data);
         }
         const token = res.data;
 
@@ -61,15 +62,13 @@ const Login = ({ navigation }) => {
 
         await AsyncStorage.setItem("user", JSON.stringify(data));
 
-        const userData = await AsyncStorage.getItem("user");
-        const user = JSON.parse(userData);
-
         dispatch({
           type: "login",
           payload: data,
         });
 
-        if (user) navigation.navigate("MainScreen");
+        const userData = await AsyncStorage.getItem("user");
+        if (userData) navigation.navigate("MainScreen");
       } catch (error) {
         // console.error("Login error:", error);
       } finally {
@@ -83,8 +82,26 @@ const Login = ({ navigation }) => {
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
-      console.log(userInfo)
-      setUserInfo(userInfo);
+      let res = await Apis.post(endpoints["googleLogin"], userInfo);
+      const token = res.data;
+      if (res && res.data) {
+        await AsyncStorage.setItem("token", res.data);
+      }
+      let { data } = await axios.get(endpoints["currentUser"], {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      await AsyncStorage.setItem("user", JSON.stringify(data));
+
+      dispatch({
+        type: "login",
+        payload: userInfo,
+      });
+
+      const userData = await AsyncStorage.getItem("user");
+      console.log("userData " + userData);
+      if (userData) navigation.navigate("MainScreen");
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         console.log("Google Sign-In Cancelled");
@@ -99,7 +116,6 @@ const Login = ({ navigation }) => {
   const signout = async () => {
     try {
       await GoogleSignin.signOut();
-      setUserInfo(null);
     } catch (error) {
       console.log(error);
     }
