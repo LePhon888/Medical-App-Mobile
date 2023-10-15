@@ -10,7 +10,6 @@ import {
   Image,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome"; // Import an icon library
-<<<<<<< HEAD
 import { GiftedChat } from 'react-native-gifted-chat';
 import SockJS from 'sockjs-client';
 import Stomp from 'webstomp-client';
@@ -19,17 +18,9 @@ import ChatDialog from '../components/ChatDialog';
 import { endpoints } from '../config/Apis';
 import COLORS from '../constants/colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-=======
-import { GiftedChat } from "react-native-gifted-chat";
-import SockJS from "sockjs-client";
-import Stomp from "webstomp-client";
-import { FloatingAction } from "react-native-floating-action";
-import ChatDialog from "../components/ChatDialog";
-import { endpoints } from "../config/Apis";
-import COLORS from "../constants/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import FeatherIcon from "react-native-vector-icons/Feather";
->>>>>>> 3e5310d8b9ade743186e3562f251a9f0dedf179c
+import ChatIntroduction from "../components/ChatIntroduction";
 
 const Chat = () => {
   const [connected, setConnected] = useState(false);
@@ -37,7 +28,6 @@ const Chat = () => {
   const [roomId, setRoomId] = useState("");
   const [messages, setMessages] = useState([]);
   const [visible, setVisible] = useState(false);
-<<<<<<< HEAD
   const [userInfo, setUsetInfo] = useState(null)
   const [user, setUser] = useState(null);
 
@@ -55,6 +45,7 @@ const Chat = () => {
           name: parsedUser.firstName,
           avatar: parsedUser.image ? parsedUser.image : ""
         };
+        console.log(newUser)
         setUser(newUser);
       }
 
@@ -63,32 +54,29 @@ const Chat = () => {
     }
   };
 
-=======
-  const [userInfo, setUserInfo] = useState(null);
-  const [user, setUser] = useState(null);
-
-  const getUserAndToken = async () => {
-    try {
-      const currentUser = await AsyncStorage.getItem("user");
-      const tokenInfo = await AsyncStorage.getItem("token");
-      setUserInfo(JSON.parse(currentUser));
-      setToken(tokenInfo);
-    } catch (error) {
-      console.error(error);
-    }
-  };
->>>>>>> 3e5310d8b9ade743186e3562f251a9f0dedf179c
+  useEffect(() => {
+    getUserAndToken();
+  }, [])
 
   useEffect(() => {
     if (connected) {
+
       const initializeWebSocket = async () => {
         const socket = new SockJS(endpoints["websocket"]);
         const client = Stomp.over(socket);
 
-        client.connect({}, () => {
-          setStompClient(client);
+        client.connect({ roomId: roomId, username: user.name }, () => {
 
-          // Subscribe to a specific chat topic (e.g., /topic/chat)
+          // Send a join message to the room
+          const joinMessage = {
+            _id: Math.round(Math.random() * 1000000),
+            text: user.name + " đã tham gia phòng.",
+            system: true,
+          };
+
+          client.send(`/app/send/${roomId}`, JSON.stringify(joinMessage));
+
+          // Subscribe to the chat room
           client.subscribe(`/topic/chat/${roomId}`, (message) => {
             const newMessage = JSON.parse(message.body);
 
@@ -97,21 +85,15 @@ const Chat = () => {
               GiftedChat.append(previousMessages, [newMessage])
             );
           });
+
+          setStompClient(client)
+
         });
+
       };
 
       initializeWebSocket();
 
-<<<<<<< HEAD
-=======
-      const newUser = {
-        _id: Math.round(Math.random() * 1000000),
-        name: userInfo.firstName,
-        avatar: userInfo.image,
-      };
-
-      setUser(newUser);
->>>>>>> 3e5310d8b9ade743186e3562f251a9f0dedf179c
     } else {
       return () => {
         if (stompClient) {
@@ -120,71 +102,58 @@ const Chat = () => {
         }
       };
     }
-<<<<<<< HEAD
-    getUserAndToken();
-=======
 
-    if (!userInfo) getUserAndToken();
->>>>>>> 3e5310d8b9ade743186e3562f251a9f0dedf179c
   }, [connected]);
 
   const onSend = useCallback(
     (newMessages = []) => {
-      // Extract the user's message text
       const userMessage = newMessages[0].text;
 
-      // Send the user's message to the WebSocket server with the room ID
+
       if (stompClient && roomId) {
         const message = {
-          _id: Math.round(Math.random() * 1000000), // Generate a unique ID
+          _id: Math.round(Math.random() * 1000000),
           text: userMessage,
           createdAt: new Date(),
           user: user,
         };
 
-        // Send the message to the specific room's WebSocket topic
+
         stompClient.send(`/app/send/${roomId}`, JSON.stringify(message));
         console.log("TEST9999", JSON.stringify(message));
       }
     },
     [stompClient, user, roomId]
   );
+
+  const handleLeaveAction = () => {
+
+    if (stompClient) {
+      const leaveMessage = {
+        _id: Math.round(Math.random() * 1000000),
+        text: user.name + " đã rời khỏi phòng.",
+        system: true,
+      };
+
+      stompClient.send(`/app/send/${roomId}`, JSON.stringify(leaveMessage));
+    }
+
+    setConnected(false)
+  }
   const ChatHeader = () => {
     return (
-      <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.header}>
-          {!connected ? (
-            <Text style={styles.titleText}>Trò chuyện</Text>
-          ) : (
-            <>
-              <TouchableOpacity onPress={() => setConnected(false)}>
-                <Icon name="arrow-left" size={20} color={"#FFFF"} />
-              </TouchableOpacity>
-              <Text style={styles.titleText}>Phòng {roomId}</Text>
-            </>
-          )}
-        </View>
-        <View style={styles.empty}>
-          <FeatherIcon color="#94A3B8" name="mail" size={36} />
-
-          <Text style={styles.emptyTitle}>Không có trò chuyện nào</Text>
-
-          <Text style={styles.emptyDescription}>Hãy bắt đầu</Text>
-
-          <TouchableOpacity onPress={() => setConnected(false)}>
-            <View style={styles.btn}>
-              <Text style={styles.btnText}>Bắt đầu bằng cuộc hẹn</Text>
-
-              <FeatherIcon
-                color="#fff"
-                name="message-circle"
-                size={18}
-                style={{ marginLeft: 12 }}
-              />
-            </View>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
+      <View style={styles.header}>
+        {!connected ? (
+          <Text style={styles.titleText}>Trò chuyện</Text>
+        ) : (
+          <>
+            <TouchableOpacity onPress={() => handleLeaveAction()}>
+              <Icon name="arrow-left" size={20} color={"#FFFF"} />
+            </TouchableOpacity>
+            <Text style={styles.titleText}>Phòng {roomId}</Text>
+          </>
+        )}
+      </View>
     );
   };
 
@@ -246,6 +215,7 @@ const Chat = () => {
   return (
     <View style={styles.container}>
       <ChatHeader />
+
       {connected && (
         <GiftedChat
           messages={messages}
@@ -256,6 +226,7 @@ const Chat = () => {
 
       {!connected && (
         <>
+          <ChatIntroduction />
           <ChatDialog
             visible={visible}
             closeDialog={closeDialog}
@@ -266,11 +237,15 @@ const Chat = () => {
             }}
           />
           <FloatingAction
-            color="#0097cb"
             actions={actions}
             onPressItem={(name) => {
               optionHandle(name);
             }}
+            floatingIcon={{
+              uri: "https://play-lh.googleusercontent.com/64pIxivSTmdI8ngZc8sQESkXKCgqS2bQTGG_29dx052T0Re3csxpKUP0_gMgOErOmUg",
+            }}
+            iconHeight={60}
+            iconWidth={60}
           />
         </>
       )}
@@ -317,7 +292,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: COLORS.primary,
-    paddingVertical: 26,
+    paddingVertical: 10,
     paddingHorizontal: 16,
   },
   titleText: {

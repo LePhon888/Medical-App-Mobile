@@ -3,6 +3,7 @@ import { GiftedChat } from "react-native-gifted-chat";
 import TypingIndicator from "../components/TypingIndicator";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome"; // Import an icon library
+import COLORS from "../constants/colors";
 
 const ChatBot = ({ navigation }) => {
   const [messages, setMessages] = useState([]);
@@ -90,7 +91,7 @@ const ChatBot = ({ navigation }) => {
         messages={messages}
         onSend={onSend}
         user={user}
-        renderFooter={renderFooter} // Render the footer with the typing indicator
+        renderFooter={renderFooter}
         shouldUpdateMessage={() => true}
       />
     </View>
@@ -101,7 +102,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#1877F2",
+    backgroundColor: COLORS.primary,
     paddingVertical: 10,
     paddingHorizontal: 16,
   },
