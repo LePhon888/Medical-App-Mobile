@@ -4,6 +4,7 @@ import TypingIndicator from "../components/TypingIndicator";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome"; // Import an icon library
 import COLORS from "../constants/colors";
+import { endpoints } from "../config/Apis";
 
 const ChatBot = ({ navigation }) => {
   const [messages, setMessages] = useState([]);
@@ -22,7 +23,6 @@ const ChatBot = ({ navigation }) => {
   };
 
   useEffect(() => {
-    // Initialize the chat with a welcome message
     setMessages([
       {
         _id: Math.round(Math.random() * 1000000),
@@ -34,29 +34,27 @@ const ChatBot = ({ navigation }) => {
   }, []);
 
   const onSend = useCallback((newMessages = []) => {
-    // Append the user's input message to the chat
     setMessages((previousMessages) =>
       GiftedChat.append(previousMessages, newMessages)
     );
 
-    // Extract the user's message text
+
     const userMessage = newMessages[0].text;
 
-    // Make a request to your API to fetch the bot's response
+
     fetchReponse(userMessage);
   }, []);
 
   const fetchReponse = async (message) => {
-    setBotIsTyping(true); // Set botIsTyping to true while fetching the response
+    setBotIsTyping(true);
 
     const response = await fetch(
-      `http://192.168.1.105:8000/api/get/?msg=${message}`
+      `${endpoints["chatbot"]}?msg=${message}`
     );
     const responseData = await response.json();
-    const botResponse = responseData.message; // Adjust this based on your API response structure
-    setBotIsTyping(false); // Set botIsTyping back to false when the response is received
+    const botResponse = responseData.message;
+    setBotIsTyping(false);
 
-    // Create a new message for the bot's response
     const newBotMessage = {
       _id: Math.round(Math.random() * 1000000),
       text: botResponse,
