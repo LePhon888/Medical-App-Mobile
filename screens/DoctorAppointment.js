@@ -45,6 +45,7 @@ const DoctorAppointment = () => {
                         headers: { Authorization: `Bearer ${tokenInfo}` },
                     });
                     setAppointment(response.data);
+                    console.log(response.data)
                 }
             } catch (error) {
                 console.error(error);
@@ -74,16 +75,21 @@ const DoctorAppointment = () => {
         }
     };
 
+    const clear = () => {
+        setKw(null)
+        setDate(null)
+    };
+
     const renderFilter = () => {
         return (
-            <Grid>
+            <Grid style={{ paddingTop: 5 }}>
                 <Row style={{ alignItems: "center" }}>
                     <Col style={{ width: "15", padding: 10 }}>
                         <Text>
                             <Icon style={{ fontSize: 30 }} name="filter"></Icon>
                         </Text>
                     </Col>
-                    <Col style={{ padding: 10 }}>
+                    <Col style={{ padding: 5 }}>
                         <Text>Theo ngày</Text>
                         <TouchableOpacity onPress={() => setShowDatePicker(true)}>
                             <Text
@@ -100,7 +106,7 @@ const DoctorAppointment = () => {
                             </Text>
                         </TouchableOpacity>
                     </Col>
-                    <Col style={{ padding: 10 }}>
+                    <Col style={{ padding: 5 }}>
                         <Text>Theo tên</Text>
                         <TextInput
                             autoCorrect={false}
@@ -170,7 +176,7 @@ const DoctorAppointment = () => {
                         <Text style={styles.closeButtonText}>Đóng</Text>
                     </TouchableOpacity>
                     <View>
-                        <ModalText>Ngày khám: {date.format("DD-MM-YYYY")}</ModalText>
+                        <ModalText>Ngày khám: {moment(selectedRow.date).format("DD-MM-YYYY")}</ModalText>
                         <ModalText>Giờ khám: {selectedRow.hour.hour}</ModalText>
                         <ModalText>
                             Bệnh nhân: {selectedRow.user.firstName}{" "}
