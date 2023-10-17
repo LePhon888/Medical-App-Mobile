@@ -17,6 +17,7 @@ import { RadioButton } from "react-native-paper";
 import { launchImageLibrary } from "react-native-image-picker";
 import Apis, { endpoints } from "../config/Apis";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import FeatherIcon from "react-native-vector-icons/Feather";
 
 const EditProfile = ({ route, navigation }) => {
   const [user, setUser] = useState(route.params.userInfo);
@@ -25,7 +26,6 @@ const EditProfile = ({ route, navigation }) => {
   const [error, setError] = useState(null);
 
   const userFields = [
-    { field: "email", label: "Email", type: "text" },
     { field: "firstName", label: "Họ", type: "text" },
     { field: "lastName", label: "Tên", type: "text" },
     { field: "birthday", label: "Ngày sinh", type: "date" },
@@ -120,7 +120,7 @@ const EditProfile = ({ route, navigation }) => {
     return (
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="arrow-left" size={20} color={"#FFFF"} />
+          <FeatherIcon color="white" name="chevron-left" size={20} />
         </TouchableOpacity>
         <Text style={styles.titleText}>Chỉnh sửa thông tin</Text>
       </View>

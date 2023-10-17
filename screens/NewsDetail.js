@@ -13,8 +13,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome5";
 import { useRoute } from "@react-navigation/native";
 import COLORS from "../constants/colors";
 import axios from "axios";
-import 'url-search-params-polyfill';
-
+import "url-search-params-polyfill";
 
 export default function NewsDetail({ navigation: { goBack } }) {
   const route = useRoute();
@@ -49,7 +48,7 @@ export default function NewsDetail({ navigation: { goBack } }) {
         headers: {
           "content-type": "application/x-www-form-urlencoded",
           "X-RapidAPI-Key":
-            "cb2418597fmshf4b32867fccd499p173d67jsn3f59a72fb6e0",
+            "0d190faf13msh1adb3499dd9a912p1e3358jsn7cdb1d58159a",
           "X-RapidAPI-Host": "text-translator2.p.rapidapi.com",
         },
         data: headerParams,
@@ -61,7 +60,7 @@ export default function NewsDetail({ navigation: { goBack } }) {
         headers: {
           "content-type": "application/x-www-form-urlencoded",
           "X-RapidAPI-Key":
-            "cb2418597fmshf4b32867fccd499p173d67jsn3f59a72fb6e0",
+            "0d190faf13msh1adb3499dd9a912p1e3358jsn7cdb1d58159a",
           "X-RapidAPI-Host": "text-translator2.p.rapidapi.com",
         },
         data: contentParams,
@@ -70,8 +69,16 @@ export default function NewsDetail({ navigation: { goBack } }) {
       const headerResponse = await axios.request(headerOptions);
       const contentResponse = await axios.request(contentOptions);
 
+      const halfwayIndex = Math.floor(
+        contentResponse.data.data.translatedText.length / 2
+      );
+      const trimmedContent = contentResponse.data.data.translatedText.slice(
+        0,
+        halfwayIndex
+      );
+
       setHeader(headerResponse.data.data.translatedText);
-      setContent(contentResponse.data.data.translatedText);
+      setContent(trimmedContent);
     } catch (error) {
       console.error(error);
     }
@@ -397,6 +404,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     color: "#7b7c7e",
+    textAlign: "justify",
   },
   footer: {
     flexGrow: 1,

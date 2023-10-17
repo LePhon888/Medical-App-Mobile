@@ -13,6 +13,21 @@ import Apis, { endpoints } from "../config/Apis";
 import COLORS from "../constants/colors";
 
 export default function AppointmentList({ navigation: { goBack } }) {
+  function formatDate(inputDate) {
+    const dateComponents = inputDate.split("-");
+
+    const dateObject = new Date(
+      dateComponents[0],
+      dateComponents[1] - 1,
+      dateComponents[2]
+    );
+
+    const formattedDate = `${dateObject.getDate()}-${(dateObject.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}-${dateObject.getFullYear()}`;
+
+    return formattedDate;
+  }
   const [appointment, setAppointment] = useState(null);
   useEffect(() => {
     const fetchData = async () => {
@@ -28,7 +43,7 @@ export default function AppointmentList({ navigation: { goBack } }) {
     };
     fetchData();
   }, []);
-  console.log(appointment);
+
   return (
     <SafeAreaView style={{ backgroundColor: "#f2f2f2" }}>
       <ScrollView contentContainerStyle={styles.container}>
@@ -87,7 +102,9 @@ export default function AppointmentList({ navigation: { goBack } }) {
                           </Text>
                         </View>
 
-                        <Text style={styles.cardSalary}>{item.date}</Text>
+                        <Text style={styles.cardSalary}>
+                          {formatDate(item.date)}
+                        </Text>
                       </View>
                     </View>
 
@@ -130,7 +147,7 @@ export default function AppointmentList({ navigation: { goBack } }) {
             );
           })
         ) : (
-          <Text>Loading</Text>
+          <Text>Danh sách rỗng</Text>
         )}
       </ScrollView>
     </SafeAreaView>
@@ -142,7 +159,7 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   title: {
-    fontSize: 26,
+    fontSize: 22,
     fontWeight: "700",
     color: "#1d1d1d",
     marginBottom: 12,

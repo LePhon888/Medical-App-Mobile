@@ -64,7 +64,7 @@ const Signup = ({ navigation }) => {
         if (res.status === 201) {
           setNotification(true);
           navigation.navigate("Login");
-        } else setErr("Error");
+        } else setError("Error");
       } catch (error) {
         console.log(error);
       }

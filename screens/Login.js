@@ -30,11 +30,13 @@ const Login = ({ navigation }) => {
   const [user, dispatch] = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
+  const [error, setError] = useState(null);
 
   const login = () => {
     const processLogin = async () => {
       try {
         setIsLoading(true);
+        setError(null);
 
         let res = await Apis.post(endpoints["login"], {
           email,
@@ -71,6 +73,7 @@ const Login = ({ navigation }) => {
         if (userData) navigation.navigate("MainScreen");
       } catch (error) {
         // console.error("Login error:", error);
+        setError("Không tìm thấy tài khoản hoặc chưa xác thực email");
       } finally {
         setIsLoading(false);
       }
@@ -82,6 +85,7 @@ const Login = ({ navigation }) => {
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
+      console.log(userInfo);
       let res = await Apis.post(endpoints["googleLogin"], userInfo);
       const token = res.data;
       if (res && res.data) {
@@ -113,18 +117,10 @@ const Login = ({ navigation }) => {
     }
   };
 
-  const signout = async () => {
-    try {
-      await GoogleSignin.signOut();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
     GoogleSignin.configure({
       webClientId:
-        "30139582015-5i50r04lc1e5q5ekb9p3nor1embpj8hd.apps.googleusercontent.com",
+        "30139582015-5ftl3a00g106h5pjbj8jr64jucnk038g.apps.googleusercontent.com",
     });
   });
 
@@ -275,6 +271,17 @@ const Login = ({ navigation }) => {
           }}
           onPress={() => login()}
         />
+        {error && (
+          <Text
+            style={{
+              color: COLORS.red,
+              marginBottom: 10,
+              textAlign: "center",
+            }}
+          >
+            {error}
+          </Text>
+        )}
         <View
           style={{
             flexDirection: "row",
