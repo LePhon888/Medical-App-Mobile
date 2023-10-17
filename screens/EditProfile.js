@@ -109,10 +109,7 @@ const EditProfile = ({ route, navigation }) => {
       console.log(error);
       if (error.response && error.response.status === 400)
         setError(error.response.data);
-      else
-        setError(
-          "The field file exceeds its maximum permitted size of 1048576 bytes."
-        );
+      else setError("Vui lòng chọn ảnh có kích thước nhỏ");
     }
   };
 
@@ -193,18 +190,15 @@ const EditProfile = ({ route, navigation }) => {
           })}
 
           {error && (
-            <View
+            <Text
               style={{
-                backgroundColor: "#DC4C64",
-                padding: 10,
+                color: COLORS.red,
                 marginBottom: 10,
-                borderRadius: 10,
+                textAlign: "center",
               }}
             >
-              <Text style={{ color: "white", textAlign: "center" }}>
-                {error}
-              </Text>
-            </View>
+              {error}
+            </Text>
           )}
           <View style={styles.buttonContainer}>
             <Button title="Cập nhật" filled onPress={handleSubmit} />

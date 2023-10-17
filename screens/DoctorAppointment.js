@@ -218,7 +218,7 @@ const DoctorAppointment = () => {
       }
       return true;
     });
-
+    console.log("filteredAppointments " + filteredAppointments);
     return filteredAppointments.length === 0 ? (
       <Text>Danh sách rỗng</Text>
     ) : (
