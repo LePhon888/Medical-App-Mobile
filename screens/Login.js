@@ -124,7 +124,7 @@ const Login = ({ navigation }) => {
   useEffect(() => {
     GoogleSignin.configure({
       webClientId:
-        "30139582015-5ftl3a00g106h5pjbj8jr64jucnk038g.apps.googleusercontent.com",
+        "30139582015-5i50r04lc1e5q5ekb9p3nor1embpj8hd.apps.googleusercontent.com",
     });
   });
 
@@ -275,7 +275,6 @@ const Login = ({ navigation }) => {
           }}
           onPress={() => login()}
         />
-
         <View
           style={{
             flexDirection: "row",
@@ -360,7 +359,6 @@ const Login = ({ navigation }) => {
           </Pressable>
         </View>
       </View>
-      {isLoading && <ActivityIndicator size="small" color={COLORS.primary} />}
     </SafeAreaView>
   );
 };

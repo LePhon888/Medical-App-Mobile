@@ -78,19 +78,19 @@ export default function Setting({ navigation, route }) {
     getUserAndToken();
   }, [isFocused]);
 
-
   return (
     <SafeAreaView style={{ backgroundColor: "#f6f6f6" }}>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.profile}>
-          <TouchableOpacity >
+          <TouchableOpacity>
             <Image
               alt=""
               source={{
-                uri:
-                  `${selectedImage ? selectedImage
-                    : 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2.5&w=256&h=256&q=80'
-                  }`
+                uri: `${
+                  selectedImage
+                    ? selectedImage
+                    : "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2.5&w=256&h=256&q=80"
+                }`,
               }}
               style={styles.profileAvatar}
             />
@@ -106,7 +106,7 @@ export default function Setting({ navigation, route }) {
 
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate('EditProfile', {
+              navigation.navigate("EditProfile", {
                 userInfo,
               });
             }}

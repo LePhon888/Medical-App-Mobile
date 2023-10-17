@@ -28,7 +28,7 @@ export default function AppointmentList({ navigation: { goBack } }) {
     };
     fetchData();
   }, []);
-
+  console.log(appointment);
   return (
     <SafeAreaView style={{ backgroundColor: "#f2f2f2" }}>
       <ScrollView contentContainerStyle={styles.container}>
@@ -83,8 +83,7 @@ export default function AppointmentList({ navigation: { goBack } }) {
                           </Text>
 
                           <Text style={styles.cardCompany}>
-                            Lý do hẹn:
-                            {item.reason}
+                            Lý do hẹn: {item.reason}
                           </Text>
                         </View>
 
