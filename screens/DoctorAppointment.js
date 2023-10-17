@@ -15,7 +15,7 @@ const DoctorAppointment = () => {
     const [selectedRow, setSelectedRow] = useState(null);
     const [isVisible, setVisible] = useState(false);
     const [showDatePicker, setShowDatePicker] = useState(false);
-    const [date, setDate] = useState(moment());
+    const [date, setDate] = useState(null);
     const [kw, setKw] = useState('')
     const [user, setUser] = useState(null)
 
@@ -32,6 +32,7 @@ const DoctorAppointment = () => {
                     const e = `${endpoints["appointment"]}/?userId=${parsedUser.id}`;
                     const response = await Apis.get(e, { headers: { Authorization: `Bearer ${tokenInfo}` } });
                     setAppointment(response.data);
+                    console.log(response.data)
                 }
             } catch (error) {
                 console.error(error);
@@ -62,24 +63,42 @@ const DoctorAppointment = () => {
         }
     };
 
+    const clear = () => {
+        setKw(null)
+        setDate(null)
+    };
+
     const renderFilter = () => {
         return (
-            <Grid>
+            <Grid style={{ paddingTop: 5 }}>
                 <Row style={{ alignItems: "center" }}>
                     <Col style={{ width: "15", padding: 10 }}>
                         <Text><Icon style={{ fontSize: 30 }} name="filter"></Icon></Text>
                     </Col>
-                    <Col style={{ padding: 10 }}>
+                    <Col style={{ padding: 5 }}>
                         <Text>Theo ngày</Text>
                         <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-                            <Text style={{ borderWidth: 1, borderColor: "gray", padding: 5, marginTop: 5, borderRadius: 5 }}>{date.format("DD-MM-YYYY")} <Icon style={{ fontSize: 15 }} name="calendar"></Icon></Text>
+                            <Text style={{ borderWidth: 1, borderColor: "gray", padding: 5, marginTop: 5, borderRadius: 5 }}>
+                                {date && date.format("DD-MM-YYYY")} <Icon style={{ fontSize: 15 }} name="calendar"></Icon>
+                            </Text>
                         </TouchableOpacity>
                     </Col>
-                    <Col style={{ padding: 10 }}>
+                    <Col style={{ padding: 5 }}>
                         <Text>Theo tên</Text>
-                        <TextInput autoCorrect={false} autoCapitalize="none" style={{ borderWidth: 1, borderColor: "gray", paddingHorizontal: 5, marginTop: 5, borderRadius: 5 }} value={kw} onChangeText={val => setKw(val)} placeholder="Nhập tên...." />
+                        <TextInput
+                            autoCorrect={false}
+                            autoCapitalize="none"
+                            style={{ borderWidth: 1, borderColor: "gray", paddingHorizontal: 5, marginTop: 5, borderRadius: 5 }}
+                            value={kw}
+                            onChangeText={val => setKw(val)}
+                            placeholder="Nhập tên...."
+                        />
                     </Col>
-
+                    <Col style={{ padding: 10, width: "auto" }}>
+                        <View style={{ marginTop: 15 }}>
+                            <Button title="Clear" onPress={() => clear()} />
+                        </View>
+                    </Col>
                 </Row>
             </Grid>
         )
@@ -128,7 +147,7 @@ const DoctorAppointment = () => {
                         <Text style={styles.closeButtonText}>Đóng</Text>
                     </TouchableOpacity>
                     <View>
-                        <ModalText>Ngày khám: {date.format("DD-MM-YYYY")}</ModalText>
+                        <ModalText>Ngày khám: {moment(selectedRow.date).format("DD-MM-YYYY")}</ModalText>
                         <ModalText>Giờ khám: {selectedRow.hour.hour}</ModalText>
                         <ModalText>Bệnh nhân: {selectedRow.user.firstName} {selectedRow.user.lastName}</ModalText>
                         <ModalText>Lý do: {selectedRow.reason}</ModalText>
@@ -165,7 +184,7 @@ const DoctorAppointment = () => {
 
         return filteredAppointments.length === 0 ? (<Text>loading....</Text>)
             : (
-                <Grid style={{ padding: 10 }}>
+                <Grid style={{ padding: 5 }}>
                     <Row>
                     </Row>
                     {filteredAppointments.map((a, index) => (
@@ -178,9 +197,13 @@ const DoctorAppointment = () => {
                                     />
                                 </Col>
                                 <Col style={{ flex: 1, marginLeft: 15, marginTop: 20 }}>
-                                    <Text style={{ fontSize: 17 }}>{a.user.firstName} {a.user.lastName}</Text>
-                                    <Text style={{ marginVertical: 5, color: "#818181", fontSize: 14, fontWeight: "500", paddingRight: 20 }}>Lý do hẹn: {a.reason}/</Text>
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <Text style={{ fontSize: 17 }}>{a.user.firstName}</Text>
+                                        <Text style={{ fontSize: 14, fontWeight: 500, color: "#464646" }}>{moment(a.date).format("DD-MM-YYYY")}</Text>
+                                    </View>
+                                    <Text style={{ marginVertical: 5, color: "#818181", fontSize: 14, fontWeight: "500", paddingRight: 20 }}>Lý do hẹn: {a.reason}</Text>
                                 </Col>
+
                             </Row>
                             <Row style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
                                 <Text style={{ fontSize: 14, fontWeight: 500, color: "#464646", marginVertical: 5, textAlign: "left", padding: 5 }}>
