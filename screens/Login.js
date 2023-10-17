@@ -82,6 +82,7 @@ const Login = ({ navigation }) => {
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
+      console.log(userInfo)
       let res = await Apis.post(endpoints["googleLogin"], userInfo);
       const token = res.data;
       if (res && res.data) {

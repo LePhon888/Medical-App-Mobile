@@ -10,11 +10,6 @@ const UserReducer = async (currentState, action) => {
       await AsyncStorage.removeItem("token");
       await AsyncStorage.removeItem("user");
       return null;
-    case 'update':
-      return {
-        ...currentState,
-        ...action.payload,
-      };
   }
   return currentState;
 };

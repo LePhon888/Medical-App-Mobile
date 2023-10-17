@@ -17,7 +17,6 @@ const EditProfile = ({ route, navigation }) => {
     const [error, setError] = useState(null);
 
     const userFields = [
-        { field: "email", label: "Email", type: "text" },
         { field: "firstName", label: "Họ", type: "text" },
         { field: "lastName", label: "Tên", type: "text" },
         { field: "birthday", label: "Ngày sinh", type: "date" },
