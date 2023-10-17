@@ -20,6 +20,7 @@ import {
 } from "./screens";
 
 import DoctorAppointment from "./screens/DoctorAppointment";
+import EditProfile from "./screens/EditProfile";
 const Stack = createNativeStackNavigator();
 export const UserContext = createContext();
 
@@ -114,6 +115,13 @@ export default function App() {
           <Stack.Screen
             name="NewsDetail"
             component={NewsDetail}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="EditProfile"
+            component={EditProfile}
             options={{
               headerShown: false,
             }}

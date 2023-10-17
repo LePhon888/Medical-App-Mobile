@@ -15,6 +15,7 @@ import { launchImageLibrary } from "react-native-image-picker";
 import Apis, { endpoints } from "../config/Apis";
 import { useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useIsFocused } from "@react-navigation/native";
 const SECTIONS = [
   {
     header: "Cài đặt",
@@ -49,7 +50,7 @@ const SECTIONS = [
   },
 ];
 
-export default function Setting({ navigation }) {
+export default function Setting({ navigation, route }) {
   const [form, setForm] = useState({
     language: "Tiếng việt",
     darkMode: true,
@@ -57,90 +58,39 @@ export default function Setting({ navigation }) {
   });
   const [user, dispatch] = useState(UserContext);
   const [userInfo, setUserInfo] = useState(null);
-  const [token, setToken] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     const getUserAndToken = async () => {
-      try {
-        const currentUser = await AsyncStorage.getItem("user");
-        const tokenInfo = await AsyncStorage.getItem("token");
-        setUserInfo(JSON.parse(currentUser));
-        setToken(tokenInfo);
-        console.log("userInfo ", userInfo);
-        if (currentUser) {
-          setSelectedImage(JSON.parse(currentUser).image);
+      if (isFocused) {
+        try {
+          const currentUser = await AsyncStorage.getItem("user");
+          setUserInfo(JSON.parse(currentUser));
+          if (currentUser) {
+            setSelectedImage(JSON.parse(currentUser).image);
+          }
+        } catch (error) {
+          console.error(error);
         }
-      } catch (error) {
-        console.error(error);
       }
     };
     getUserAndToken();
-  }, []);
+  }, [isFocused]);
 
-  const openImagePicker = () => {
-    const options = {
-      mediaType: "photo",
-      includeBase64: false,
-      maxHeight: 2000,
-      maxWidth: 2000,
-    };
-
-    launchImageLibrary(options, (response) => {
-      if (response.didCancel) {
-        console.log("User cancelled image picker");
-      } else if (response.error) {
-        console.log("Image picker error: ", response.error);
-      } else {
-        let imageUri = response.uri || response.assets?.[0]?.uri;
-
-        update(imageUri);
-      }
-    });
-  };
-
-  const update = async (imageUri) => {
-    try {
-      const formData = new FormData();
-      formData.append("user", {
-        string: JSON.stringify(userInfo),
-        type: "application/json",
-      });
-      formData.append("file", {
-        uri: imageUri,
-        name: "image.jpg",
-        type: "image/jpeg",
-      });
-
-      const e = `${endpoints["user"]}/${userInfo.id}`;
-
-      let res = await Apis.post(e, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      if (res.status === 200) {
-        setSelectedImage(imageUri);
-      } else {
-        console.log("Error updating user profile:", res.status);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   return (
     <SafeAreaView style={{ backgroundColor: "#f6f6f6" }}>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.profile}>
-          <TouchableOpacity onPress={openImagePicker}>
+          <TouchableOpacity >
             <Image
               alt=""
               source={{
                 uri:
-                  selectedImage ||
-                  "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2.5&w=256&h=256&q=80",
+                  `${selectedImage ? selectedImage
+                    : 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2.5&w=256&h=256&q=80'
+                  }`
               }}
               style={styles.profileAvatar}
             />
@@ -156,12 +106,13 @@ export default function Setting({ navigation }) {
 
           <TouchableOpacity
             onPress={() => {
-              // handle onPress
+              navigation.navigate('EditProfile', {
+                userInfo,
+              });
             }}
           >
             <View style={styles.profileAction}>
               <Text style={styles.profileActionText}>Chỉnh sửa thông tin</Text>
-
               <FeatherIcon color="#fff" name="edit" size={16} />
             </View>
           </TouchableOpacity>
