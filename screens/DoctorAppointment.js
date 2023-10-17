@@ -25,7 +25,7 @@ const DoctorAppointment = () => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [isVisible, setVisible] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [date, setDate] = useState(null);
+  const [date, setDate] = useState(moment());
   const [kw, setKw] = useState("");
   const [user, setUser] = useState(null);
 
@@ -44,7 +44,6 @@ const DoctorAppointment = () => {
             headers: { Authorization: `Bearer ${tokenInfo}` },
           });
           setAppointment(response.data);
-          console.log(response.data);
         }
       } catch (error) {
         console.error(error);
@@ -74,21 +73,16 @@ const DoctorAppointment = () => {
     }
   };
 
-  const clear = () => {
-    setKw(null);
-    setDate(null);
-  };
-
   const renderFilter = () => {
     return (
-      <Grid style={{ paddingTop: 5 }}>
+      <Grid>
         <Row style={{ alignItems: "center" }}>
           <Col style={{ width: "15", padding: 10 }}>
             <Text>
               <Icon style={{ fontSize: 30 }} name="filter"></Icon>
             </Text>
           </Col>
-          <Col style={{ padding: 5 }}>
+          <Col style={{ padding: 10 }}>
             <Text>Theo ngày</Text>
             <TouchableOpacity onPress={() => setShowDatePicker(true)}>
               <Text
@@ -100,12 +94,12 @@ const DoctorAppointment = () => {
                   borderRadius: 5,
                 }}
               >
-                {date && date.format("DD-MM-YYYY")}{" "}
+                {date.format("DD-MM-YYYY")}{" "}
                 <Icon style={{ fontSize: 15 }} name="calendar"></Icon>
               </Text>
             </TouchableOpacity>
           </Col>
-          <Col style={{ padding: 5 }}>
+          <Col style={{ padding: 10 }}>
             <Text>Theo tên</Text>
             <TextInput
               autoCorrect={false}
@@ -121,11 +115,6 @@ const DoctorAppointment = () => {
               onChangeText={(val) => setKw(val)}
               placeholder="Nhập tên...."
             />
-          </Col>
-          <Col style={{ padding: 10, width: "auto" }}>
-            <View style={{ marginTop: 15 }}>
-              <Button title="Clear" onPress={() => clear()} />
-            </View>
           </Col>
         </Row>
       </Grid>
@@ -180,9 +169,7 @@ const DoctorAppointment = () => {
             <Text style={styles.closeButtonText}>Đóng</Text>
           </TouchableOpacity>
           <View>
-            <ModalText>
-              Ngày khám: {moment(selectedRow.date).format("DD-MM-YYYY")}
-            </ModalText>
+            <ModalText>Ngày khám: {date.format("DD-MM-YYYY")}</ModalText>
             <ModalText>Giờ khám: {selectedRow.hour.hour}</ModalText>
             <ModalText>
               Bệnh nhân: {selectedRow.user.firstName}{" "}
@@ -231,11 +218,11 @@ const DoctorAppointment = () => {
       }
       return true;
     });
-
+    console.log("filteredAppointments " + filteredAppointments);
     return filteredAppointments.length === 0 ? (
-      <Text>loading....</Text>
+      <Text>Danh sách rỗng</Text>
     ) : (
-      <Grid style={{ padding: 5 }}>
+      <Grid style={{ padding: 10 }}>
         <Row></Row>
         {filteredAppointments.map((a, index) => (
           <TouchableOpacity
@@ -263,20 +250,9 @@ const DoctorAppointment = () => {
                 />
               </Col>
               <Col style={{ flex: 1, marginLeft: 15, marginTop: 20 }}>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text style={{ fontSize: 17 }}>{a.user.firstName}</Text>
-                  <Text
-                    style={{ fontSize: 14, fontWeight: 500, color: "#464646" }}
-                  >
-                    {moment(a.date).format("DD-MM-YYYY")}
-                  </Text>
-                </View>
+                <Text style={{ fontSize: 17 }}>
+                  {a.user.firstName} {a.user.lastName}
+                </Text>
                 <Text
                   style={{
                     marginVertical: 5,
@@ -286,7 +262,7 @@ const DoctorAppointment = () => {
                     paddingRight: 20,
                   }}
                 >
-                  Lý do hẹn: {a.reason}
+                  Lý do hẹn: {a.reason}/
                 </Text>
               </Col>
             </Row>
@@ -333,7 +309,10 @@ const DoctorAppointment = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.dateText}>Danh sách lịch khám</Text>
+      <Text style={styles.dateText}>
+        <FeatherIcon color="white" name="chevron-left" size={20} />
+        Danh sách lịch khám
+      </Text>
       <ScrollView>
         {renderFilter()}
         {renderAppointment()}
