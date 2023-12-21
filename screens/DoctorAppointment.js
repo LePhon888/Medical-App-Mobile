@@ -19,6 +19,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Header from "../common/Header";
 
 const DoctorAppointment = () => {
     const [appointment, setAppointment] = useState([]);
