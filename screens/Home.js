@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Image } from 'react-native';
 import {
   SafeAreaView,
   ScrollView,
@@ -6,7 +7,6 @@ import {
   StyleSheet,
   View,
   Text,
-  TextInput,
   ImageBackground,
   FlatList,
   Dimensions,
@@ -16,35 +16,69 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import COLORS from "../constants/colors";
 import { FloatingAction } from "react-native-floating-action";
 const { width } = Dimensions.get("screen");
-import {} from "react-native";
+import { } from "react-native";
 import News from "./News";
 import { useNavigation } from "@react-navigation/native";
 import { useRoute } from "@react-navigation/native";
+import AntDesign from "react-native-vector-icons/AntDesign";
+
 
 const Home = ({ navigation: { goBack } }) => {
   const navigation = useNavigation();
   const route = useRoute();
-
   const categoryIcons = [
-    <Icon
-      name="list"
-      size={25}
-      color={COLORS.white}
-      onPress={() => navigation.navigate("AppointmentList")}
-    />,
-    <Icon name="duo" size={25} color={COLORS.white} />,
-    <Icon name="near-me" size={25} color={COLORS.white} />,
-    <Icon name="place" size={25} color={COLORS.white} />,
-  ];
+    {
+      path: require('../assets/images/health.png'),
+      text: 'Sức khỏe của tôi'
+    },
+    {
+      path: require('../assets/images/drugs.png'),
+      text: 'Thư viện thuốc'
+    },
+    {
+      path: require('../assets/images/first-aid-kit.png'),
+      text: 'Y tế chuyên khoa'
+    },
+    {
+      path: require('../assets/images/medical-history.png'),
+      text: 'Lịch sử đăng ký'
+    },
+    {
+      path: require('../assets/images/medical-report.png'),
+      text: 'Đăng ký khám'
+    },
+    {
+      path: require('../assets/images/video-call.png'),
+      text: 'Gọi video'
+    },
+    {
+      path: require('../assets/images/medicine.png'),
+      text: 'Hộp thuốc cá nhân'
+    },
+    {
+      path: require('../assets/images/customer-behavior.png'),
+      text: 'Tùy chọn'
+    },
+  ]
   const ListCategories = () => {
     return (
       <View style={style.categoryContainer}>
-        {categoryIcons.map((icon, index) => (
+        {categoryIcons.map((item, index) => (
           <View key={index} style={style.iconContainer}>
-            {icon}
+            <View style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              margin: 6
+            }}
+            // onPress={() => navigation.navigate("AppointmentList")}
+            >
+              <Image source={item.path} style={{ width: 32, height: 32, marginBottom: 3 }} />
+              <Text style={{ textAlign: 'center' }}>{item.text}</Text>
+            </View>
           </View>
-        ))}
-      </View>
+        ))
+        }
+      </View >
     );
   };
 
@@ -132,8 +166,12 @@ const Home = ({ navigation: { goBack } }) => {
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <StatusBar translucent={false} backgroundColor={COLORS.primary} />
       <View style={style.header}>
-        <Icon name="sort" size={28} color={COLORS.white} />
-        <Icon name="notifications-none" size={28} color={COLORS.white} />
+        <View style={{ padding: 6, backgroundColor: COLORS.white, width: 40, height: 40, marginRight: 10, borderRadius: 50 }}>
+          <AntDesign name="search1" size={21} color={COLORS.black} style={{ marginLeft: 3, marginTop: 2 }} />
+        </View>
+        <View style={{ padding: 6, backgroundColor: COLORS.white, width: 40, height: 40, borderRadius: 50 }}>
+          <AntDesign name="bells" size={21} color={COLORS.black} style={{ marginLeft: 3, marginTop: 2 }} />
+        </View>
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View
@@ -143,19 +181,7 @@ const Home = ({ navigation: { goBack } }) => {
             paddingHorizontal: 20,
           }}
         >
-          <View style={{ flex: 1 }}>
-            <Text style={style.headerTitle}>Y tế</Text>
-            <Text style={style.headerTitle}>Thông minh</Text>
-            <View style={style.inputContainer}>
-              <Icon name="search" size={28} />
-              <TextInput
-                placeholder="Tìm kiếm"
-                style={{ color: COLORS.grey }}
-              />
-            </View>
-          </View>
         </View>
-        <Text style={style.sectionTitle}>Tiện ích</Text>
         <ListCategories />
         <View>
           <FlatList
@@ -165,8 +191,13 @@ const Home = ({ navigation: { goBack } }) => {
             // data={places}
             renderItem={({ item }) => <Card place={item} />}
           />
-          <Text style={style.sectionTitle}>Tin tức y tế</Text>
-          <News />
+          {/* <News /> */}
+          <Text style={style.sectionTitle}>Kế hoạch sức khỏe</Text>
+          <TouchableOpacity style={{
+            backgroundColor: COLORS.primary, height: 90, width: '94%', justifyContent: 'center', alignItems: 'center', marginHorizontal: 10, marginTop: 6, borderRadius: 20
+          }}>
+
+          </TouchableOpacity>
           <FlatList
             snapToInterval={width - 20}
             contentContainerStyle={{ paddingLeft: 20, paddingBottom: 20 }}
@@ -187,16 +218,16 @@ const Home = ({ navigation: { goBack } }) => {
           uri: "https://cdn.dribbble.com/userupload/2798813/file/original-a9da6aa3bf061621ab9d8c97a226a358.png",
         }}
       />
-    </SafeAreaView>
+    </SafeAreaView >
   );
 };
 
 const style = StyleSheet.create({
   header: {
-    paddingVertical: 20,
+    paddingVertical: 14,
     paddingHorizontal: 20,
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     backgroundColor: COLORS.primary,
   },
   headerTitle: {
@@ -219,26 +250,36 @@ const style = StyleSheet.create({
   categoryContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
+    flexWrap: 'wrap',
     backgroundColor: COLORS.white,
-    borderRadius: 10,
-    paddingTop: 20,
-    paddingHorizontal: 40,
-    shadowColor: "#171717",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
+    padding: 10,
+    height: 190,
+    marginTop: -100,
+    width: '90%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 20,
+    borderRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 5,
   },
   iconContainer: {
-    height: 55,
-    width: 55,
-    backgroundColor: COLORS.primary,
+    height: 80,
+    width: '24%',
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
   },
   sectionTitle: {
     marginHorizontal: 20,
-    marginTop: 50,
+    marginTop: 10,
     fontWeight: "bold",
     fontSize: 20,
   },

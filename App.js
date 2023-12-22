@@ -5,7 +5,7 @@ import UserReducer from "./reducers/UserReducer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import {
-  Login,
+  // Login,
   Welcome,
   Signup,
   Home,
@@ -33,7 +33,7 @@ export default function App() {
   return (
     <UserContext.Provider value={[user, dispatch]}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="VideoCall">
+        <Stack.Navigator initialRouteName="MainScreen">
           <Stack.Screen
             name="Welcome"
             component={Welcome}
@@ -41,13 +41,13 @@ export default function App() {
               headerShown: false,
             }}
           />
-          <Stack.Screen
+          {/* <Stack.Screen
             name="Login"
             component={Login}
             options={{
               headerShown: false,
             }}
-          />
+          /> */}
           <Stack.Screen
             name="Signup"
             component={Signup}
