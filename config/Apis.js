@@ -3,10 +3,13 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// const SERVER = "http://localhost:8080";
+const SERVER = "http://localhost:8080";
 
-const SERVER = "http://192.168.1.4:8080";
-const CHATBOT = "http://192.168.1.4:8000";
+// const SERVER = "http://192.168.1.4:8080";
+// const CHATBOT = "http://192.168.1.4:8000";
+
+// const SERVER = "http://192.168.43.97:8080";
+const CHATBOT = "http://192.168.43.181:8000";
 
 export const endpoints = {
   login: `${SERVER}/auth/login`,

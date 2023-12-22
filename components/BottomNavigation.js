@@ -1,39 +1,35 @@
 import React, { useContext, useEffect, useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Icon from "react-native-vector-icons/FontAwesome";
+import AntDesign from "react-native-vector-icons/AntDesign";
+
 import MedicalRegister from "../screens/MedicalRegister";
 import Chat from "../screens/Chat";
 import Home from "../screens/Home";
 import Setting from "../screens/Setting";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { UserContext } from "../App";
 import DoctorAppointment from "../screens/DoctorAppointment";
 
 const Tab = createBottomTabNavigator();
 
 function BottomNavigation({ navigation }) {
-
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(null);
   useEffect(() => {
     const getUserInfo = async () => {
-      const res = await AsyncStorage.getItem("user")
-      setUser(JSON.parse(res))
-    }
-    getUserInfo()
-  }, [])
-
-
+      const res = await AsyncStorage.getItem("user");
+      setUser(JSON.parse(res));
+    };
+    getUserInfo();
+  }, []);
 
   return (
     <Tab.Navigator
       screenOptions={{
         tabBarLabelStyle: {
-          fontSize: 14,
+          fontSize: 10,
           fontWeight: "600",
-          marginBottom: 5,
         },
         tabBarStyle: {
-          height: 60,
+          height: 56,
         },
       }}
     >
@@ -42,7 +38,20 @@ function BottomNavigation({ navigation }) {
         component={Home}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Icon name="home" size={size} color={color} />
+            <AntDesign name="home" size={24} color={color} />
+          ),
+          tabBarPress: () => {
+            navigation.navigate("Home");
+          },
+          headerShown: false,
+        }}
+      />
+      <Tab.Screen
+        name="Bài viết"
+        component={Home}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <AntDesign name="book" size={24} color={color} />
           ),
           tabBarPress: () => {
             navigation.navigate("Home");
@@ -52,11 +61,11 @@ function BottomNavigation({ navigation }) {
       />
       {user && user.userRole === "ROLE_DOCTOR" ? (
         <Tab.Screen
-          name="Lịch khám "
+          name="Lịch hẹn "
           component={DoctorAppointment}
           options={{
             tabBarIcon: ({ color, size }) => (
-              <Icon name="user-md" size={size} color={color} />
+              <AntDesign name="team" size={24} color={color} />
             ),
             tabBarPress: () => {
               navigation.navigate("DoctorAppointment");
@@ -66,11 +75,11 @@ function BottomNavigation({ navigation }) {
         />
       ) : (
         <Tab.Screen
-          name="Lịch khám "
+          name="Lịch hẹn "
           component={MedicalRegister}
           options={{
             tabBarIcon: ({ color, size }) => (
-              <Icon name="user-md" size={size} color={color} />
+              <AntDesign name="team" size={24} color={color} />
             ),
             tabBarPress: () => {
               navigation.navigate("MedicalRegister");
@@ -80,13 +89,12 @@ function BottomNavigation({ navigation }) {
         />
       )}
 
-
       <Tab.Screen
         name="Chat"
         component={Chat}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Icon name="comments" size={size} color={color} />
+            <AntDesign name="message1" size={24} color={color} />
           ),
           tabBarPress: () => {
             navigation.navigate("Chat");
@@ -99,7 +107,7 @@ function BottomNavigation({ navigation }) {
         component={Setting}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Icon name="cog" size={size} color={color} />
+            <AntDesign name="setting" size={24} color={color} />
           ),
           headerShown: false,
         }}
