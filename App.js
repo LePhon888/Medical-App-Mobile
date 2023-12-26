@@ -33,7 +33,7 @@ export default function App() {
   return (
     <UserContext.Provider value={[user, dispatch]}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="MainScreen">
+        <Stack.Navigator initialRouteName="News">
           <Stack.Screen
             name="Welcome"
             component={Welcome}
