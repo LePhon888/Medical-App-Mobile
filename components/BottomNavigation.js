@@ -27,9 +27,10 @@ function BottomNavigation({ navigation }) {
         tabBarLabelStyle: {
           fontSize: 10,
           fontWeight: "600",
+          marginBottom: 5
         },
         tabBarStyle: {
-          height: 56,
+          height: 52,
         },
       }}
     >
