@@ -14,14 +14,18 @@ export default function News() {
   const [value, setValue] = React.useState(0);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-      <HeaderWithBackButton title={'Chuyên mục'} />
+    <View style={{ flex: 1, backgroundColor: '#fff' }}>
+      <View>
+        <SafeAreaView>
+          <HeaderWithBackButton title={'Chuyên mục'} />
+        </SafeAreaView>
+      </View>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.tabs}>
           <View style={{ backgroundColor: '#eee', paddingHorizontal: 5.5, paddingVertical: 4, borderRadius: 50, marginRight: 7 }}>
             <Ionicons name="options-sharp" size={19} style={{ color: COLORS.primary }} />
           </View>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} nestedScrollEnabled={true}>
             {category.map(({ name }, index) => {
               const isActive = index === value;
               return (
@@ -51,7 +55,7 @@ export default function News() {
           </ScrollView>
         </View>
         <View style={styles.list}>
-          <ScrollView contentContainerStyle={styles.listContent} horizontal={true} showsHorizontalScrollIndicator={false}>
+          <ScrollView contentContainerStyle={styles.listContent} horizontal={true} showsHorizontalScrollIndicator={false} nestedScrollEnabled={true}>
             {dataNews.map(({ img, name, category, time }, index) => {
               return (
                 <TouchableOpacity
@@ -79,10 +83,10 @@ export default function News() {
             })}
           </ScrollView>
         </View>
-        <TouchableOpacity style={{ height: 360, backgroundColor: "#dff9fb", paddingBottom: 20 }}>
+        <TouchableOpacity style={{ backgroundColor: "#dff9fb", paddingBottom: 20 }}>
           <Premium size='large' />
           <Text style={{ fontSize: 16, color: '#243b58', marginHorizontal: 20, marginVertical: 16 }}>Các thông tin sức khỏe đặc biệt được nghiên cứu và tham vấn y khoa</Text>
-          <ScrollView contentContainerStyle={styles.listContentNews} horizontal={true} showsHorizontalScrollIndicator={false}>
+          <ScrollView contentContainerStyle={styles.listContentNews} horizontal={true} showsHorizontalScrollIndicator={false} nestedScrollEnabled={true}>
             {dataNews.map(({ img, name, category, time }, index) => {
               return (
                 <TouchableOpacity
@@ -111,6 +115,7 @@ export default function News() {
                       bottom: 8,
                       left: 8,
                       elevation: 1,
+                      width: '86%'
                     }}><Text style={{
                       color: '#fffffd',
                       fontWeight: 500,
@@ -136,7 +141,7 @@ export default function News() {
               {newsItems.map(({ img, title, author, authorImg, tag, date }, index) => {
                 return (
                   index == 0 ?
-                    <TouchableOpacity style={{
+                    <TouchableOpacity key={index} style={{
                       marginTop: 10,
                       borderBottomColor: '#f3f4f6',
                       borderBottomWidth: 0.7,
@@ -252,7 +257,7 @@ export default function News() {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView >
+    </View >
   );
 }
 

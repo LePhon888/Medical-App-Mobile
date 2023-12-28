@@ -1,7 +1,6 @@
 import { Text, TouchableOpacity, View } from "react-native";
 import { StyleSheet } from "react-native";
 import COLORS from "../constants/colors";
-import AntDesign from "react-native-vector-icons/AntDesign";
 import Entypo from "react-native-vector-icons/Entypo";
 
 /**
@@ -13,7 +12,7 @@ import Entypo from "react-native-vector-icons/Entypo";
  * @param OnBack can be empty. Incase you use the isCustomEvent then you can pass the function into this one
  * @returns 
  */
-const HeaderWithBackButton = ({ title, navigation, isCustomEvent, OnBack, }) => {
+const HeaderWithBackButton = ({ title, navigation, isCustomEvent, OnBack, customIcons }) => {
     const OnBackPressed = () => {
         if (isCustomEvent) {
             return OnBack()
@@ -27,6 +26,13 @@ const HeaderWithBackButton = ({ title, navigation, isCustomEvent, OnBack, }) => 
                 <Entypo name="chevron-thin-left" size={19} />
             </TouchableOpacity>
             <Text style={styles.titleText}>{title}</Text>
+            <View style={{ position: 'absolute', right: 6, flexDirection: 'row' }}>
+                {customIcons && customIcons.map((icon, index) => (
+                    <TouchableOpacity key={index} style={{ marginHorizontal: 12 }}>
+                        {icon}
+                    </TouchableOpacity>
+                ))}
+            </View>
         </View>
     );
 }
@@ -39,6 +45,7 @@ const styles = StyleSheet.create({
         paddingTop: 15,
         paddingBottom: 12,
         paddingHorizontal: 10,
+        position: 'relative'
     },
     titleText: {
         color: COLORS.black,
