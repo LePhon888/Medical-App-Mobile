@@ -2,9 +2,9 @@ import { Text, View } from "react-native";
 import { StyleSheet } from "react-native";
 import COLORS from "../constants/colors";
 /**
- * 
- * @param {*} title the title of header 
- * @returns 
+ * This component is use as a header
+ * @param title (mandantory) the title of header 
+ * @returns Header component
  */
 const Header = ({ title }) => {
     return (

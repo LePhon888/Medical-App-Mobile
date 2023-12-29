@@ -213,7 +213,6 @@ const DoctorAppointment = () => {
             </Modal>
         );
     };
-
     const renderAppointment = () => {
         const filteredAppointments = appointment.filter((a) => {
             if (kw && kw.length > 0) {
