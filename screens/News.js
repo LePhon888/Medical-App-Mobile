@@ -20,11 +20,12 @@ export default function News() {
           <HeaderWithBackButton title={'Chuyên mục'} />
         </SafeAreaView>
       </View>
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
         <View style={styles.tabs}>
           <View style={{ backgroundColor: '#eee', paddingHorizontal: 5.5, paddingVertical: 4, borderRadius: 50, marginRight: 7 }}>
             <Ionicons name="options-sharp" size={19} style={{ color: COLORS.primary }} />
           </View>
+          {/* category */}
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} nestedScrollEnabled={true}>
             {category.map(({ name }, index) => {
               const isActive = index === value;
@@ -54,6 +55,7 @@ export default function News() {
             })}
           </ScrollView>
         </View>
+        {/* List news */}
         <View style={styles.list}>
           <ScrollView contentContainerStyle={styles.listContent} horizontal={true} showsHorizontalScrollIndicator={false} nestedScrollEnabled={true}>
             {dataNews.map(({ img, name, category, time }, index) => {
@@ -83,6 +85,7 @@ export default function News() {
             })}
           </ScrollView>
         </View>
+        {/* Premium list */}
         <TouchableOpacity style={{ backgroundColor: "#dff9fb", paddingBottom: 20 }}>
           <Premium size='large' />
           <Text style={{ fontSize: 16, color: '#243b58', marginHorizontal: 20, marginVertical: 16 }}>Các thông tin sức khỏe đặc biệt được nghiên cứu và tham vấn y khoa</Text>
@@ -131,6 +134,7 @@ export default function News() {
             })}
           </ScrollView>
         </TouchableOpacity>
+        {/* Recent news */}
         <View>
           <View style={{ marginTop: 8 }}>
             <View style={{ marginTop: 18, flexDirection: 'row', marginLeft: 14 }}>
@@ -264,9 +268,9 @@ export default function News() {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 0,
-    flexGrow: 1,
-    flexShrink: 1,
-    flexBasis: 0,
+    // flexGrow: 1, this one cause the scrollView not scrollable, using inside contentContainerStyle
+    // flexShrink: 1,
+    // flexBasis: 0,
   },
   title: {
     paddingHorizontal: 24,
