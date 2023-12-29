@@ -18,6 +18,7 @@ import { launchImageLibrary } from "react-native-image-picker";
 import Apis, { endpoints } from "../config/Apis";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import FeatherIcon from "react-native-vector-icons/Feather";
+import HeaderWithBackButton from "../common/HeaderWithBackButton";
 
 const EditProfile = ({ route, navigation }) => {
     const [user, setUser] = useState(route.params.userInfo);
@@ -126,7 +127,7 @@ const EditProfile = ({ route, navigation }) => {
 
     return (
         <View style={{ backgroundColor: "white", flex: 1 }}>
-            <Header />
+            <HeaderWithBackButton />
             {user && (
                 <ScrollView style={styles.formContainer}>
                     <TouchableOpacity

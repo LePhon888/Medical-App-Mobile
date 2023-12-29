@@ -4,13 +4,13 @@ import COLORS from "../constants/colors";
 import Entypo from "react-native-vector-icons/Entypo";
 
 /**
+ * This component is used as a header with the back icon on the left.
  *
- * 
- * @param title is the title of header
- * @param navigation can be not empty. This is the navigation of current screen, must be belong to stack
- * @param isCustomEvent can be empty. This is the flag if the user want to handle on back instead of back to previous screen
- * @param OnBack can be empty. Incase you use the isCustomEvent then you can pass the function into this one
- * @returns 
+ * @param title - (mandantory) The title of the header.
+ * @param navigation - (optional) If not using isCustomEvent then need to pass this one.
+ * @param isCustomEvent - (optional) Flag indicating if the user wants to handle on back instead of going back to the previous screen.
+ * @param OnBack - (optional) Function to be called if isCustomEvent is true.
+ * @returns {JSX.Element} Header component.
  */
 const HeaderWithBackButton = ({ title, navigation, isCustomEvent, OnBack, customIcons }) => {
     const OnBackPressed = () => {

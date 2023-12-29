@@ -1,0 +1,57 @@
+[
+    {
+        "key": "1",
+        "name": "Nguyễn Văn A",
+        "department": "Đa khoa",
+        "hospital": "Phòng khám Đa khoa Quốc tế Golden Healthcare",
+        "address": "123 Example Street, City",
+        "consultation": "Tư vấn trực tiếp",
+        "rating": 5,
+        "target": [
+            "adult",
+            "children"
+        ],
+        "fee": 200000,
+        "nextAppointment": {
+            "date": "25/12/2023",
+            "time": "07:30"
+        },
+        "avatar": "https://www.aucmed.edu/sites/g/files/krcnkv361/files/styles/atge_3_2_crop_md/public/2021-11/large-Smile-Guy-web.jpg?h=6b55786a&itok=Wy7cQpYS"
+    },
+    {
+        "key": "2",
+        "name": "Nguyễn Thị B",
+        "department": "Nhi khoa",
+        "hospital": "Phòng khám Đa khoa Minh Anh",
+        "address": "456 Example Street, City",
+        "consultation": "Tư vấn trực tiếp & Tư vấn từ xa",
+        "rating": 4.5,
+        "target": [
+            "children"
+        ],
+        "fee": 150000,
+        "nextAppointment": {
+            "date": "26/12/2023",
+            "time": "09:00"
+        },
+        "avatar": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRB_zqFocO4Dr7TmAqolB1hjVY5BHd-QyPmneip3fJZJfVY29xC32KEH45oOpYPVRvQ2ow&usqp=CAU"
+    },
+    {
+        "key": "3",
+        "name": "Lê Thị C",
+        "department": "Ngoại khoa",
+        "hospital": "Phòng khám Đa khoa Quốc tế Healthy Life",
+        "address": "789 Example Street, City",
+        "consultation": "Tư vấn trực tiếp",
+        "rating": 4.8,
+        "target": [
+            "adult"
+        ],
+        "fee": 250000,
+        "nextAppointment": {
+            "date": "27/12/2023",
+            "time": "10:30"
+        },
+        "avatar": "https://images.healthshots.com/healthshots/en/uploads/2022/07/02195043/doctor-stress.jpg"
+    }
+]
