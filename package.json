@@ -63,7 +63,12 @@
     "source-map-loader": "^4.0.1",
     "url-search-params-polyfill": "^8.2.5",
     "webstomp-client": "^1.2.6",
-    "zego-express-engine-reactnative": "^3.2.0"
+    "zego-express-engine-reactnative": "^3.2.0",
+
+    "@zegocloud/zego-uikit-prebuilt-call-rn": "^1.2.1",
+    "@zegocloud/zego-uikit-rn": "^1.2.0",
+    "react-native-gesture-handler": "^2.8.0",
+    "react-navigation": "^4.4.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
