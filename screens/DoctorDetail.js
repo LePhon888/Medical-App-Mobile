@@ -18,7 +18,6 @@ const DoctorDetail = ({ navigation, route }) => {
     const { doctor } = route.params // get the doctor object from route
     const [activeTab, setActiveTab] = useState(1); // set the active tab with key 1
     const [showFullInfo, setShowFullInfo] = useState(false); // this one use as a flag for read more button
-    const scrollY = useRef(new Animated.Value(0)).current;
     const height = useRef(new Animated.Value(0)).current
 
     const toggleReadMore = () => {
