@@ -63,6 +63,7 @@ const Doctors = () => {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#FFFF',
+        marginBottom: 30
     },
     header: {
         backgroundColor: '#e1f1ff',

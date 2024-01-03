@@ -25,6 +25,8 @@
     "@react-navigation/bottom-tabs": "^6.5.8",
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/native-stack": "^6.9.13",
+    "@zegocloud/zego-uikit-prebuilt-call-rn": "^1.2.1",
+    "@zegocloud/zego-uikit-rn": "^1.2.0",
     "axios": "^1.5.0",
     "expo": "~49.0.11",
     "expo-checkbox": "~2.4.0",
@@ -38,12 +40,14 @@
     "react-native": "0.72.5",
     "react-native-anchor-carousel": "^4.0.1",
     "react-native-app-auth": "^7.0.0",
+    "react-native-calendar-picker": "^7.1.4",
     "react-native-date-picker": "^4.3.5",
     "react-native-dialog": "^9.3.0",
     "react-native-draggable": "^3.3.0",
     "react-native-dropdown-select-list": "^2.0.5",
     "react-native-easy-grid": "^0.2.2",
     "react-native-floating-action": "^1.22.0",
+    "react-native-gesture-handler": "^2.8.0",
     "react-native-gifted-chat": "^2.4.0",
     "react-native-image-crop-picker": "^0.40.0",
     "react-native-image-picker": "^7.0.0",
@@ -59,16 +63,12 @@
     "react-native-svg": "^14.1.0",
     "react-native-vector-icons": "^10.0.0",
     "react-native-web": "~0.19.6",
+    "react-navigation": "^4.4.4",
     "sockjs-client": "^1.6.1",
     "source-map-loader": "^4.0.1",
     "url-search-params-polyfill": "^8.2.5",
     "webstomp-client": "^1.2.6",
-    "zego-express-engine-reactnative": "^3.2.0",
-
-    "@zegocloud/zego-uikit-prebuilt-call-rn": "^1.2.1",
-    "@zegocloud/zego-uikit-rn": "^1.2.0",
-    "react-native-gesture-handler": "^2.8.0",
-    "react-navigation": "^4.4.4"
+    "zego-express-engine-reactnative": "^3.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

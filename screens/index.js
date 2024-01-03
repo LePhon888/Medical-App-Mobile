@@ -10,7 +10,11 @@ import Setting from "./Setting";
 import AppointmentList from "./AppointmentList";
 import News from "./News";
 import NewsDetail from "./NewsDetail";
-// import VoiceCallPage from "./VoiceCallPage";
+import VideoHome from "./VideoHome";
+import Call from "./Call";
+import AppointmentRegister from "./AppointmentRegister";
+import Category from "./Category";
+
 export {
   Login,
   Welcome,
@@ -24,4 +28,8 @@ export {
   AppointmentList,
   News,
   NewsDetail,
+  VideoHome,
+  Call,
+  AppointmentRegister,
+  Category
 };

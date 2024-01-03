@@ -12,7 +12,7 @@ const ChatBot = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <HeaderWithBackButton title={"Medical App AI"} navigation={navigation} />
+      <HeaderWithBackButton title={"Chat AI"} navigation={navigation} />
       <MessageUI isBotMode={true} />
     </View>
   );

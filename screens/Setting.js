@@ -20,6 +20,9 @@ const SECTIONS = [
   {
     header: "Cài đặt",
     items: [
+      { id: "pass", icon: "user", label: "Đổi mật khẩu", type: "link" },
+      { id: "delete", icon: "user-minus", label: "Xóa tài khoản", type: "link" },
+      { id: "notify", icon: "volume-2", label: "Thông báo", type: "link" },
       { id: "language", icon: "globe", label: "Ngôn ngữ", type: "select" },
       { id: "darkMode", icon: "moon", label: "Giao diện", type: "toggle" },
     ],
@@ -27,8 +30,11 @@ const SECTIONS = [
   {
     header: "Giúp đỡ",
     items: [
-      { id: "bug", icon: "flag", label: "Báo lỗi", type: "link" },
+      { id: "bug", icon: "tablet", label: "Góp ý ứng dụng", type: "link" },
+      { id: "bug1", icon: "flag", label: "Báo lỗi ứng dụng", type: "link" },
       { id: "contact", icon: "mail", label: "Liên hệ chúng tôi", type: "link" },
+      { id: "right", icon: "alert-circle", label: "Chính sách quyền riêng tư", type: "link" },
+      { id: "question", icon: "file-text", label: "Câu hỏi thường gặp", type: "link" },
     ],
   },
   {
@@ -79,18 +85,17 @@ export default function Setting({ navigation, route }) {
   }, [isFocused]);
 
   return (
-    <SafeAreaView style={{ backgroundColor: "#f6f6f6" }}>
+    <SafeAreaView style={{ backgroundColor: '#f8f9fd', paddingBottom: 48 }}>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.profile}>
           <TouchableOpacity>
             <Image
               alt=""
               source={{
-                uri: `${
-                  selectedImage
-                    ? selectedImage
-                    : "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2.5&w=256&h=256&q=80"
-                }`,
+                uri: `${selectedImage
+                  ? selectedImage
+                  : "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2.5&w=256&h=256&q=80"
+                  }`,
               }}
               style={styles.profileAvatar}
             />
@@ -120,9 +125,9 @@ export default function Setting({ navigation, route }) {
 
         {SECTIONS.map(({ header, items }) => (
           <View style={styles.section} key={header}>
-            <View style={styles.sectionHeader}>
+            {/* <View style={styles.sectionHeader}>
               <Text style={styles.sectionHeaderText}>{header}</Text>
-            </View>
+            </View> */}
             <View style={styles.sectionBody}>
               {items.map(({ id, label, icon, type, value }, index) => {
                 return (
@@ -190,13 +195,17 @@ export default function Setting({ navigation, route }) {
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 24,
   },
   section: {
-    paddingTop: 12,
+    borderWidth: 0.6,
+    marginHorizontal: 10,
+    borderRadius: 20,
+    borderColor: '#ccc',
+    marginVertical: 8,
+    overflow: 'hidden'
   },
   sectionHeader: {
-    paddingHorizontal: 24,
+    paddingHorizontal: 20,
     paddingVertical: 8,
   },
   sectionHeaderText: {
@@ -207,9 +216,6 @@ const styles = StyleSheet.create({
     letterSpacing: 1.2,
   },
   sectionBody: {
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: "#e3e3e3",
   },
   header: {
     paddingLeft: 24,
@@ -232,9 +238,6 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     backgroundColor: "#fff",
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: "#e3e3e3",
   },
   profileAvatar: {
     width: 60,
@@ -279,8 +282,8 @@ const styles = StyleSheet.create({
   rowWrapper: {
     paddingLeft: 24,
     backgroundColor: "#fff",
-    borderTopWidth: 1,
-    borderColor: "#e3e3e3",
+    borderWidth: 0.2,
+    borderColor: '#ccc',
   },
   rowIcon: {
     marginRight: 12,

@@ -174,3 +174,85 @@ export const newsItems = [
         date: 'Mar 19, 2023',
     },
 ];
+
+export const morning = [
+    { hour: '07:30' },
+    { hour: '08:00' },
+    { hour: '08:30' },
+    { hour: '09:00' },
+    { hour: '09:30' },
+    { hour: '10:00' },
+    { hour: '10:30' },
+    { hour: '11:00' },
+    { hour: '11:30' },
+    { hour: '12:00' }
+
+]
+export const afternoon = [
+    '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30'
+]
+export const evening = [
+    '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30'
+]
+export const departments = [
+    {
+        name: 'Dị ứng',
+        path: require('../assets/images/departments/Allergeries.png'),
+    },
+    {
+        name: 'Máu',
+        path: require('../assets/images/departments/Blood.png'),
+    },
+    {
+        name: 'Thần kinh',
+        path: require('../assets/images/departments/Brain.png'),
+    },
+    {
+        name: 'Ung thư',
+        path: require('../assets/images/departments/Cancer.png'),
+    },
+    {
+        name: 'Tiểu đường',
+        path: require('../assets/images/departments/Diabetes.png'),
+    },
+    {
+        name: 'TIêu hóa',
+        path: require('../assets/images/departments/Digestive.png'),
+    },
+    {
+        name: 'Tai mũi họng',
+        path: require('../assets/images/departments/ENT.png'),
+    },
+    {
+        name: 'Chăm sóc giấc ngủ',
+        path: require('../assets/images/departments/Healthy.png'),
+    },
+    {
+        name: 'Tim mạch',
+        path: require('../assets/images/departments/Heart.png'),
+    },
+    {
+        name: 'Bệnh truyền nhiễm',
+        path: require('../assets/images/departments/Infectious.png'),
+    },
+    {
+        name: 'Nam khoa',
+        path: require('../assets/images/departments/Mens.png'),
+    },
+    {
+        name: 'Răng hàm mặt',
+        path: require('../assets/images/departments/Oral.png'),
+    },
+    {
+        name: 'Cơ xương khớp',
+        path: require('../assets/images/departments/Orthopedics.png'),
+    },
+    {
+        name: 'Bệnh hô hấp',
+        path: require('../assets/images/departments/Respiratory.png'),
+    },
+    {
+        name: 'Đường tiết niệu',
+        path: require('../assets/images/departments/Urological.png'),
+    },
+];

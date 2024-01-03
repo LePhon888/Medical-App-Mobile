@@ -8,13 +8,13 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { category, dataNews, newsItems } from '../config/data';
 import Premium from '../components/Premium';
 
-const CARD_WIDTH = Math.min(Dimensions.get('screen').width * 0.80, 400);
+const CARD_WIDTH = Math.min(Dimensions.get('screen').width * 0.84, 400);
 
 export default function News() {
   const [value, setValue] = React.useState(0);
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#fff' }}>
+    <View style={{ flex: 1, backgroundColor: '#fff', marginBottom: 40 }}>
       <View>
         <SafeAreaView>
           <HeaderWithBackButton title={'Chuyên mục'} />
@@ -69,7 +69,7 @@ export default function News() {
 
                     <View style={styles.cardBody}>
                       <View style={{ height: '80%' }}>
-                        <Text style={{ color: '#e67a32', fontWeight: 500, marginBottom: 2, textTransform: 'uppercase', fontSize: 10 }}>{category}</Text>
+                        <Text style={{ color: '#e67a32', fontWeight: 500, marginBottom: 2, textTransform: 'uppercase', fontSize: 13 }}>{category}</Text>
                         <Text style={styles.cardTitle}>{name}</Text>
                       </View>
                       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -77,7 +77,7 @@ export default function News() {
                         <FontAwesome name="bookmark-o" size={18} />
                       </View>
                     </View>
-                    <Image alt="" source={{ uri: img }} style={styles.cardCover} />
+                    <Image alt="img" source={{ uri: img }} style={styles.cardCover} />
 
                   </View>
                 </TouchableOpacity>
@@ -268,9 +268,6 @@ export default function News() {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 0,
-    // flexGrow: 1, this one cause the scrollView not scrollable, using inside contentContainerStyle
-    // flexShrink: 1,
-    // flexBasis: 0,
   },
   title: {
     paddingHorizontal: 24,
@@ -311,7 +308,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginHorizontal: 6,
     paddingLeft: 12,
-    height: 130,
+    height: 140,
     backgroundColor: '#eee',
     borderRadius: 10,
     borderWidth: 0.5,
@@ -397,12 +394,12 @@ const styles = StyleSheet.create({
     flex: 1,
     position: 'absolute',
     left: 0,
-    top: 0,
+    bottom: 0,
     opacity: 0.1,
     backgroundColor: '#666',
     width: '100%',
     borderRadius: 16,
-    height: '100%'
+    height: '40%'
   },
   title: {
     fontSize: 32,
