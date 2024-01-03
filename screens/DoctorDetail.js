@@ -35,17 +35,12 @@ const DoctorDetail = ({ userId }) => {
             </View>
             {/* Center item */}
             <View style={styles.avatarContainer}>
-                {/* Avatar */}
                 <Image source={{ uri: doctor.avatar }} style={styles.avatar} />
-                {/* Center content */}
                 <View style={{ alignItems: 'center' }}>
-                    {/* Name */}
                     <Text style={styles.name}>BS.CKI {doctor.name}</Text>
-                    {/* Department */}
                     <Text numberOfLines={1} ellipsizeMode="tail" style={styles.department}>
                         {doctor.department}
                     </Text>
-                    {/* consultation */}
                     <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap' }}>
                         <Text style={styles.consultation}>{doctor.consultation}</Text>
                     </View>

@@ -12,7 +12,6 @@ import COLORS from "../constants/colors";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Carousel from 'react-native-anchor-carousel';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import Draggable from 'react-native-draggable';
 
 const { width: windowWidth } = Dimensions.get('window');
 
@@ -188,7 +187,7 @@ const Home = ({ navigation: { goBack } }) => {
           {/* <News /> */}
           <Text style={style.sectionTitle}>Hãy đến với chúng tôi</Text>
           <TouchableOpacity style={{
-            height: 90, width: '94%', height: 170, justifyContent: 'center', alignItems: 'center', marginHorizontal: 10
+            height: 90, width: '94%', height: 170, justifyContent: 'center', alignItems: 'center', marginHorizontal: 12
           }}>
             <ImageBackground imageStyle={{ borderRadius: 10 }} style={{ width: '100%', height: 170, borderRadius: 10, marginTop: 10 }} source={require('../assets/images/banner.png')} />
           </TouchableOpacity>
@@ -234,7 +233,7 @@ const Home = ({ navigation: { goBack } }) => {
           </ScrollView>
           <FlatList
             snapToInterval={width - 20}
-            contentContainerStyle={{ paddingLeft: 20, paddingBottom: 20 }}
+            contentContainerStyle={{ paddingLeft: 20, paddingBottom: 20, marginBottom: 60 }}
             showsHorizontalScrollIndicator={false}
             horizontal
             // data={places}
@@ -303,7 +302,6 @@ const style = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-
     elevation: 5,
   },
   iconContainer: {

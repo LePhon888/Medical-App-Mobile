@@ -3,8 +3,9 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import AntDesign from "react-native-vector-icons/AntDesign";
 
 import MedicalRegister from "../screens/MedicalRegister";
-import Chat from "../screens/Chat";
+import Chatbot from "../screens/Chatbot";
 import Home from "../screens/Home";
+import News from "../screens/News";
 import Setting from "../screens/Setting";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DoctorAppointment from "../screens/DoctorAppointment";
@@ -25,12 +26,21 @@ function BottomNavigation({ navigation }) {
     <Tab.Navigator
       screenOptions={{
         tabBarLabelStyle: {
-          fontSize: 10,
+          fontSize: 11,
           fontWeight: "600",
-          marginBottom: 5
+          marginBottom: 5,
         },
         tabBarStyle: {
-          height: 52,
+          height: 60,
+          paddingTop: 8,
+          paddingBottom: 4,
+          backgroundColor: '#fff',
+          borderTopLeftRadius: 24,
+          borderTopRightRadius: 24,
+          borderWidth: 0.3,
+          borderColor: '#ccc',
+          position: 'absolute',
+          overflow: 'hidden',
         },
       }}
     >
@@ -49,13 +59,13 @@ function BottomNavigation({ navigation }) {
       />
       <Tab.Screen
         name="Bài viết"
-        component={Home}
+        component={News}
         options={{
           tabBarIcon: ({ color, size }) => (
             <AntDesign name="book" size={24} color={color} />
           ),
           tabBarPress: () => {
-            navigation.navigate("Home");
+            navigation.navigate("News");
           },
           headerShown: false,
         }}
@@ -92,7 +102,7 @@ function BottomNavigation({ navigation }) {
 
       <Tab.Screen
         name="Chat"
-        component={Chat}
+        component={Chatbot}
         options={{
           tabBarIcon: ({ color, size }) => (
             <AntDesign name="message1" size={24} color={color} />
