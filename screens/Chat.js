@@ -22,6 +22,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import ChatIntroduction from "../components/Chat/ChatIntroduction";
 import Header from "../common/Header";
+
 import MessageUI from "../components/Chat/MessageUI";
 
 const Chat = () => {
