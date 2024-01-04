@@ -4,7 +4,7 @@
         "name": "Nguyễn Văn A",
         "department": "Đa khoa",
         "hospital": "Phòng khám Đa khoa Quốc tế Golden Healthcare",
-        "address": "123 Example Street, City",
+        "address": "37 Hoàng Hoa Thám, Phường 13, Tân Bình, Thành phố Hồ Chí Minh",
         "consultation": "Tư vấn trực tiếp",
         "rating": 5,
         "target": [
@@ -34,6 +34,36 @@
                 "location": "Bệnh viện Columbia + bệnh viện Tâm trí",
                 "duration": "2013 - 2017"
             }
+        ],
+        "education": [
+            {
+                "degree": "Tiến sĩ Y khoa",
+                "school": "Đại học Y Dược Hà Nội",
+                "year": "1995 - 2001"
+            },
+            {
+                "degree": "Thạc sĩ Nội tổng quát",
+                "school": "Đại học Y Dược Hà Nội",
+                "year": "1988 - 1991"
+            }
+        ],
+        "payment": [
+            {
+                "title": "Visa",
+                "image": "https://cdn4.iconfinder.com/data/icons/flat-brand-logo-2/512/visa-512.png"
+            },
+            {
+                "title": "Tiền mặt",
+                "image": "https://cdn.iconscout.com/icon/free/png-256/free-cash-2065963-1746112.png"
+            },
+            {
+                "title": "Mastercard",
+                "image": "https://cdn.iconscout.com/icon/free/png-256/free-mastercard-3521564-2944982.png"
+            },
+            {
+                "title": "Chuyển khoản",
+                "image": "https://cdn-icons-png.flaticon.com/512/8483/8483685.png"
+            }
         ]
     },
     {
@@ -41,7 +71,7 @@
         "name": "Nguyễn Thị B",
         "department": "Nhi khoa",
         "hospital": "Phòng khám Đa khoa Minh Anh",
-        "address": "456 Example Street, City",
+        "address": "15-16 Đ. Phan Văn Trị, Phường 5, Gò Vấp, Thành phố Hồ Chí Minh",
         "consultation": "Tư vấn trực tiếp & Tư vấn từ xa",
         "rating": 4.5,
         "target": [
@@ -70,14 +100,36 @@
                 "location": "Bệnh viện Columbia + bệnh viện Tâm trí",
                 "duration": "2013 - 2017"
             }
+        ],
+        "education": [
+            {
+                "degree": "Tiến sĩ Y khoa",
+                "school": "Đại học Y Dược Hồ Chí Minh",
+                "year": "1996 - 2002"
+            },
+            {
+                "degree": "Thạc sĩ Nhi khoa",
+                "school": "Đại học Y Dược Hồ Chí Minh",
+                "year": "1989 - 1993"
+            }
+        ],
+        "payment": [
+            {
+                "title": "Visa",
+                "image": "https://cdn4.iconfinder.com/data/icons/flat-brand-logo-2/512/visa-512.png"
+            },
+            {
+                "title": "Tiền mặt",
+                "image": "https://cdn.iconscout.com/icon/free/png-256/free-cash-2065963-1746112.png"
+            }
         ]
     },
     {
         "key": "3",
         "name": "Lê Thị C",
         "department": "Ngoại khoa",
-        "hospital": "Phòng khám Đa khoa Quốc tế Healthy Life",
-        "address": "789 Example Street, City",
+        "hospital": "Bệnh viện Chợ Rẫy",
+        "address": "201B Đ. Nguyễn Chí Thanh, Phường 12, Quận 5, Thành phố Hồ Chí Minh 700000",
         "consultation": "Tư vấn trực tiếp",
         "rating": 4.8,
         "target": [
@@ -102,9 +154,31 @@
                 "duration": "1999 - 2002"
             },
             {
-                "title": "Bác sĩ chuyên khoa Nội tổng quát",
+                "title": "Bác sĩ chuyên khoa Ngoại tổng quát",
                 "location": "Bệnh viện Columbia + bệnh viện Tâm trí",
                 "duration": "2013 - 2017"
+            }
+        ],
+        "education": [
+            {
+                "degree": "Tiến sĩ Y khoa",
+                "school": "Đại học Y Dược Hồ Chí Minh",
+                "year": "1990 - 1996"
+            },
+            {
+                "degree": "Thạc sĩ Ngoại khoa",
+                "school": "Đại học Y Dược Hồ Chí Minh",
+                "year": "1985 - 1989"
+            }
+        ],
+        "payment": [
+            {
+                "title": "Mastercard",
+                "image": "https://cdn.iconscout.com/icon/free/png-256/free-mastercard-3521564-2944982.png"
+            },
+            {
+                "title": "Chuyển khoản",
+                "image": "https://cdn-icons-png.flaticon.com/512/8483/8483685.png"
             }
         ]
     },
@@ -113,7 +187,7 @@
         "name": "Trần Văn D",
         "department": "Nhi khoa",
         "hospital": "Phòng khám Đa khoa Anh Dũng",
-        "address": "101 Example Street, City",
+        "address": "31/4D Đ. Nguyễn Ảnh Thủ, Trung Chánh, Quận 12, Thành phố Hồ Chí Minh",
         "consultation": "Tư vấn trực tiếp & Tư vấn từ xa",
         "rating": 4.2,
         "target": [
@@ -133,9 +207,39 @@
                 "duration": "1999 - 2002"
             },
             {
-                "title": "Bác sĩ chuyên khoa Nội tổng quát",
+                "title": "Bác sĩ chuyên khoa Ngoại tổng quát",
                 "location": "Bệnh viện Columbia + bệnh viện Tâm trí",
                 "duration": "2013 - 2017"
+            }
+        ],
+        "education": [
+            {
+                "degree": "Tiến sĩ Y khoa",
+                "school": "Đại học Y Dược Hồ Chí Minh",
+                "year": "1992 - 1998"
+            },
+            {
+                "degree": "Thạc sĩ Nhi khoa",
+                "school": "Đại học Y Dược Hồ Chí Minh",
+                "year": "1987 - 1991"
+            }
+        ],
+        "payment": [
+            {
+                "title": "Visa",
+                "image": "https://cdn4.iconfinder.com/data/icons/flat-brand-logo-2/512/visa-512.png"
+            },
+            {
+                "title": "Tiền mặt",
+                "image": "https://cdn.iconscout.com/icon/free/png-256/free-cash-2065963-1746112.png"
+            },
+            {
+                "title": "Mastercard",
+                "image": "https://cdn.iconscout.com/icon/free/png-256/free-mastercard-3521564-2944982.png"
+            },
+            {
+                "title": "Chuyển khoản",
+                "image": "https://cdn-icons-png.flaticon.com/512/8483/8483685.png"
             }
         ]
     },
@@ -143,8 +247,8 @@
         "key": "5",
         "name": "Phạm Thị E",
         "department": "Đa khoa",
-        "hospital": "Phòng khám Đa khoa Sức Khỏe 365",
-        "address": "202 Example Street, City",
+        "hospital": "Phòng khám Đa khoa Ngọc Minh",
+        "address": "20-22 Lãnh Binh Thăng, Phường 13, Quận 11, Thành phố Hồ Chí Minh",
         "consultation": "Tư vấn trực tiếp",
         "rating": 0,
         "target": [
@@ -173,42 +277,27 @@
                 "location": "Bệnh viện Columbia + bệnh viện Tâm trí",
                 "duration": "2013 - 2017"
             }
-        ]
-    },
-    {
-        "key": "6",
-        "name": "Hoàng Văn F",
-        "department": "Ngoại khoa",
-        "hospital": "Phòng khám Đa khoa Hoa Sen",
-        "address": "303 Example Street, City",
-        "consultation": "Tư vấn trực tiếp",
-        "rating": 0,
-        "target": [
-            "adult",
-            "children"
         ],
-        "fee": 270000,
-        "nextAppointment": {
-            "date": "30/12/2023",
-            "time": "15:30"
-        },
-        "avatar": "https://media.istockphoto.com/id/177373093/photo/indian-male-doctor.jpg?s=612x612&w=0&k=20&c=5FkfKdCYERkAg65cQtdqeO_D0JMv6vrEdPw3mX1Lkfg=",
-        "info": "Bác sĩ Ngoại khoa với kinh nghiệm lâu năm. Chuyên tư vấn và điều trị các bệnh lý ngoại khoa.",
-        "experience": [
+        "education": [
             {
-                "title": "Bác sĩ chuyên khoa Nội tổng quát",
-                "location": "Phòng khám đa khoa Thành Công",
-                "duration": "2017 - 2021"
+                "degree": "Tiến sĩ Y khoa",
+                "school": "Đại học Y Dược Hồ Chí Minh",
+                "year": "1994 - 2000"
             },
             {
-                "title": "Bác sĩ chuyên khoa Ngoại tổng quát",
-                "location": "Bệnh viện Nam Định",
-                "duration": "1978 - 1988"
+                "degree": "Thạc sĩ Nội tổng quát",
+                "school": "Đại học Y Dược Hồ Chí Minh",
+                "year": "1989 - 1993"
+            }
+        ],
+        "payment": [
+            {
+                "title": "Mastercard",
+                "image": "https://cdn.iconscout.com/icon/free/png-256/free-mastercard-3521564-2944982.png"
             },
             {
-                "title": "Bác sĩ chuyên khoa Ngoại tổng quát",
-                "location": "Bệnh viện Columbia + bệnh viện Tâm trí",
-                "duration": "2013 - 2017"
+                "title": "Chuyển khoản",
+                "image": "https://cdn-icons-png.flaticon.com/512/8483/8483685.png"
             }
         ]
     }

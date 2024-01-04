@@ -10,15 +10,6 @@ import doctors from "../../assets/SampleDoctors.json"
  */
 const DoctorList = ({ onItemclickEvent }) => {
 
-    // On scroll list item
-    const onScroll = (event) => {
-        if (onScrollEvent) {
-            const offsetY = event.nativeEvent.contentOffset.y;
-            const isOnTop = offsetY <= 50;
-            onScrollEvent(isOnTop)
-        }
-    }
-
     // On click item
     const onItemClick = (item) => {
         onItemclickEvent(item)
@@ -71,7 +62,7 @@ const DoctorList = ({ onItemclickEvent }) => {
                 <Text style={styles.fee}>
                     Phí thăm khám cố định<Text style={{ fontSize: 13, color: '#0e8558', fontWeight: '500' }}>{` ${Number(item.fee).toLocaleString('vi-VN')} đ`}</Text></Text>
             </View>
-            {/* Next appointment and appoint*/}
+            {/* Next appointment and schedule */}
             <View style={styles.nextAppointmentContainer}>
                 <Text style={styles.nextAppointment}>Giờ đặt tiếp theo</Text>
                 <Text style={styles.appointmentTime}> {item.nextAppointment.date} - {item.nextAppointment.time}</Text>
@@ -179,15 +170,15 @@ const styles = StyleSheet.create({
         borderRadius: 5
     },
     nextAppointment: {
-        fontSize: 13,
+        fontSize: 12,
     },
     appointmentTime: {
-        fontSize: 13,
+        fontSize: 12,
         fontWeight: '500'
     },
     appoint: {
-        marginLeft: 10,
-        fontSize: 13,
+        marginLeft: 5,
+        fontSize: 12,
         color: '#4581cc',
         fontWeight: 'bold',
         alignItems: 'center',

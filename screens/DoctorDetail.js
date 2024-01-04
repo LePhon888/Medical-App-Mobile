@@ -1,20 +1,25 @@
-import React, { useState } from 'react';
-import { Button, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { Animated, Button, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import Doctors from '../assets/SampleDoctors.json';
+import ViewMap from '../components/ViewMap';
+import MapView from 'react-native-maps';
 /**
  * The doctor detail screen
  * 
  * @returns 
  */
 const DoctorDetail = ({ navigation, route }) => {
+
     const { doctor } = route.params // get the doctor object from route
     const [activeTab, setActiveTab] = useState(1); // set the active tab with key 1
     const [showFullInfo, setShowFullInfo] = useState(false); // this one use as a flag for read more button
+    const scrollY = useRef(new Animated.Value(0)).current;
+    const height = useRef(new Animated.Value(0)).current
 
     const toggleReadMore = () => {
         setShowFullInfo(!showFullInfo);
@@ -29,10 +34,16 @@ const DoctorDetail = ({ navigation, route }) => {
         navigation.goBack()
     }
 
+    const onScrollEvent = (event) => {
+        const scrollY = event.nativeEvent.contentOffset.y;
+        const newHeight = scrollY > 400 ? 50 : 0;
+        height.setValue(newHeight);
+    };
+
     const Header = () => {
         return (
-            <View style={styles.header}>
-                <View style={styles.flexRowCenter}>
+            <ScrollView style={styles.header}>
+                <View style={{ ...styles.flexRowCenter }}>
                     {/* Back icon */}
                     <TouchableOpacity style={styles.backIcon} onPress={onBack}>
                         <Ionicons size={20} name="chevron-back-outline"></Ionicons>
@@ -49,9 +60,8 @@ const DoctorDetail = ({ navigation, route }) => {
                         {/* favourite */}
                         <View style={styles.favourite}><MaterialCommunityIcons size={20} name="heart-plus-outline" /></View>
                     </View>
-
                 </View>
-            </View>
+            </ScrollView>
         )
     }
 
@@ -97,25 +107,42 @@ const DoctorDetail = ({ navigation, route }) => {
 
     const Tabs = () => {
         return (
-            <View style={styles.tabContainer}>
-                {tabs.map((t) => (
-                    <TouchableOpacity
-                        key={t.key} style={[styles.tab, { backgroundColor: activeTab === t.key ? '#2a87f1' : '#f8f9fd' }]}
-                        onPress={() => setActiveTab(t.key)}>
-                        <Text style={[styles.tabTitle, { color: activeTab === t.key ? '#FFFF' : '#504f54' }]}>{t.title}</Text>
+            <View style={{ backgroundColor: 'white' }}>
+                {/* Sticky header */}
+                <Animated.View style={{ ...styles.flexRowCenter, ...styles.content, height: height }}>
+                    {/* Back icon */}
+                    <TouchableOpacity onPress={onBack}>
+                        <Ionicons size={20} name="chevron-back-outline" />
                     </TouchableOpacity>
-                ))}
+                    <View>
+                        <Text style={{ ...styles.name, marginLeft: 5 }}>BS.CKI {doctor.name}</Text>
+                    </View>
+                    {/* Favourite */}
+                    <View style={{ ...styles.flexRowCenter, marginLeft: 'auto' }}>
+                        <MaterialCommunityIcons size={20} name="heart-plus-outline" />
+                    </View>
+                </Animated.View>
+                {/* Sticky tab */}
+                <View style={styles.tabContainer}>
+                    {tabs.map((t) => (
+                        <TouchableOpacity
+                            key={t.key} style={[styles.tab, { backgroundColor: activeTab === t.key ? '#2a87f1' : '#f8f9fd' }]}
+                            onPress={() => setActiveTab(t.key)}>
+                            <Text style={[styles.tabTitle, { color: activeTab === t.key ? '#FFFF' : '#504f54' }]}>{t.title}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
             </View>
         )
     }
 
     const TabContentInfo = () => {
         return (
-            <View>
+            <View style={styles.content}>
                 {/* Infomation */}
                 <View style={styles.info}>
                     <View style={{ ...styles.flexRowCenter, marginBottom: 10 }}>
-                        <View style={styles.infoIcon}><Ionicons name='information-sharp' color={'#f49d41'} size={13} /></View>
+                        <View style={styles.infoIcon}><Ionicons name='information' color={'#f49d41'} size={15} /></View>
                         <Text style={styles.infoTitle}>Thông tin bác sĩ</Text>
                     </View>
                     <Text numberOfLines={showFullInfo ? 99 : 2} ellipsizeMode="tail" style={styles.infoText}>BS.CKI {doctor.name} {doctor.info}</Text>
@@ -123,12 +150,47 @@ const DoctorDetail = ({ navigation, route }) => {
                     <TouchableOpacity onPress={toggleReadMore}><Text style={styles.buttonReadMore}>{showFullInfo ? 'Thu gọn' : 'Xem thêm'}</Text></TouchableOpacity>
                 </View>
                 {/* Experience */}
-                <BulletContent field={doctor.experience} title={'Kinh nghiệm'} iconComponent={(<FontAwesome name={'star'} color={'#f49d41'} size={13} />)} />
+                <BulletContent field={doctor.experience} title={'Kinh nghiệm'}
+                    iconComponent={(<FontAwesome name={'star'} color={'#f49d41'} size={10} />)}
+                    itemTitle={"title"} itemSubtitle={"location"} itemDuration={"duration"} />
+                {/* Education */}
+                <BulletContent field={doctor.education} title={'Quá trình đào tạo'}
+                    iconComponent={(<MaterialCommunityIcons name={'certificate'} color={'#f49d41'} size={13} />)}
+                    itemTitle={"degree"} itemSubtitle={"school"} itemDuration={"year"} />
+                {/* Map */}
+                <View style={styles.info}>
+                    <View style={{ ...styles.flexRowCenter, marginBottom: 20 }}>
+                        <View style={styles.infoIcon}><MaterialCommunityIcons name='map-marker-outline' color={'#f19534'} size={15} /></View>
+                        <Text style={styles.infoTitle}>Địa chỉ bệnh viện</Text>
+                    </View>
+                    <ViewMap height={170} />
+                    <View style={styles.mapText}>
+                        <Text style={styles.bulletTitle}>{doctor.hospital}</Text>
+                        <Text style={styles.bulletSubTitle}>{doctor.address}</Text>
+                    </View>
+                </View>
+                {/* Payment type */}
+                <View style={styles.info}>
+                    <View style={{ ...styles.flexRowCenter, marginBottom: 15 }}>
+                        <View style={styles.infoIcon}><Feather name='dollar-sign' color={'#f19534'} size={15} /></View>
+                        <Text style={styles.infoTitle}>Hình thức thanh toán</Text>
+                    </View>
+                    <View style={styles.paymentList}>
+                        {doctor.payment.map((payment, index) => (
+                            <View key={index} style={styles.paymentItem}>
+                                <View style={styles.paymentImageContainer}>
+                                    <Image source={{ uri: payment.image }} style={styles.paymentImage} />
+                                </View>
+                                <Text style={styles.paymentText}>{payment.title}</Text>
+                            </View>
+                        ))}
+                    </View>
+                </View>
             </View>
         )
     }
 
-    const BulletContent = ({ field, title, iconComponent }) => {
+    const BulletContent = ({ field, title, iconComponent, itemTitle, itemSubtitle, itemDuration }) => {
         return (
             <View style={styles.info}>
                 {/* Icon and title */}
@@ -137,12 +199,14 @@ const DoctorDetail = ({ navigation, route }) => {
                     <Text style={styles.infoTitle}>{title}</Text>
                 </View>
                 {/* Bullet list */}
-                {field.map((exp, index) => (
+                {field.map((item, index) => (
                     <View key={index} style={styles.bulletPoint}>
-                        <View style={styles.bulletIcon}><FontAwesome name='circle' color={'black'} size={5} /></View>
+                        <View style={styles.bulletIcon}>
+                            <FontAwesome name='circle' color={'black'} size={5} />
+                        </View>
                         <View style={styles.bulletContent}>
-                            <Text style={styles.bulletTitle}>{exp.title}</Text>
-                            <Text style={styles.bulletSubTitle}>{`${exp.location}\n${exp.duration}`}</Text>
+                            <Text style={styles.bulletTitle}>{item[itemTitle]}</Text>
+                            <Text style={styles.bulletSubTitle}>{`${item[itemSubtitle]}\n${item[itemDuration]}`}</Text>
                         </View>
                     </View>
                 ))}
@@ -151,18 +215,22 @@ const DoctorDetail = ({ navigation, route }) => {
     };
 
     return (
-        <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-            {/* Header */}
-            <Header />
-            {/* Doctor Info */}
-            <DoctorInfo />
-            {/* Main Content */}
-            <View style={styles.content}>
+        <>
+            <ScrollView style={styles.container} showsVerticalScrollIndicator={false} stickyHeaderIndices={[2]} onScroll={onScrollEvent} scrollEventThrottle={16}>
+                {/* Header */}
+                <Header />
+                {/* Doctor Info */}
+                <DoctorInfo />
                 {/* Tab View for switching info and rating */}
                 <Tabs />
                 {activeTab === 1 && <TabContentInfo />}
+            </ScrollView>
+            <View style={{ backgroundColor: 'white' }}>
+                <TouchableOpacity style={styles.buttonSchedule}>
+                    <Text style={styles.textSchedule}>Đặt lịch hẹn</Text>
+                </TouchableOpacity>
             </View>
-        </ScrollView>
+        </>
     );
 };
 
@@ -172,7 +240,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     flexRowCenter: {
-        flexDirection: 'row', alignItems: 'center'
+        flexDirection: 'row', alignItems: 'center',
     },
     header: {
         paddingHorizontal: 10,
@@ -218,8 +286,7 @@ const styles = StyleSheet.create({
         borderWidth: 4
     },
     name: {
-        marginTop: 10,
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: 'bold',
         color: '#425463',
     },
@@ -258,17 +325,21 @@ const styles = StyleSheet.create({
         borderColor: '#4d85be',
         borderRadius: 25,
         padding: 1,
-        marginRight: 5,
+        marginRight: 7,
     },
     fee: {
         marginVertical: 5,
         fontSize: 13,
         color: '#282828',
+        marginRight: 10,
+        lineHeight: 1.5 * 13
     },
     tabContainer: {
-        marginVertical: 10,
         flexDirection: 'row',
         alignItems: 'center',
+        paddingHorizontal: 15,
+        backgroundColor: 'white',
+        paddingVertical: 5,
     },
     tab: {
         paddingVertical: 8,
@@ -285,12 +356,14 @@ const styles = StyleSheet.create({
         marginVertical: 12,
     },
     infoIcon: {
-        borderWidth: 2,
-        borderColor: '#4d85be',
-        borderRadius: 10,
-        paddingVertical: 2,
-        paddingHorizontal: 2,
-        marginRight: 10,
+        width: 20,
+        height: 20,
+        borderWidth: 1.5,
+        borderColor: '#3188f2',
+        borderRadius: 9,
+        marginRight: 12,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     infoTitle: {
         color: '#262626',
@@ -327,7 +400,52 @@ const styles = StyleSheet.create({
     },
     bulletIcon: {
         marginHorizontal: 4,
-    }
+    },
+    buttonSchedule: {
+        backgroundColor: '#2c87f2',
+        marginVertical: 10,
+        marginHorizontal: 30,
+        borderRadius: 5,
+    },
+    textSchedule: {
+        paddingVertical: 12,
+        color: 'white',
+        textAlign: 'center',
+        fontWeight: 'bold',
+        fontSize: 17,
+    },
+    mapText: {
+        padding: 16,
+        backgroundColor: '#f8f9fd'
+    },
+    paymentList: {
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        paddingHorizontal: 10,
+    },
+    paymentItem: {
+        alignItems: 'center',
+        marginHorizontal: 5,
+        marginBottom: 10,
+    },
+    paymentText: {
+        marginTop: 5,
+        color: '#595959',
+        fontSize: 12,
+    },
+    paymentImageContainer: {
+        paddingVertical: 1,
+        paddingHorizontal: 15,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: '#d5d6d8'
+    },
+    paymentImage: {
+        width: 30,
+        height: 30,
+        resizeMode: 'contain',
+    },
 });
 
 export default DoctorDetail;

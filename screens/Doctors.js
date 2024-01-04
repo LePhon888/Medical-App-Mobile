@@ -127,9 +127,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     tab: {
-        width: 180,
+        flex: 1,
         paddingVertical: 8,
-        paddingHorizontal: 10,
         borderRadius: 20,
         marginHorizontal: 5,
     },
