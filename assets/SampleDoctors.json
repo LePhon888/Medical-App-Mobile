@@ -4,7 +4,7 @@
         "name": "Nguyễn Văn A",
         "department": "Đa khoa",
         "hospital": "Phòng khám Đa khoa Quốc tế Golden Healthcare",
-        "address": "123 Example Street, City",
+        "address": "37 Hoàng Hoa Thám, Phường 13, Tân Bình, Thành phố Hồ Chí Minh",
         "consultation": "Tư vấn trực tiếp",
         "rating": 5,
         "target": [
@@ -16,14 +16,62 @@
             "date": "25/12/2023",
             "time": "07:30"
         },
-        "avatar": "https://www.aucmed.edu/sites/g/files/krcnkv361/files/styles/atge_3_2_crop_md/public/2021-11/large-Smile-Guy-web.jpg?h=6b55786a&itok=Wy7cQpYS"
+        "avatar": "https://www.aucmed.edu/sites/g/files/krcnkv361/files/styles/atge_3_2_crop_md/public/2021-11/large-Smile-Guy-web.jpg?h=6b55786a&itok=Wy7cQpYS",
+        "info": "Là bác sỹ chuyên khoa Nội Tổng quát - Giảm Đốc chuyên môn Phòng Khám, Golden Healthcare. Bác có hơn 20 năm kinh nghiệm trong việc thăm khám và điều trị các bệnh lý về nội khoa.",
+        "experience": [
+            {
+                "title": "Bác sĩ chuyên khoa Nội tổng quát",
+                "location": "Phòng khám đa khoa Thành Công",
+                "duration": "2017 - 2021"
+            },
+            {
+                "title": "Bác sĩ chuyên khoa Ngoại tổng quát",
+                "location": "Bệnh viện Nam Định",
+                "duration": "1978 - 1988"
+            },
+            {
+                "title": "Bác sĩ chuyên khoa Ngoại tổng quát",
+                "location": "Bệnh viện Columbia + bệnh viện Tâm trí",
+                "duration": "2013 - 2017"
+            }
+        ],
+        "education": [
+            {
+                "degree": "Tiến sĩ Y khoa",
+                "school": "Đại học Y Dược Hà Nội",
+                "year": "1995 - 2001"
+            },
+            {
+                "degree": "Thạc sĩ Nội tổng quát",
+                "school": "Đại học Y Dược Hà Nội",
+                "year": "1988 - 1991"
+            }
+        ],
+        "payment": [
+            {
+                "title": "Visa",
+                "image": "https://cdn4.iconfinder.com/data/icons/flat-brand-logo-2/512/visa-512.png"
+            },
+            {
+                "title": "Tiền mặt",
+                "image": "https://cdn.iconscout.com/icon/free/png-256/free-cash-2065963-1746112.png"
+            },
+            {
+                "title": "Mastercard",
+                "image": "https://cdn.iconscout.com/icon/free/png-256/free-mastercard-3521564-2944982.png"
+            },
+            {
+                "title": "Chuyển khoản",
+                "image": "https://cdn-icons-png.flaticon.com/512/8483/8483685.png"
+            }
+        ]
     },
     {
         "key": "2",
         "name": "Nguyễn Thị B",
         "department": "Nhi khoa",
         "hospital": "Phòng khám Đa khoa Minh Anh",
-        "address": "456 Example Street, City",
+        "address": "15-16 Đ. Phan Văn Trị, Phường 5, Gò Vấp, Thành phố Hồ Chí Minh",
         "consultation": "Tư vấn trực tiếp & Tư vấn từ xa",
         "rating": 4.5,
         "target": [
@@ -34,14 +82,54 @@
             "date": "26/12/2023",
             "time": "09:00"
         },
-        "avatar": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRB_zqFocO4Dr7TmAqolB1hjVY5BHd-QyPmneip3fJZJfVY29xC32KEH45oOpYPVRvQ2ow&usqp=CAU"
+        "avatar": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRB_zqFocO4Dr7TmAqolB1hjVY5BHd-QyPmneip3fJZJfVY29xC32KEH45oOpYPVRvQ2ow&usqp=CAU",
+        "info": "Bác sĩ chuyên khoa Nhi khoa với hơn 10 năm kinh nghiệm. Thực hiện cả tư vấn từ xa để hỗ trợ bệnh nhân trên mọi miền đất nước.",
+        "experience": [
+            {
+                "title": "Bác sĩ cấp cứu tổng hợp",
+                "location": "Bệnh viện Nhân dân 115",
+                "duration": "2001 - 2014"
+            },
+            {
+                "title": "Bác sĩ chuyên khoa Nội tổng quát",
+                "location": "Bệnh viện thống nhất",
+                "duration": "1999 - 2002"
+            },
+            {
+                "title": "Bác sĩ chuyên khoa Nội tổng quát",
+                "location": "Bệnh viện Columbia + bệnh viện Tâm trí",
+                "duration": "2013 - 2017"
+            }
+        ],
+        "education": [
+            {
+                "degree": "Tiến sĩ Y khoa",
+                "school": "Đại học Y Dược Hồ Chí Minh",
+                "year": "1996 - 2002"
+            },
+            {
+                "degree": "Thạc sĩ Nhi khoa",
+                "school": "Đại học Y Dược Hồ Chí Minh",
+                "year": "1989 - 1993"
+            }
+        ],
+        "payment": [
+            {
+                "title": "Visa",
+                "image": "https://cdn4.iconfinder.com/data/icons/flat-brand-logo-2/512/visa-512.png"
+            },
+            {
+                "title": "Tiền mặt",
+                "image": "https://cdn.iconscout.com/icon/free/png-256/free-cash-2065963-1746112.png"
+            }
+        ]
     },
     {
         "key": "3",
         "name": "Lê Thị C",
         "department": "Ngoại khoa",
-        "hospital": "Phòng khám Đa khoa Quốc tế Healthy Life",
-        "address": "789 Example Street, City",
+        "hospital": "Bệnh viện Chợ Rẫy",
+        "address": "201B Đ. Nguyễn Chí Thanh, Phường 12, Quận 5, Thành phố Hồ Chí Minh 700000",
         "consultation": "Tư vấn trực tiếp",
         "rating": 4.8,
         "target": [
@@ -52,6 +140,165 @@
             "date": "27/12/2023",
             "time": "10:30"
         },
-        "avatar": "https://images.healthshots.com/healthshots/en/uploads/2022/07/02195043/doctor-stress.jpg"
+        "avatar": "https://images.healthshots.com/healthshots/en/uploads/2022/07/02195043/doctor-stress.jpg",
+        "info": "Bác sĩ Ngoại khoa uy tín với nhiều năm kinh nghiệm. Chuyên tư vấn và điều trị các bệnh lý ngoại khoa.",
+        "experience": [
+            {
+                "title": "Bác sĩ cấp cứu tổng hợp",
+                "location": "Bệnh viện Nhân dân 115",
+                "duration": "2001 - 2014"
+            },
+            {
+                "title": "Bác sĩ chuyên khoa Nội tổng quát",
+                "location": "Bệnh viện thống nhất",
+                "duration": "1999 - 2002"
+            },
+            {
+                "title": "Bác sĩ chuyên khoa Ngoại tổng quát",
+                "location": "Bệnh viện Columbia + bệnh viện Tâm trí",
+                "duration": "2013 - 2017"
+            }
+        ],
+        "education": [
+            {
+                "degree": "Tiến sĩ Y khoa",
+                "school": "Đại học Y Dược Hồ Chí Minh",
+                "year": "1990 - 1996"
+            },
+            {
+                "degree": "Thạc sĩ Ngoại khoa",
+                "school": "Đại học Y Dược Hồ Chí Minh",
+                "year": "1985 - 1989"
+            }
+        ],
+        "payment": [
+            {
+                "title": "Mastercard",
+                "image": "https://cdn.iconscout.com/icon/free/png-256/free-mastercard-3521564-2944982.png"
+            },
+            {
+                "title": "Chuyển khoản",
+                "image": "https://cdn-icons-png.flaticon.com/512/8483/8483685.png"
+            }
+        ]
+    },
+    {
+        "key": "4",
+        "name": "Trần Văn D",
+        "department": "Nhi khoa",
+        "hospital": "Phòng khám Đa khoa Anh Dũng",
+        "address": "31/4D Đ. Nguyễn Ảnh Thủ, Trung Chánh, Quận 12, Thành phố Hồ Chí Minh",
+        "consultation": "Tư vấn trực tiếp & Tư vấn từ xa",
+        "rating": 4.2,
+        "target": [
+            "children"
+        ],
+        "fee": 180000,
+        "nextAppointment": {
+            "date": "28/12/2023",
+            "time": "11:15"
+        },
+        "avatar": "https://t4.ftcdn.net/jpg/03/20/74/45/360_F_320744517_TaGkT7aRlqqWdfGUuzRKDABtFEoN5CiO.jpg",
+        "info": "Bác sĩ Nhi khoa với kinh nghiệm dày dặn. Chuyên tư vấn và điều trị các vấn đề sức khỏe của trẻ em.",
+        "experience": [
+            {
+                "title": "Bác sĩ chuyên khoa Nội tổng quát",
+                "location": "Bệnh viện thống nhất",
+                "duration": "1999 - 2002"
+            },
+            {
+                "title": "Bác sĩ chuyên khoa Ngoại tổng quát",
+                "location": "Bệnh viện Columbia + bệnh viện Tâm trí",
+                "duration": "2013 - 2017"
+            }
+        ],
+        "education": [
+            {
+                "degree": "Tiến sĩ Y khoa",
+                "school": "Đại học Y Dược Hồ Chí Minh",
+                "year": "1992 - 1998"
+            },
+            {
+                "degree": "Thạc sĩ Nhi khoa",
+                "school": "Đại học Y Dược Hồ Chí Minh",
+                "year": "1987 - 1991"
+            }
+        ],
+        "payment": [
+            {
+                "title": "Visa",
+                "image": "https://cdn4.iconfinder.com/data/icons/flat-brand-logo-2/512/visa-512.png"
+            },
+            {
+                "title": "Tiền mặt",
+                "image": "https://cdn.iconscout.com/icon/free/png-256/free-cash-2065963-1746112.png"
+            },
+            {
+                "title": "Mastercard",
+                "image": "https://cdn.iconscout.com/icon/free/png-256/free-mastercard-3521564-2944982.png"
+            },
+            {
+                "title": "Chuyển khoản",
+                "image": "https://cdn-icons-png.flaticon.com/512/8483/8483685.png"
+            }
+        ]
+    },
+    {
+        "key": "5",
+        "name": "Phạm Thị E",
+        "department": "Đa khoa",
+        "hospital": "Phòng khám Đa khoa Ngọc Minh",
+        "address": "20-22 Lãnh Binh Thăng, Phường 13, Quận 11, Thành phố Hồ Chí Minh",
+        "consultation": "Tư vấn trực tiếp",
+        "rating": 0,
+        "target": [
+            "adult"
+        ],
+        "fee": 220000,
+        "nextAppointment": {
+            "date": "29/12/2023",
+            "time": "13:45"
+        },
+        "avatar": "https://img.freepik.com/premium-photo/medical-concept-indian-beautiful-female-doctor-white-coat-with-stethoscope-waist-up-medical-student-woman-hospital-worker-looking-camera-smiling-studio-blue-background_185696-621.jpg",
+        "info": "Bác sĩ Đa khoa với sự chuyên nghiệp và tận tâm. Luôn lắng nghe và tư vấn cho bệnh nhân một cách chân thành.",
+        "experience": [
+            {
+                "title": "Bác sĩ chuyên khoa Nội tổng quát",
+                "location": "Phòng khám đa khoa Thành Công",
+                "duration": "2017 - 2021"
+            },
+            {
+                "title": "Bác sĩ chuyên khoa Nội tổng quát",
+                "location": "Bệnh viện thống nhất",
+                "duration": "1999 - 2002"
+            },
+            {
+                "title": "Bác sĩ chuyên khoa Nội tổng quát",
+                "location": "Bệnh viện Columbia + bệnh viện Tâm trí",
+                "duration": "2013 - 2017"
+            }
+        ],
+        "education": [
+            {
+                "degree": "Tiến sĩ Y khoa",
+                "school": "Đại học Y Dược Hồ Chí Minh",
+                "year": "1994 - 2000"
+            },
+            {
+                "degree": "Thạc sĩ Nội tổng quát",
+                "school": "Đại học Y Dược Hồ Chí Minh",
+                "year": "1989 - 1993"
+            }
+        ],
+        "payment": [
+            {
+                "title": "Mastercard",
+                "image": "https://cdn.iconscout.com/icon/free/png-256/free-mastercard-3521564-2944982.png"
+            },
+            {
+                "title": "Chuyển khoản",
+                "image": "https://cdn-icons-png.flaticon.com/512/8483/8483685.png"
+            }
+        ]
     }
 ]

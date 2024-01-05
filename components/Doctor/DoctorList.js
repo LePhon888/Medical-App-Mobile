@@ -1,15 +1,22 @@
-/** 
- * This one use to display list of doctors, include information about each doctor
- */
+
 import React from 'react';
 import { View, Text, FlatList, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import Icon from "react-native-vector-icons/Ionicons";
 import Feather from "react-native-vector-icons/Feather";
 import doctors from "../../assets/SampleDoctors.json"
-const DoctorList = () => {
+/** 
+ * This one use to display list of doctors, include information about each doctor
+ * @param onItemclickEvent (optional) Function to hanlde when click the item of the list, can navigate to the detail
+ */
+const DoctorList = ({ onItemclickEvent }) => {
 
-    const renderItem = ({ item }) => (
-        <View style={styles.itemContainer}>
+    // On click item
+    const onItemClick = (item) => {
+        onItemclickEvent(item)
+    }
+
+    const renderItem = (item, index) => (
+        <TouchableOpacity key={index} style={styles.itemContainer} onPress={() => onItemClick(item)}>
             {/* Avatar, Name, Rating, Department, Direct or Indirect */}
             <View style={{ flexDirection: 'row' }}>
                 {/* Avatar */}
@@ -20,10 +27,12 @@ const DoctorList = () => {
                         {/* Name */}
                         <Text style={styles.name}>BS.CKI {item.name}</Text>
                         {/* Rating */}
-                        <View style={styles.rating}>
-                            <Text style={{ fontSize: 10 }}>⭐</Text>
-                            <Text style={{ fontWeight: '500' }}>{` ${item.rating}/5`}</Text>
-                        </View>
+                        {item.rating && item.rating > 0 ? (
+                            <View style={styles.rating}>
+                                <Text style={{ fontSize: 10 }}>⭐</Text>
+                                <Text style={{ fontWeight: '500' }}>{` ${item.rating}/5`}</Text>
+                            </View>
+                        ) : ""}
                     </View>
                     {/* Department, hospital */}
                     <Text numberOfLines={1} ellipsizeMode="tail" style={styles.department}><Icon name='git-branch-outline' /> {item.department}</Text>
@@ -53,27 +62,35 @@ const DoctorList = () => {
                 <Text style={styles.fee}>
                     Phí thăm khám cố định<Text style={{ fontSize: 13, color: '#0e8558', fontWeight: '500' }}>{` ${Number(item.fee).toLocaleString('vi-VN')} đ`}</Text></Text>
             </View>
-            {/* Next appointment and appoint*/}
+            {/* Next appointment and schedule */}
             <View style={styles.nextAppointmentContainer}>
                 <Text style={styles.nextAppointment}>Giờ đặt tiếp theo</Text>
                 <Text style={styles.appointmentTime}> {item.nextAppointment.date} - {item.nextAppointment.time}</Text>
                 <View style={styles.verticalLine}></View>
-                <TouchableOpacity style={styles.flexRow}>
+                <TouchableOpacity style={styles.flexRow} onPress={() => console.log('clickled the child')}>
                     <Text style={styles.appoint}>Đặt hẹn </Text>
                     <Feather size={20} style={{ color: '#4581cc' }} name='chevron-right'></Feather>
                 </TouchableOpacity>
             </View>
-        </View >
+        </TouchableOpacity >
     );
-
+    //     <FlatList
+    //     data={doctors}
+    //     renderItem={renderItem}
+    //     keyExtractor={(item) => item.name}
+    //     style={styles.container}
+    //     showsVerticalScrollIndicator={false}
+    //     scrollEventThrottle={16}
+    //     onScroll={onScroll}
+    // />
     return (
-        <FlatList
-            data={doctors}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.name}
-            style={styles.container}
-            ListFooterComponent={<View style={{ height: 200 }} />}
-        />
+        <ScrollView key='Doctors' style={styles.container} showsVerticalScrollIndicator={false} nestedScrollEnabled={true}>
+            {doctors && doctors.length > 0 && (
+                doctors.map((item, index) => {
+                    return renderItem(item, index)
+                })
+            )}
+        </ScrollView>
     );
 };
 
@@ -153,15 +170,15 @@ const styles = StyleSheet.create({
         borderRadius: 5
     },
     nextAppointment: {
-        fontSize: 13,
+        fontSize: 12,
     },
     appointmentTime: {
-        fontSize: 13,
+        fontSize: 12,
         fontWeight: '500'
     },
     appoint: {
-        marginLeft: 10,
-        fontSize: 13,
+        marginLeft: 5,
+        fontSize: 12,
         color: '#4581cc',
         fontWeight: 'bold',
         alignItems: 'center',
