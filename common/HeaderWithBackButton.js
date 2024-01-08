@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     },
     titleText: {
         color: COLORS.black,
-        fontSize: 22,
+        fontSize: 21,
         fontWeight: "bold",
         marginLeft: 18,
     },

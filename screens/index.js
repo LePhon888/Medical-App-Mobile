@@ -14,6 +14,8 @@ import VideoHome from "./VideoHome";
 import Call from "./Call";
 import AppointmentRegister from "./AppointmentRegister";
 import Category from "./Category";
+import Notification from "./Notification";
+import MedicineList from "./MedicineList";
 
 export {
   Login,
@@ -31,5 +33,7 @@ export {
   VideoHome,
   Call,
   AppointmentRegister,
-  Category
+  Category,
+  Notification,
+  MedicineList
 };

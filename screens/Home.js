@@ -158,20 +158,29 @@ const Home = ({ navigation: { goBack } }) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <StatusBar translucent={false} backgroundColor={COLORS.primary} />
-      <View style={style.header}>
-        <View style={{ padding: 6, backgroundColor: COLORS.white, width: 40, height: 40, marginRight: 10, borderRadius: 50 }}>
-          <AntDesign name="search1" size={21} color={COLORS.black} style={{ marginLeft: 3, marginTop: 2 }} />
-        </View>
-        <View style={{ padding: 6, backgroundColor: COLORS.white, width: 40, height: 40, borderRadius: 50 }}>
-          <AntDesign name="bells" size={21} color={COLORS.black} style={{ marginLeft: 3, marginTop: 2 }} />
-        </View>
-      </View>
       <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={style.header}>
+          <View style={{ marginTop: 4 }}><Text style={{ color: COLORS.white, fontSize: 20, fontWeight: 700 }}>Chào bạn !</Text></View>
+          <View style={{ flexDirection: 'row' }}>
+            <View style={{ padding: 6, backgroundColor: COLORS.white, width: 40, height: 40, marginRight: 10, borderRadius: 50 }}>
+              <AntDesign name="search1" size={21} color={COLORS.black} style={{ marginLeft: 3, marginTop: 2 }} />
+            </View>
+            <TouchableOpacity style={{ padding: 6, backgroundColor: COLORS.white, width: 40, height: 40, borderRadius: 50, position: 'relative' }}
+              onPress={() => navigation.navigate('Notification')}>
+              <AntDesign name="bells" size={21} color={COLORS.black} style={{ marginLeft: 3, marginTop: 2 }} />
+              <View style={{ backgroundColor: '#f44236', width: 18, height: 18, borderRadius: 50, alignItems: 'center', position: 'absolute', top: 3, right: 4 }}>
+                <Text style={{ color: COLORS.white, fontWeight: 600, fontSize: 12 }}>4</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
         <View
           style={{
             backgroundColor: COLORS.primary,
             height: 120,
             paddingHorizontal: 20,
+            borderBottomEndRadius: 18,
+            borderBottomStartRadius: 18
           }}
         >
         </View>
@@ -259,10 +268,11 @@ const Home = ({ navigation: { goBack } }) => {
 
 const style = StyleSheet.create({
   header: {
-    paddingVertical: 14,
+    paddingTop: 14,
+    paddingBottom: 8,
     paddingHorizontal: 20,
     flexDirection: "row",
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
     backgroundColor: COLORS.primary,
   },
   headerTitle: {

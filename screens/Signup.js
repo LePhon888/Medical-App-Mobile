@@ -80,7 +80,6 @@ const Signup = ({ navigation }) => {
             style={{
               fontSize: 22,
               fontWeight: "bold",
-              marginVertical: 12,
               color: COLORS.black,
             }}
           >
@@ -103,8 +102,8 @@ const Signup = ({ navigation }) => {
             style={{
               width: "100%",
               height: 48,
-              borderColor: COLORS.black,
-              borderWidth: 1,
+              borderColor: COLORS.grey,
+              borderWidth: 0.5,
               borderRadius: 8,
               alignItems: "center",
               justifyContent: "center",
@@ -138,8 +137,8 @@ const Signup = ({ navigation }) => {
             style={{
               width: "100%",
               height: 48,
-              borderColor: COLORS.black,
-              borderWidth: 1,
+              borderColor: COLORS.grey,
+              borderWidth: 0.5,
               borderRadius: 8,
               alignItems: "center",
               justifyContent: "center",
@@ -173,8 +172,8 @@ const Signup = ({ navigation }) => {
             style={{
               width: "100%",
               height: 48,
-              borderColor: COLORS.black,
-              borderWidth: 1,
+              borderColor: COLORS.grey,
+              borderWidth: 0.5,
               borderRadius: 8,
               alignItems: "center",
               justifyContent: "center",
@@ -208,8 +207,8 @@ const Signup = ({ navigation }) => {
             style={{
               width: "100%",
               height: 48,
-              borderColor: COLORS.black,
-              borderWidth: 1,
+              borderColor: COLORS.grey,
+              borderWidth: 0.5,
               borderRadius: 8,
               alignItems: "center",
               justifyContent: "center",
@@ -256,8 +255,8 @@ const Signup = ({ navigation }) => {
             style={{
               width: "100%",
               height: 48,
-              borderColor: COLORS.black,
-              borderWidth: 1,
+              borderColor: COLORS.grey,
+              borderWidth: 0.5,
               borderRadius: 8,
               alignItems: "center",
               justifyContent: "center",
@@ -311,7 +310,7 @@ const Signup = ({ navigation }) => {
           filled
           style={{
             marginTop: 18,
-            marginBottom: 4,
+            marginBottom: 20,
           }}
           onPress={() => handleSignUp()}
         />
@@ -337,6 +336,7 @@ const Signup = ({ navigation }) => {
           style={{
             flexDirection: "row",
             justifyContent: "center",
+            marginTop: 10
           }}
         >
           <Text style={{ fontSize: 16, color: COLORS.black }}>
