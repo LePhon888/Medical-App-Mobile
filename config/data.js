@@ -256,3 +256,157 @@ export const departments = [
         path: require('../assets/images/departments/Urological.png'),
     },
 ];
+export const noti = [
+    {
+        title: 'Bạn đã xem bài viết mới trong Thể dục thể thao chưa?',
+        content: 'TOP 4+ cách làm giảm mỡ bụng dưới hiệu quả, an toàn',
+        time: '5 tiếng trước'
+    },
+    {
+        title: 'Từ hộp thuốc của bạn',
+        content: 'Đã đến giờ uống thuốc: 1 viên Amitriptyline',
+        time: '22 tiếng trước'
+    },
+    {
+        title: 'Từ hộp thuốc của bạn',
+        content: 'Đã đến giờ uống thuốc: 1 viên Amitriptyline',
+        time: '1 ngày trước'
+    },
+    {
+        title: 'Từ hộp thuốc của bạn',
+        content: 'Đã đến giờ uống thuốc: 1 viên Amitriptyline',
+        time: '3 ngày trước'
+    },
+    {
+        title: 'Từ hộp thuốc của bạn',
+        content: 'Đã đến giờ uống thuốc: 1 viên Amitriptyline',
+        time: '3 ngày trước'
+    },
+    {
+        title: 'Từ hộp thuốc của bạn',
+        content: 'Đã đến giờ uống thuốc: 1 viên Amitriptyline',
+        time: '3 ngày trước'
+    },
+    {
+        title: 'Từ hộp thuốc của bạn',
+        content: 'Đã đến giờ uống thuốc: 1 viên Amitriptyline',
+        time: '3 ngày trước'
+    },
+    {
+        title: 'Từ hộp thuốc của bạn',
+        content: 'Đã đến giờ uống thuốc: 1 viên Amitriptyline',
+        time: '3 ngày trước'
+    },
+    {
+        title: 'Từ hộp thuốc của bạn',
+        content: 'Đã đến giờ uống thuốc: 1 viên Amitriptyline',
+        time: '3 ngày trước'
+    },
+    {
+        title: 'Từ hộp thuốc của bạn',
+        content: 'Đã đến giờ uống thuốc: 1 viên Amitriptyline',
+        time: '3 ngày trước'
+    },
+    {
+        title: 'Từ hộp thuốc của bạn',
+        content: 'Đã đến giờ uống thuốc: 1 viên Amitriptyline',
+        time: '3 ngày trước'
+    },
+    {
+        title: 'Từ hộp thuốc của bạn',
+        content: 'Đã đến giờ uống thuốc: 1 viên Amitriptyline',
+        time: '3 ngày trước'
+    }
+]
+export const medicines = [
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "A-Derma Dermalibour®" },
+    { name: "XYZ Dermalibour®" },
+];

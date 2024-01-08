@@ -4,7 +4,7 @@ import React, { createContext, useReducer } from "react";
 import UserReducer from "./reducers/UserReducer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
-  // Login,
+  Login,
   Welcome,
   Signup,
   Home,
@@ -19,7 +19,9 @@ import {
   Call,
   VideoHome,
   AppointmentRegister,
-  Category
+  Category,
+  Notification,
+  MedicineList,
 } from "./screens";
 
 import DoctorAppointment from "./screens/DoctorAppointment";
@@ -38,7 +40,7 @@ export default function App() {
   return (
     <UserContext.Provider value={[user, dispatch]}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="MainScreen">
+        <Stack.Navigator initialRouteName="DoctorDetail">
           <Stack.Screen
             name="Welcome"
             component={Welcome}
@@ -46,13 +48,13 @@ export default function App() {
               headerShown: false,
             }}
           />
-          {/* <Stack.Screen
+          <Stack.Screen
             name="Login"
             component={Login}
             options={{
               headerShown: false,
             }}
-          /> */}
+          />
           <Stack.Screen
             name="Signup"
             component={Signup}
@@ -169,6 +171,20 @@ export default function App() {
           <Stack.Screen
             name="Category"
             component={Category}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="Notification"
+            component={Notification}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="MedicineList"
+            component={MedicineList}
             options={{
               headerShown: false,
             }}

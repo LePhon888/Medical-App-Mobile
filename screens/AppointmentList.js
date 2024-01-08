@@ -7,10 +7,13 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ScrollView,
+  Image,
 } from "react-native";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import Apis, { endpoints } from "../config/Apis";
 import COLORS from "../constants/colors";
+import HeaderWithBackButton from "../common/HeaderWithBackButton";
+import { medicines } from "../config/data";
 
 export default function AppointmentList({ navigation: { goBack } }) {
   function formatDate(inputDate) {
@@ -44,119 +47,122 @@ export default function AppointmentList({ navigation: { goBack } }) {
     fetchData();
   }, []);
 
+  const data = [
+    {
+      reason: 'Ho khó thở',
+      date: '10/01/2023',
+      hour: '08:00',
+      department: 'Đa khoa',
+      doctor: 'BS.CKI Nguyen An Binh'
+    },
+    {
+      reason: 'Ho khó thở',
+      date: '10/01/2023',
+      hour: '08:00',
+      department: 'Đa khoa',
+      doctor: 'BS.CKI Nguyen An Binh'
+    },
+    {
+      reason: 'Ho khó thở',
+      date: '10/01/2023',
+      hour: '08:00',
+      department: 'Đa khoa',
+      doctor: 'BS.CKI Nguyen An Binh'
+    },
+    {
+      reason: 'Ho khó thở',
+      date: '10/01/2023',
+      hour: '08:00',
+      department: 'Đa khoa',
+      doctor: 'BS.CKI Nguyen An Binh'
+    },
+    {
+      reason: 'Ho khó thở',
+      date: '10/01/2023',
+      hour: '08:00',
+      department: 'Đa khoa',
+      doctor: 'BS.CKI Nguyen An Binh'
+    },
+    {
+      reason: 'Ho khó thở',
+      date: '10/01/2023',
+      hour: '08:00',
+      department: 'Đa khoa',
+      doctor: 'BS.CKI Nguyen An Binh'
+    },
+    {
+      reason: 'Ho khó thở',
+      date: '10/01/2023',
+      hour: '08:00',
+      department: 'Đa khoa',
+      doctor: 'BS.CKI Nguyen An Binh'
+    },
+    {
+      reason: 'Ho khó thở',
+      date: '10/01/2023',
+      hour: '08:00',
+      department: 'Đa khoa',
+      doctor: 'BS.CKI Nguyen An Binh'
+    },
+    {
+      reason: 'Ho khó thở',
+      date: '10/01/2023',
+      hour: '08:00',
+      department: 'Đa khoa',
+      doctor: 'BS.CKI Nguyen An Binh'
+    },
+    {
+      reason: 'Ho khó thở',
+      date: '10/01/2023',
+      hour: '08:00',
+      department: 'Đa khoa',
+      doctor: 'BS.CKI Nguyen An Binh'
+    }
+  ]
+
   return (
-    <SafeAreaView style={{ backgroundColor: "#f2f2f2" }}>
+    <SafeAreaView style={{ backgroundColor: "#fff", flex: 1 }}>
+      <HeaderWithBackButton title={'Danh sách đặt hẹn'} />
       <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.actionWrapper}>
-          <TouchableOpacity
-            onPress={() => goBack()}
-            style={{ marginRight: "auto" }}
-          >
-            <View style={styles.action}>
-              <FeatherIcon color="#242329" name="chevron-left" size={20} />
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              // handle onPress
-            }}
-          >
-            <View style={styles.action}>
-              <FeatherIcon color="#242329" name="heart" size={18} />
-            </View>
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.title}>Danh sách lịch hẹn </Text>
-        {appointment ? (
-          appointment.map((item, index) => {
-            return (
-              <View
-                key={index}
-                style={[
-                  styles.cardWrapper,
-                  index === 0 && { borderTopWidth: 0 },
-                ]}
-              >
-                <TouchableOpacity
-                  onPress={() => {
-                    // handle onPress
-                  }}
-                >
-                  <View style={styles.card}>
-                    <View style={styles.cardTop}>
-                      {/* <View
-                        style={[
-                          styles.cardLogo,
-                          { backgroundColor: COLORS.primary },
-                        ]}
-                      ></View> */}
-
-                      <View style={styles.cardBody}>
-                        <View>
-                          <Text style={styles.cardTitle}>
-                            {item.user.firstName} {item.user.lastName}
-                          </Text>
-
-                          <Text style={styles.cardCompany}>
-                            Lý do hẹn: {item.reason}
-                          </Text>
-                        </View>
-
-                        <Text style={styles.cardSalary}>
-                          {formatDate(item.date)}
-                        </Text>
-                      </View>
-                    </View>
-
-                    <View style={styles.cardFooter}>
-                      <View style={styles.cardFooterItem}>
-                        <Text style={styles.cardFooterItemText}>
-                          {
-                            <Text
-                              style={
-                                item.isConfirm === 1
-                                  ? styles.cardPriceConfirm
-                                  : styles.cardPrice
-                              }
-                            >
-                              {item.isConfirm === 1
-                                ? "Đã xác nhận"
-                                : "Đang xác nhận"}
-                            </Text>
-                          }
-                        </Text>
-                      </View>
-
-                      <View
-                        style={[styles.cardFooterItem, { marginLeft: "auto" }]}
-                      >
-                        <Text style={styles.cardFooterItemText}>
-                          Bác sĩ: {item.doctor.user.firstName}
-                        </Text>
-                        <Text>{"  "}</Text>
-                        <FeatherIcon color="#464646" name="clock" size={14} />
-
-                        <Text style={styles.cardFooterItemText}>
-                          {item.hour.hour}
-                        </Text>
-                      </View>
+        {data.map((item, index) => {
+          return (
+            <View key={index}>
+              <View style={styles.radio}>
+                <View style={{ height: 50 }}>
+                  <Image alt="image" style={styles.profileAvatar} source={{ uri: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2.5&w=256&h=256&q=80" }} />
+                </View>
+                <View style={styles.radioTop}>
+                  <View style={{ flexDirection: 'row' }}>
+                    <Text style={styles.radioLabel}>{item.doctor}</Text>
+                  </View>
+                  <View style={{ position: 'absolute', right: 60 }}>
+                    <View style={{ flexDirection: 'row' }}>
+                      <Image source={require('../assets/images/chronometer.png')} style={{ width: 16, height: 16, marginRight: 1 }} />
+                      <Text style={styles.cardFooterItemText}>{item.hour}</Text>
                     </View>
                   </View>
-                </TouchableOpacity>
+                  <View style={{ flexDirection: 'row', position: 'absolute', right: 60, top: 20 }}>
+                    <Image source={require('../assets/images/calendar.png')} style={{ width: 20, height: 20, marginRight: 1 }} />
+                    <Text style={styles.cardSalary}>{item.date}</Text>
+                  </View>
+                  <View >
+                    <Text style={{ fontSize: 14, fontWeight: '400', color: '#848a96', marginBottom: 4 }}>{item.department}</Text>
+                  </View>
+                  <Text style={{ fontSize: 15, color: '#848a96', marginBottom: 1, width: 260 }}>Lý do hẹn: {item.reason}</Text>
+                </View>
               </View>
-            );
-          })
-        ) : (
-          <Text>Danh sách rỗng</Text>
-        )}
+            </View>
+          )
+        })}
+
       </ScrollView>
-    </SafeAreaView>
+    </SafeAreaView >
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 24,
+    paddingHorizontal: 14,
   },
   title: {
     fontSize: 22,
@@ -168,7 +174,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
   },
   cardWrapper: {
-    borderTopWidth: 1,
+    borderBottomWidth: 0.3,
     borderColor: "#ccc",
   },
   cardTop: {
@@ -188,12 +194,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 6,
+    borderWidth: 0.7,
+    borderRadius: 20
   },
   cardFooterItemText: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: "500",
     color: "#464646",
-    marginLeft: 4,
   },
   cardLogo: {
     width: 48,
@@ -225,8 +232,6 @@ const styles = StyleSheet.create({
   },
   cardSalary: {
     fontSize: 15,
-    fontWeight: "700",
-    color: "#959796",
   },
   cardPrice: {
     marginLeft: "auto",
@@ -236,9 +241,12 @@ const styles = StyleSheet.create({
   },
   cardPriceConfirm: {
     marginLeft: "auto",
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: "700",
     color: COLORS.secondary,
+    position: 'absolute',
+    right: 60,
+    bottom: 0
   },
   actions: {
     paddingVertical: 12,
@@ -262,5 +270,47 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
     alignItems: "center",
     justifyContent: "center",
+  },
+  radio: {
+    flexDirection: 'row',
+    position: 'relative',
+    backgroundColor: '#fff',
+    padding: 12,
+    borderRadius: 6,
+    borderWidth: 0.3,
+    borderColor: '#ccc',
+    marginTop: 8
+  },
+  radioActive: {
+    borderColor: '#0069fe',
+  },
+  radioTop: {
+    width: '100%',
+    flexDirection: 'column',
+    marginBottom: 4,
+    position: 'relative'
+  },
+  radioLabel: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: 5,
+  },
+  radioUsers: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#2f2f2f',
+  },
+  radioDescription: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: '#848a96',
+    marginLeft: 8
+  },
+  profileAvatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 9999,
+    marginRight: 10,
   },
 });
