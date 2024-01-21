@@ -28,6 +28,7 @@ import DoctorAppointment from "./screens/DoctorAppointment";
 import EditProfile from "./screens/EditProfile";
 import Doctors from "./screens/Doctors";
 import DoctorDetail from "./screens/DoctorDetail";
+import MedicationBox from "./screens/MedicationBox";
 const Stack = createNativeStackNavigator();
 export const UserContext = createContext();
 
@@ -40,7 +41,7 @@ export default function App() {
   return (
     <UserContext.Provider value={[user, dispatch]}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="DoctorDetail">
+        <Stack.Navigator initialRouteName="MedicationBox">
           <Stack.Screen
             name="Welcome"
             component={Welcome}
@@ -185,6 +186,13 @@ export default function App() {
           <Stack.Screen
             name="MedicineList"
             component={MedicineList}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="MedicationBox"
+            component={MedicationBox}
             options={{
               headerShown: false,
             }}
