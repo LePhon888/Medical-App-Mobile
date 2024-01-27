@@ -9,7 +9,7 @@ import {
   ScrollView,
   Image,
 } from "react-native";
-import FeatherIcon from "react-native-vector-icons/Feather";
+import Feather from "react-native-vector-icons/Feather";
 import Apis, { endpoints } from "../config/Apis";
 import COLORS from "../constants/colors";
 import HeaderWithBackButton from "../common/HeaderWithBackButton";
@@ -122,7 +122,9 @@ export default function AppointmentList({ navigation: { goBack } }) {
 
   return (
     <SafeAreaView style={{ backgroundColor: "#fff", flex: 1 }}>
-      <HeaderWithBackButton title={'Danh sách đặt hẹn'} />
+      <HeaderWithBackButton title={'Lịch sử đặt hẹn'} customIcons={[
+        <Feather name="plus" size={24} style={{ marginTop: 4 }} />
+      ]} />
       <ScrollView contentContainerStyle={styles.container}>
         {data.map((item, index) => {
           return (
@@ -148,7 +150,9 @@ export default function AppointmentList({ navigation: { goBack } }) {
                   <View >
                     <Text style={{ fontSize: 14, fontWeight: '400', color: '#848a96', marginBottom: 4 }}>{item.department}</Text>
                   </View>
-                  <Text style={{ fontSize: 15, color: '#848a96', marginBottom: 1, width: 260 }}>Lý do hẹn: {item.reason}</Text>
+                  <View style={{ borderWidth: 1, width: 94, borderRadius: 20, borderColor: '#368866', color: '#218e60', backgroundColor: '#e1f8ee', marginTop: 2 }}>
+                    <Text style={{ fontSize: 14, color: '#218e60', marginLeft: 7 }}>Tư vấn từ xa</Text>
+                  </View>
                 </View>
               </View>
             </View>
@@ -231,7 +235,7 @@ const styles = StyleSheet.create({
     color: "#818181",
   },
   cardSalary: {
-    fontSize: 15,
+    fontSize: 13,
   },
   cardPrice: {
     marginLeft: "auto",

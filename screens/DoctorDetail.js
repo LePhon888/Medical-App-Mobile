@@ -8,6 +8,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import Doctors from '../assets/SampleDoctors.json';
 import ViewMap from '../components/ViewMap';
 import MapView from 'react-native-maps';
+import COLORS from '../constants/colors';
 /**
  * The doctor detail screen
  * 
@@ -125,7 +126,7 @@ const DoctorDetail = ({ navigation, route }) => {
                 <View style={styles.tabContainer}>
                     {tabs.map((t) => (
                         <TouchableOpacity
-                            key={t.key} style={[styles.tab, { backgroundColor: activeTab === t.key ? '#2a87f1' : '#f8f9fd' }]}
+                            key={t.key} style={[styles.tab, { backgroundColor: activeTab === t.key ? COLORS.primary : '#f8f9fd' }]}
                             onPress={() => setActiveTab(t.key)}>
                             <Text style={[styles.tabTitle, { color: activeTab === t.key ? '#FFFF' : '#504f54' }]}>{t.title}</Text>
                         </TouchableOpacity>
@@ -321,7 +322,7 @@ const styles = StyleSheet.create({
     },
     dollar: {
         borderWidth: 1,
-        borderColor: '#4d85be',
+        borderColor: COLORS.primary,
         borderRadius: 25,
         padding: 1,
         marginRight: 7,
@@ -358,7 +359,7 @@ const styles = StyleSheet.create({
         width: 20,
         height: 20,
         borderWidth: 1.5,
-        borderColor: '#3188f2',
+        borderColor: COLORS.primary,
         borderRadius: 9,
         marginRight: 12,
         justifyContent: 'center',
@@ -374,7 +375,7 @@ const styles = StyleSheet.create({
         lineHeight: 1.5 * 14
     },
     buttonReadMore: {
-        color: '#3286ea',
+        color: COLORS.primary,
         fontSize: 14,
         fontWeight: 'bold',
         paddingVertical: 5,
@@ -401,9 +402,9 @@ const styles = StyleSheet.create({
         marginHorizontal: 4,
     },
     buttonSchedule: {
-        backgroundColor: '#2c87f2',
+        backgroundColor: COLORS.primary,
         marginVertical: 10,
-        marginHorizontal: 30,
+        marginHorizontal: 14,
         borderRadius: 5,
     },
     textSchedule: {
