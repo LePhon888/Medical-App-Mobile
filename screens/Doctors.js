@@ -4,6 +4,7 @@ import Feather from "react-native-vector-icons/Feather"
 import FontAwesome from "react-native-vector-icons/FontAwesome"
 import Ionicons from "react-native-vector-icons/Ionicons"
 import { useRef, useState } from "react";
+import COLORS from "../constants/colors";
 const Doctors = ({ navigation }) => {
 
     const [activeTab, setActiveTab] = useState(2);
@@ -53,7 +54,7 @@ const Doctors = ({ navigation }) => {
                 <View style={styles.tabContainer}>
                     {tabs.map((t) => (
                         <TouchableOpacity
-                            key={t.key} style={[styles.tab, { backgroundColor: activeTab === t.key ? '#2a87f1' : '#f8f9fd' }]}
+                            key={t.key} style={[styles.tab, { backgroundColor: activeTab === t.key ? COLORS.primary : '#f8f9fd' }]}
                             onPress={() => setActiveTab(t.key)}>
                             <Text style={[styles.tabTitle, { color: activeTab === t.key ? '#FFFF' : '#504f54' }]}>{t.title}</Text>
                         </TouchableOpacity>

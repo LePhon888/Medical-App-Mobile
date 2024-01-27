@@ -16,6 +16,7 @@ import AppointmentRegister from "./AppointmentRegister";
 import Category from "./Category";
 import Notification from "./Notification";
 import MedicineList from "./MedicineList";
+import Status from "./Status";
 
 export {
   Login,
@@ -35,5 +36,6 @@ export {
   AppointmentRegister,
   Category,
   Notification,
-  MedicineList
+  MedicineList,
+  Status
 };

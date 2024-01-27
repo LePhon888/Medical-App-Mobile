@@ -282,8 +282,6 @@ const styles = StyleSheet.create({
   rowWrapper: {
     paddingLeft: 24,
     backgroundColor: "#fff",
-    borderWidth: 0.2,
-    borderColor: '#ccc',
   },
   rowIcon: {
     marginRight: 12,

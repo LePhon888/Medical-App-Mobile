@@ -22,6 +22,7 @@ import {
   Category,
   Notification,
   MedicineList,
+  Status
 } from "./screens";
 
 import DoctorAppointment from "./screens/DoctorAppointment";
@@ -41,7 +42,7 @@ export default function App() {
   return (
     <UserContext.Provider value={[user, dispatch]}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="MedicationBox">
+        <Stack.Navigator initialRouteName="MainScreen">
           <Stack.Screen
             name="Welcome"
             component={Welcome}
@@ -193,6 +194,14 @@ export default function App() {
           <Stack.Screen
             name="MedicationBox"
             component={MedicationBox}
+            options={{
+              headerShown: false,
+            }}
+          />
+
+          <Stack.Screen
+            name="Status"
+            component={Status}
             options={{
               headerShown: false,
             }}
