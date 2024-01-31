@@ -17,6 +17,10 @@ import Category from "./Category";
 import Notification from "./Notification";
 import MedicineList from "./MedicineList";
 import Status from "./Status";
+import JoinScreen from "./JoinScreen";
+import IncomingCallScreen from "./IncomingCallScreen";
+import OutgoingCallScreen from "./OutgoingCallScreen";
+import VideoConferencePage from "./VideoConferencePage";
 
 export {
   Login,
@@ -37,5 +41,5 @@ export {
   Category,
   Notification,
   MedicineList,
-  Status
+  Status, JoinScreen, IncomingCallScreen, OutgoingCallScreen, VideoConferencePage
 };

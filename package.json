@@ -27,6 +27,7 @@
     "@react-navigation/native-stack": "^6.9.13",
     "@zegocloud/zego-uikit-prebuilt-call-rn": "^1.2.1",
     "@zegocloud/zego-uikit-rn": "^1.2.0",
+    "@zegocloud/zego-uikit-prebuilt-video-conference-rn": "^1.0.0",
     "axios": "^1.5.0",
     "expo": "~49.0.11",
     "expo-checkbox": "~2.4.0",

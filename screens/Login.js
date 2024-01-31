@@ -85,7 +85,6 @@ const Login = ({ navigation }) => {
         try {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
-            console.log(userInfo);
             let res = await Apis.post(endpoints["googleLogin"], userInfo);
             const token = res.data;
             if (res && res.data) {
@@ -104,7 +103,6 @@ const Login = ({ navigation }) => {
             });
 
             const userData = await AsyncStorage.getItem("user");
-            console.log("userData " + userData);
             if (userData) navigation.navigate("MainScreen");
         } catch (error) {
             if (error.code === statusCodes.SIGN_IN_CANCELLED) {
