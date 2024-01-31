@@ -14,7 +14,7 @@ export default function Call(props) {
                 callID='testCallID'
 
                 config={{
-                    ...GROUP_VIDEO_CALL_CONFIG,
+                    ...ONE_ON_ONE_VIDEO_CALL_CONFIG,
                     onHangUp: () => { props.navigation.navigate('VideoHome') },
                     onOnlySelfInRoom: () => { props.navigation.navigate('VideoHome') },
                 }}
