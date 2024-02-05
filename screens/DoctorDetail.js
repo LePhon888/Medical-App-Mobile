@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Animated, Button, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -9,6 +9,14 @@ import Doctors from '../assets/SampleDoctors.json';
 import ViewMap from '../components/ViewMap';
 import MapView from 'react-native-maps';
 import COLORS from '../constants/colors';
+import Apis, { endpoints } from '../config/Apis';
+import BulletContent from '../components/Doctor/BulletContent';
+import SkeletonLoading from '../components/Doctor/DoctorDetailLoading';
+import RatingStats from '../components/Doctor/RatingStats';
+import UserRating from '../components/Doctor/UserRating';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { TextInput } from 'react-native-paper';
+import RatingInput from '../components/Doctor/RatingInput';
 /**
  * The doctor detail screen
  * 
@@ -16,7 +24,14 @@ import COLORS from '../constants/colors';
  */
 const DoctorDetail = ({ navigation, route }) => {
 
-    const { doctor } = route.params // get the doctor object from route
+    const doctorId = route.params // get the doctorId from route
+    console.log(doctorId)
+    const [doctor, setDoctor] = useState(null)
+    const [detail, setDetail] = useState([]);
+    const [rating, setRating] = useState([])
+    const [ratingStats, setRatingStats] = useState([])
+    const [isEnableRating, SetEnableRating] = useState(false)
+    const [isDataFetched, setDataFetched] = useState(false)
     const [activeTab, setActiveTab] = useState(1); // set the active tab with key 1
     const [showFullInfo, setShowFullInfo] = useState(false); // this one use as a flag for read more button
     const height = useRef(new Animated.Value(0)).current
@@ -26,9 +41,10 @@ const DoctorDetail = ({ navigation, route }) => {
     };
 
     const tabs = [
-        { key: 1, title: 'Thông tin cơ bản', },
-        { key: 2, title: 'Đánh giá' },
+        { key: 1, title: 'Thông tin cơ bản' },
+        { key: 2, title: `Đánh giá ${rating.length > 0 ? `(${rating.length})` : ''}` },
     ];
+
 
     const onBack = () => {
         navigation.goBack()
@@ -40,191 +56,217 @@ const DoctorDetail = ({ navigation, route }) => {
         height.setValue(newHeight);
     };
 
-    const Header = () => {
-        return (
-            <ScrollView style={styles.header}>
-                <View style={{ ...styles.flexRowCenter }}>
-                    {/* Back icon */}
-                    <TouchableOpacity style={styles.backIcon} onPress={onBack}>
-                        <Ionicons size={20} name="chevron-back-outline"></Ionicons>
-                    </TouchableOpacity>
-                    {/* Rating and favourite */}
-                    <View style={{ ...styles.flexRowCenter, marginLeft: 'auto' }}>
-                        {/* rating */}
-                        {doctor.rating && doctor.rating > 0 ? (
-                            <View style={styles.rating}>
-                                <Text style={{ fontSize: 10 }}>⭐</Text>
-                                <Text style={{ fontWeight: '500' }}>{`${doctor.rating}/5`}</Text>
-                            </View>
-                        ) : ""}
-                        {/* favourite */}
-                        <View style={styles.favourite}><MaterialCommunityIcons size={20} name="heart-plus-outline" /></View>
-                    </View>
-                </View>
-            </ScrollView>
-        )
-    }
+    const [scaleValue] = useState(new Animated.Value(1));
 
-    const DoctorInfo = () => {
-        return (
-            <View>
-                <View style={styles.avatarContainer}>
-                    {/* Avatar */}
-                    <Image source={{ uri: doctor.avatar }} style={styles.avatar} />
-                    {/* Center content */}
-                    <View style={{ alignItems: 'center' }}>
-                        {/* Name */}
-                        <Text style={styles.name}>BS.CKI {doctor.name}</Text>
-                        {/* Department */}
-                        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.department}>{doctor.department}</Text>
-                        {/* consultation */}
-                        <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap' }}><Text style={styles.consultation}>{doctor.consultation}</Text></View>
-                    </View>
-                </View>
-                <View style={{ paddingHorizontal: 15 }}>
-                    {/* Target: adult or children */}
-                    <View style={{ flexDirection: 'row', marginBottom: 10, }}>
-                        {doctor.target.map((target, index) => (
-                            <Text style={styles.target} key={index}>
-                                {target === 'adult' ? 'Dành cho người lớn' : target === 'children' ? 'Dành cho trẻ em' : ''}
-                            </Text>
-                        ))}
-                    </View>
-                    {/* Fee */}
-                    <View style={styles.flexRowCenter}>
-                        <View style={styles.dollar}><Feather name='dollar-sign' color={'#f19534'} size={12} /></View>
-                        <Text style={styles.fee}>Phí thăm khám cố định<Text style={{ fontSize: 13, color: '#0e8558', fontWeight: '500' }}>{` ${Number(doctor.fee).toLocaleString('vi-VN')} đ`}</Text></Text>
-                    </View>
-                    {/* Address */}
-                    <View style={styles.flexRowCenter}>
-                        <View style={styles.dollar}><MaterialCommunityIcons name='map-marker-outline' color={'#f19534'} size={12} /></View>
-                        <Text style={[styles.fee, { color: '#676767', fontWeight: '400' }]}>{doctor.address}</Text>
-                    </View>
-                </View>
-            </View>
-        )
-    }
+    useEffect(() => {
+        Animated.spring(scaleValue, {
+            toValue: 1,
+            useNativeDriver: true,
+        }).start();
+    }, [activeTab, scaleValue]);
 
-    const Tabs = () => {
-        return (
-            <View style={{ backgroundColor: 'white' }}>
-                {/* Sticky header */}
-                <Animated.View style={{ ...styles.flexRowCenter, ...styles.content, height: height }}>
-                    {/* Back icon */}
-                    <TouchableOpacity onPress={onBack}>
-                        <Ionicons size={20} name="chevron-back-outline" />
-                    </TouchableOpacity>
-                    <View>
-                        <Text style={{ ...styles.name, marginLeft: 5 }}>BS.CKI {doctor.name}</Text>
-                    </View>
-                    {/* Favourite */}
-                    <View style={{ ...styles.flexRowCenter, marginLeft: 'auto' }}>
-                        <MaterialCommunityIcons size={20} name="heart-plus-outline" />
-                    </View>
-                </Animated.View>
-                {/* Sticky tab */}
-                <View style={styles.tabContainer}>
-                    {tabs.map((t) => (
-                        <TouchableOpacity
-                            key={t.key} style={[styles.tab, { backgroundColor: activeTab === t.key ? COLORS.primary : '#f8f9fd' }]}
-                            onPress={() => setActiveTab(t.key)}>
-                            <Text style={[styles.tabTitle, { color: activeTab === t.key ? '#FFFF' : '#504f54' }]}>{t.title}</Text>
-                        </TouchableOpacity>
-                    ))}
-                </View>
-            </View>
-        )
-    }
-
-    const TabContentInfo = () => {
-        return (
-            <View style={styles.content}>
-                {/* Infomation */}
-                <View style={styles.info}>
-                    <View style={{ ...styles.flexRowCenter, marginBottom: 10 }}>
-                        <View style={styles.infoIcon}><Ionicons name='information' color={'#f49d41'} size={15} /></View>
-                        <Text style={styles.infoTitle}>Thông tin bác sĩ</Text>
-                    </View>
-                    <Text numberOfLines={showFullInfo ? 99 : 2} ellipsizeMode="tail" style={styles.infoText}>BS.CKI {doctor.name} {doctor.info}</Text>
-                    {/* Read more button */}
-                    <TouchableOpacity onPress={toggleReadMore}><Text style={styles.buttonReadMore}>{showFullInfo ? 'Thu gọn' : 'Xem thêm'}</Text></TouchableOpacity>
-                </View>
-                {/* Experience */}
-                <BulletContent field={doctor.experience} title={'Kinh nghiệm'}
-                    iconComponent={(<FontAwesome name={'star'} color={'#f49d41'} size={10} />)}
-                    itemTitle={"title"} itemSubtitle={"location"} itemDuration={"duration"} />
-                {/* Education */}
-                <BulletContent field={doctor.education} title={'Quá trình đào tạo'}
-                    iconComponent={(<MaterialCommunityIcons name={'certificate'} color={'#f49d41'} size={13} />)}
-                    itemTitle={"degree"} itemSubtitle={"school"} itemDuration={"year"} />
-                {/* Map */}
-                <View style={styles.info}>
-                    <View style={{ ...styles.flexRowCenter, marginBottom: 20 }}>
-                        <View style={styles.infoIcon}><MaterialCommunityIcons name='map-marker-outline' color={'#f19534'} size={15} /></View>
-                        <Text style={styles.infoTitle}>Địa chỉ bệnh viện</Text>
-                    </View>
-                    <ViewMap height={170} />
-                    <View style={styles.mapText}>
-                        <Text style={styles.bulletTitle}>{doctor.hospital}</Text>
-                        <Text style={styles.bulletSubTitle}>{doctor.address}</Text>
-                    </View>
-                </View>
-                {/* Payment type */}
-                <View style={styles.info}>
-                    <View style={{ ...styles.flexRowCenter, marginBottom: 15 }}>
-                        <View style={styles.infoIcon}><Feather name='dollar-sign' color={'#f19534'} size={15} /></View>
-                        <Text style={styles.infoTitle}>Hình thức thanh toán</Text>
-                    </View>
-                    <View style={styles.paymentList}>
-                        {doctor.payment.map((payment, index) => (
-                            <View key={index} style={styles.paymentItem}>
-                                <View style={styles.paymentImageContainer}>
-                                    <Image source={{ uri: payment.image }} style={styles.paymentImage} />
-                                </View>
-                                <Text style={styles.paymentText}>{payment.title}</Text>
-                            </View>
-                        ))}
-                    </View>
-                </View>
-            </View>
-        )
-    }
-
-    const BulletContent = ({ field, title, iconComponent, itemTitle, itemSubtitle, itemDuration }) => {
-        return (
-            <View style={styles.info}>
-                {/* Icon and title */}
-                <View style={{ ...styles.flexRowCenter, marginBottom: 10 }}>
-                    <View style={styles.infoIcon}>{iconComponent}</View>
-                    <Text style={styles.infoTitle}>{title}</Text>
-                </View>
-                {/* Bullet list */}
-                {field.map((item, index) => (
-                    <View key={index} style={styles.bulletPoint}>
-                        <View style={styles.bulletIcon}>
-                            <FontAwesome name='circle' color={'black'} size={5} />
-                        </View>
-                        <View style={styles.bulletContent}>
-                            <Text style={styles.bulletTitle}>{item[itemTitle]}</Text>
-                            <Text style={styles.bulletSubTitle}>{`${item[itemSubtitle]}\n${item[itemDuration]}`}</Text>
-                        </View>
-                    </View>
-                ))}
-            </View>
-        );
+    const handleTabPress = (key) => {
+        scaleValue.setValue(0.8);
+        setActiveTab(key);
     };
+
+    useEffect(() => {
+        const getData = async () => {
+            try {
+                /* Get the basic information for current doctor */
+                const doctor = await Apis.get(`${endpoints["doctors"]}/detail/${doctorId}`);
+                setDoctor(doctor.data);
+                /* Get details for current doctor */
+                const detail = await Apis.get(`${endpoints["doctorDetail"]}/${doctorId}`);
+                setDetail(detail.data);
+                /* Get rating for current doctor */
+                const rating = await Apis.get(`${endpoints["rating"]}/${doctorId}`)
+                setRating(rating.data)
+                /* Get rating stats for current doctor */
+                const ratingStats = await Apis.get(`${endpoints["rating"]}/stats/${doctorId}`)
+                setRatingStats(ratingStats.data)
+                /* Check if current login user have existed appointment, then we allow this user to rating */
+                const currentUser = await AsyncStorage.getItem("user");
+                if (currentUser) {
+                    const countAppointment = await Apis.get(`${endpoints["appointment"]}/count?doctorId=${doctorId}&userId=${JSON.parse(currentUser).id}`);
+                    SetEnableRating(countAppointment.data > 0);
+                }
+                setDataFetched(true)
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        if (doctorId) {
+            getData();
+        }
+    }, [doctorId]);
+
+
+    if (!isDataFetched) {
+        return <SkeletonLoading onBack={onBack} />;
+    }
+
+    if (!doctor) {
+        return <></>
+    }
 
     return (
         <>
             <ScrollView style={styles.container} showsVerticalScrollIndicator={false} stickyHeaderIndices={[2]} onScroll={onScrollEvent} scrollEventThrottle={16}>
                 {/* Header */}
-                <Header />
+                <ScrollView style={styles.header}>
+                    <View style={{ ...styles.flexRowCenter }}>
+                        {/* Back icon */}
+                        <TouchableOpacity style={styles.backIcon} onPress={onBack}>
+                            <Ionicons size={20} name="chevron-back-outline"></Ionicons>
+                        </TouchableOpacity>
+                        {/* Rating and favourite */}
+                        <View style={{ ...styles.flexRowCenter, marginLeft: 'auto' }}>
+                            {/* rating */}
+                            {doctor.rating && doctor.rating > 0 ? (
+                                <View style={styles.rating}>
+                                    <Text style={{ fontSize: 10 }}>⭐</Text>
+                                    <Text style={{ fontWeight: '500' }}>{`${doctor.rating}/5`}</Text>
+                                </View>
+                            ) : ""}
+                            {/* favourite */}
+                            <View style={styles.favourite}><MaterialCommunityIcons size={20} name="heart-plus-outline" /></View>
+                        </View>
+                    </View>
+                </ScrollView>
                 {/* Doctor Info */}
-                <DoctorInfo />
+                <View>
+                    <View style={styles.avatarContainer}>
+                        {/* Avatar */}
+                        <Image source={{ uri: doctor.image }} style={styles.avatar} />
+                        {/* Center content */}
+                        <View style={{ alignItems: 'center' }}>
+                            {/* Name */}
+                            <Text style={styles.name}>BS.CKI {doctor.fullName}</Text>
+                            {/* Department */}
+                            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.department}>{doctor.departmentName}</Text>
+                            {/* consultation */}
+                            <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap' }}><Text style={styles.consultation}>{doctor.consultation}</Text></View>
+                        </View>
+                    </View>
+                    <View style={{ paddingHorizontal: 15 }}>
+                        {/* Target: adult or children */}
+                        <View style={{ flexDirection: 'row', marginBottom: 10, }}>
+                            {doctor.target.split(',').map((label, index) => {
+                                return (<Text style={styles.target} key={index}>{label}</Text>)
+                            })}
+                        </View>
+                    </View>
+                    {/* Fee & Andress*/}
+                    <View style={{ paddingHorizontal: 15 }}>
+                        <View style={styles.flexRowCenter}>
+                            <View style={styles.dollar}><Feather name='dollar-sign' color={'#f19534'} size={12} /></View>
+                            <Text style={styles.fee}>Phí thăm khám cố định<Text style={{ fontSize: 13, color: '#0e8558', fontWeight: '500' }}>{` ${Number(doctor.fee).toLocaleString('vi-VN')} đ`}</Text></Text>
+                        </View>
+                        {/* Address */}
+                        <View style={styles.flexRowCenter}>
+                            <View style={styles.dollar}><MaterialCommunityIcons name='map-marker-outline' color={'#f19534'} size={12} /></View>
+                            <Text style={[styles.fee, { color: '#676767', fontWeight: '400' }]}>{doctor.hospitalAddress}</Text>
+                        </View>
+                    </View>
+                </View>
                 {/* Tab View for switching info and rating */}
-                <Tabs />
-                {activeTab === 1 && <TabContentInfo />}
-            </ScrollView>
+                <View style={{ backgroundColor: 'white' }}>
+                    {/* Sticky header */}
+                    <Animated.View style={{ ...styles.flexRowCenter, ...styles.content, height: height }}>
+                        {/* Back icon */}
+                        <TouchableOpacity onPress={onBack}>
+                            <Ionicons size={20} name="chevron-back-outline" />
+                        </TouchableOpacity>
+                        <View>
+                            <Text style={{ ...styles.name, marginLeft: 5 }}>BS.CKI {doctor.fullName}</Text>
+                        </View>
+                        {/* Favourite */}
+                        <View style={{ ...styles.flexRowCenter, marginLeft: 'auto' }}>
+                            <MaterialCommunityIcons size={20} name="heart-plus-outline" />
+                        </View>
+                    </Animated.View>
+                    {/* Sticky tab */}
+                    <View style={styles.tabContainer}>
+                        {tabs.map((t) => (
+                            <TouchableOpacity key={t.key}
+                                style={[styles.tab, {
+                                    backgroundColor: activeTab === t.key ? COLORS.primary : '#f8f9fd',
+                                    transform: [{ scale: scaleValue }],
+                                },]}
+                                onPress={() => handleTabPress(t.key)}>
+                                <Text style={[styles.tabTitle, { color: activeTab === t.key ? '#FFFF' : '#504f54' }]}>{t.title}</Text>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+                </View>
+                <View style={{ ...styles.content, display: activeTab === 1 ? 'flex' : 'none' }}>
+                    {/* Infomation */}
+                    <View style={styles.info}>
+                        <View style={{ ...styles.flexRowCenter, marginBottom: 10 }}>
+                            <View style={styles.infoIcon}><Ionicons name='information' color={'#f49d41'} size={15} /></View>
+                            <Text style={styles.infoTitle}>Thông Tin Bác Sĩ</Text>
+                        </View>
+                        <Text numberOfLines={showFullInfo ? undefined : 2} ellipsizeMode="tail" style={styles.infoText}>BS.CKI {doctor.fullName} {doctor.information}</Text>
+                        {/* Read more button */}
+                        <TouchableOpacity onPress={toggleReadMore}><Text style={styles.buttonReadMore}>{showFullInfo ? 'Thu gọn' : 'Xem thêm'}</Text></TouchableOpacity>
+                    </View>
+                    {/* Experience  */}
+                    <View>
+                        {detail.length > 0 && detail.some(item => item.category === "Kinh Nghiệm") && (
+                            <BulletContent
+                                field={detail.filter(item => item.category === "Kinh Nghiệm")}
+                                title="Kinh Nghiệm"
+                                iconComponent={(<FontAwesome name={'star'} color={'#f49d41'} size={10} />)}
+                            />
+                        )}
+                    </View>
+                    {/* Education  */}
+                    <View>
+                        {detail.length > 0 && detail.some(item => item.category === "Quá trình đào tạo") && (
+                            <BulletContent
+                                field={detail.filter(item => item.category === "Quá trình đào tạo")}
+                                title="Quá Trình Đào Tạo"
+                                iconComponent={(<MaterialCommunityIcons name={'certificate'} color={'#f49d41'} size={13} />)}
+                            />
+                        )}
+                    </View>
+
+                    {/* Map */}
+                    <View style={styles.info}>
+                        <View style={{ ...styles.flexRowCenter, marginBottom: 20 }}>
+                            <View style={styles.infoIcon}><MaterialCommunityIcons name='map-marker-outline' color={'#f19534'} size={15} /></View>
+                            <Text style={styles.infoTitle}>Địa Chỉ Bệnh Viện</Text>
+                        </View>
+                        <ViewMap height={170} />
+                        <View style={styles.mapText}>
+                            <Text style={styles.bulletTitle}>{doctor.hospital}</Text>
+                            <Text style={styles.bulletSubTitle}>{doctor.hospitalAddress}</Text>
+                        </View>
+                    </View>
+                </View>
+                {/* Rating View */}
+                <View style={{ ...styles.content, display: activeTab === 2 ? 'flex' : 'none' }}>
+                    <View style={styles.ratingContainer}>
+                        {/* Rating Stats */}
+                        <View style={styles.ratingStatsContainer}>
+                            <View style={{ flex: 1, marginRight: 20 }}>
+                                <Text style={styles.ratingStatsText}>
+                                    {doctor.rating ? doctor.rating.toFixed(1) : '0.0'}
+                                </Text>
+                                <Text style={styles.ratingStatsSubText}>{rating.length} Đánh giá</Text>
+                            </View>
+                            <RatingStats listStats={ratingStats} />
+                        </View>
+                        <RatingInput />
+                        {/* Rating User List */}
+                        {rating.map((userRating, index) => (
+                            <UserRating key={index} {...userRating} />
+                        ))}
+                    </View>
+                </View>
+            </ScrollView >
             <View style={{ backgroundColor: 'white' }}>
                 <TouchableOpacity style={styles.buttonSchedule}>
                     <Text style={styles.textSchedule}>Đặt lịch hẹn</Text>
@@ -234,6 +276,23 @@ const DoctorDetail = ({ navigation, route }) => {
     );
 };
 
+{/* Payment type */ }
+//  <View style={styles.info}>
+//  <View style={{ ...styles.flexRowCenter, marginBottom: 15 }}>
+//      <View style={styles.infoIcon}><Feather name='dollar-sign' color={'#f19534'} size={15} /></View>
+//      <Text style={styles.infoTitle}>Hình thức thanh toán</Text>
+//  </View>
+//  <View style={styles.paymentList}>
+//      {doctor.payment.map((payment, index) => (
+//          <View key={index} style={styles.paymentItem}>
+//              <View style={styles.paymentImageContainer}>
+//                  <Image source={{ uri: payment.image }} style={styles.paymentImage} />
+//              </View>
+//              <Text style={styles.paymentText}>{payment.title}</Text>
+//          </View>
+//      ))}
+//  </View>
+// </View>
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -446,6 +505,59 @@ const styles = StyleSheet.create({
         height: 30,
         resizeMode: 'contain',
     },
+    ratingStatsContainer: {
+        flexDirection: 'row', alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingVertical: 5,
+        paddingHorizontal: 15,
+        backgroundColor: '#f8f9fd',
+        borderRadius: 10,
+        marginBottom: 15,
+    },
+    ratingStatsText: {
+        color: '#1f314b',
+        fontSize: 25,
+        textAlign: 'center',
+        fontWeight: 'bold'
+    },
+    ratingStatsSubText: {
+        marginVertical: 5,
+        textAlign: 'center',
+        fontWeight: '500',
+        fontSize: 14,
+        color: '#666968'
+    },
+    ratingContainer: {
+        flexDirection: 'column'
+    },
+    ratingInputContainer: {
+        marginVertical: 5,
+        marginBottom: 20,
+    },
+    ratingInput: {
+        flex: 1,
+        height: 20,
+        borderWidth: 1,
+        borderColor: '#e5e7eb',
+        paddingVertical: 15,
+        paddingHorizontal: 15,
+        marginRight: 10,
+        fontSize: 14,
+        backgroundColor: 'white'
+    },
+    ratingButton: {
+        marginVertical: 20,
+        backgroundColor: COLORS.primary,
+        width: 100,
+        paddingVertical: 7,
+        borderRadius: 20,
+    },
+    ratingButtonText: {
+        textAlign: 'center',
+        fontSize: 13,
+        color: 'white',
+        fontWeight: '500',
+    }
 });
 
 export default DoctorDetail;

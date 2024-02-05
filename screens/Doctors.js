@@ -3,8 +3,9 @@ import DoctorList from "../components/Doctor/DoctorList";
 import Feather from "react-native-vector-icons/Feather"
 import FontAwesome from "react-native-vector-icons/FontAwesome"
 import Ionicons from "react-native-vector-icons/Ionicons"
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import COLORS from "../constants/colors";
+import Apis, { endpoints } from "../config/Apis";
 const Doctors = ({ navigation }) => {
 
     const [activeTab, setActiveTab] = useState(2);
@@ -13,13 +14,14 @@ const Doctors = ({ navigation }) => {
         { key: 2, title: 'Bác sỹ' },
     ];
 
-    const navigateDoctorDetail = (item) => {
-        console.log(item)
-        navigation.navigate('DoctorDetail', { doctor: item });
+    const navigateDoctorDetail = (doctorId) => {
+        console.log(doctorId)
+        navigation.navigate('DoctorDetail', doctorId);
     }
 
-    const Header = () => {
-        return (
+    return (
+        <ScrollView style={styles.container} nestedScrollEnabled={true} stickyHeaderIndices={[1]} showsVerticalScrollIndicator={false}>
+            {/*Header View */}
             <View style={styles.header}>
                 {/* Location */}
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -42,13 +44,6 @@ const Doctors = ({ navigation }) => {
                     </View>
                 </TouchableOpacity>
             </View>
-        )
-    }
-
-    return (
-        <ScrollView style={styles.container} nestedScrollEnabled={true} stickyHeaderIndices={[1]} showsVerticalScrollIndicator={false}>
-            {/*Header View */}
-            <Header />
             {/* Tab View */}
             <View style={styles.stickyContent}>
                 <View style={styles.tabContainer}>
@@ -77,7 +72,6 @@ const Doctors = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#FFFF',
-        marginBottom: 30
     },
     header: {
         backgroundColor: '#e1f1ff',

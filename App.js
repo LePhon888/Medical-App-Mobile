@@ -24,7 +24,7 @@ export default function App() {
     AsyncStorage.getItem("user") || null
   );
 
-  const initScreen = 'MainScreen'
+  const initScreen = 'Doctors'
 
   return (
     <UserContext.Provider value={[user, dispatch]}>
