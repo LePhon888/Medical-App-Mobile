@@ -12,11 +12,8 @@ import COLORS from '../constants/colors';
 import Apis, { endpoints } from '../config/Apis';
 import BulletContent from '../components/Doctor/BulletContent';
 import SkeletonLoading from '../components/Doctor/DoctorDetailLoading';
-import RatingStats from '../components/Doctor/RatingStats';
-import UserRating from '../components/Doctor/UserRating';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { TextInput } from 'react-native-paper';
-import RatingInput from '../components/Doctor/RatingInput';
+import RatingContent from '../components/Doctor/RatingContent';
 /**
  * The doctor detail screen
  * 
@@ -34,6 +31,7 @@ const DoctorDetail = ({ navigation, route }) => {
     const [isDataFetched, setDataFetched] = useState(false)
     const [activeTab, setActiveTab] = useState(1); // set the active tab with key 1
     const [showFullInfo, setShowFullInfo] = useState(false); // this one use as a flag for read more button
+    const [userId, setUserId] = useState(null)
     const height = useRef(new Animated.Value(0)).current
 
     const toggleReadMore = () => {
@@ -58,17 +56,18 @@ const DoctorDetail = ({ navigation, route }) => {
 
     const [scaleValue] = useState(new Animated.Value(1));
 
-    useEffect(() => {
-        Animated.spring(scaleValue, {
-            toValue: 1,
-            useNativeDriver: true,
-        }).start();
-    }, [activeTab, scaleValue]);
-
     const handleTabPress = (key) => {
-        scaleValue.setValue(0.8);
         setActiveTab(key);
     };
+
+    const getRating = async () => {
+        /* Get rating for current doctor */
+        const rating = await Apis.get(`${endpoints["rating"]}/${doctorId}`)
+        setRating(rating.data)
+        /* Get rating stats for current doctor */
+        const ratingStats = await Apis.get(`${endpoints["rating"]}/stats/${doctorId}`)
+        setRatingStats(ratingStats.data)
+    }
 
     useEffect(() => {
         const getData = async () => {
@@ -79,17 +78,12 @@ const DoctorDetail = ({ navigation, route }) => {
                 /* Get details for current doctor */
                 const detail = await Apis.get(`${endpoints["doctorDetail"]}/${doctorId}`);
                 setDetail(detail.data);
-                /* Get rating for current doctor */
-                const rating = await Apis.get(`${endpoints["rating"]}/${doctorId}`)
-                setRating(rating.data)
-                /* Get rating stats for current doctor */
-                const ratingStats = await Apis.get(`${endpoints["rating"]}/stats/${doctorId}`)
-                setRatingStats(ratingStats.data)
                 /* Check if current login user have existed appointment, then we allow this user to rating */
                 const currentUser = await AsyncStorage.getItem("user");
                 if (currentUser) {
                     const countAppointment = await Apis.get(`${endpoints["appointment"]}/count?doctorId=${doctorId}&userId=${JSON.parse(currentUser).id}`);
                     SetEnableRating(countAppointment.data > 0);
+                    setUserId(JSON.parse(currentUser).id)
                 }
                 setDataFetched(true)
             } catch (error) {
@@ -99,6 +93,7 @@ const DoctorDetail = ({ navigation, route }) => {
 
         if (doctorId) {
             getData();
+            getRating()
         }
     }, [doctorId]);
 
@@ -109,6 +104,10 @@ const DoctorDetail = ({ navigation, route }) => {
 
     if (!doctor) {
         return <></>
+    }
+
+    const refreshRating = () => {
+        getRating()
     }
 
     return (
@@ -247,25 +246,16 @@ const DoctorDetail = ({ navigation, route }) => {
                     </View>
                 </View>
                 {/* Rating View */}
-                <View style={{ ...styles.content, display: activeTab === 2 ? 'flex' : 'none' }}>
-                    <View style={styles.ratingContainer}>
-                        {/* Rating Stats */}
-                        <View style={styles.ratingStatsContainer}>
-                            <View style={{ flex: 1, marginRight: 20 }}>
-                                <Text style={styles.ratingStatsText}>
-                                    {doctor.rating ? doctor.rating.toFixed(1) : '0.0'}
-                                </Text>
-                                <Text style={styles.ratingStatsSubText}>{rating.length} Đánh giá</Text>
-                            </View>
-                            <RatingStats listStats={ratingStats} />
-                        </View>
-                        <RatingInput />
-                        {/* Rating User List */}
-                        {rating.map((userRating, index) => (
-                            <UserRating key={index} {...userRating} />
-                        ))}
-                    </View>
-                </View>
+                {activeTab === 2 && (
+                    <RatingContent
+                        doctorId={doctorId}
+                        userId={userId}
+                        ratingStats={ratingStats}
+                        listRating={rating}
+                        doctorRating={doctor.rating}
+                        enableToRating={isEnableRating}
+                        refreshRating={refreshRating} />
+                )}
             </ScrollView >
             <View style={{ backgroundColor: 'white' }}>
                 <TouchableOpacity style={styles.buttonSchedule}>
@@ -505,59 +495,6 @@ const styles = StyleSheet.create({
         height: 30,
         resizeMode: 'contain',
     },
-    ratingStatsContainer: {
-        flexDirection: 'row', alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingVertical: 5,
-        paddingHorizontal: 15,
-        backgroundColor: '#f8f9fd',
-        borderRadius: 10,
-        marginBottom: 15,
-    },
-    ratingStatsText: {
-        color: '#1f314b',
-        fontSize: 25,
-        textAlign: 'center',
-        fontWeight: 'bold'
-    },
-    ratingStatsSubText: {
-        marginVertical: 5,
-        textAlign: 'center',
-        fontWeight: '500',
-        fontSize: 14,
-        color: '#666968'
-    },
-    ratingContainer: {
-        flexDirection: 'column'
-    },
-    ratingInputContainer: {
-        marginVertical: 5,
-        marginBottom: 20,
-    },
-    ratingInput: {
-        flex: 1,
-        height: 20,
-        borderWidth: 1,
-        borderColor: '#e5e7eb',
-        paddingVertical: 15,
-        paddingHorizontal: 15,
-        marginRight: 10,
-        fontSize: 14,
-        backgroundColor: 'white'
-    },
-    ratingButton: {
-        marginVertical: 20,
-        backgroundColor: COLORS.primary,
-        width: 100,
-        paddingVertical: 7,
-        borderRadius: 20,
-    },
-    ratingButtonText: {
-        textAlign: 'center',
-        fontSize: 13,
-        color: 'white',
-        fontWeight: '500',
-    }
 });
 
 export default DoctorDetail;
