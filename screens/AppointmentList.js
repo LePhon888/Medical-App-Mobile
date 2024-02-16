@@ -13,9 +13,8 @@ import Feather from "react-native-vector-icons/Feather";
 import Apis, { endpoints } from "../config/Apis";
 import COLORS from "../constants/colors";
 import HeaderWithBackButton from "../common/HeaderWithBackButton";
-import { medicines } from "../config/data";
 
-export default function AppointmentList({ navigation: { goBack } }) {
+export default function AppointmentList({ navigation }) {
   function formatDate(inputDate) {
     const dateComponents = inputDate.split("-");
 
@@ -124,7 +123,7 @@ export default function AppointmentList({ navigation: { goBack } }) {
     <SafeAreaView style={{ backgroundColor: "#fff", flex: 1 }}>
       <HeaderWithBackButton title={'Lịch sử đặt hẹn'} customIcons={[
         <Feather name="plus" size={24} style={{ marginTop: 4 }} />
-      ]} />
+      ]} navigation={navigation} />
       <ScrollView contentContainerStyle={styles.container}>
         {data.map((item, index) => {
           return (

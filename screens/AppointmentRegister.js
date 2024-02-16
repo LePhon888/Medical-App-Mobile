@@ -20,7 +20,7 @@ import CalendarPicker from 'react-native-calendar-picker';
 import { morning, afternoon, evening } from '../config/data';
 import { formatDate } from '../config/date';
 
-export default function AppointmentRegister() {
+export default function AppointmentRegister({ navigation }) {
     const minDate = new Date();
     const maxDate = new Date(minDate.getFullYear() + 1, 11, 31);
 
@@ -33,7 +33,7 @@ export default function AppointmentRegister() {
         <View style={{ flex: 1, backgroundColor: "#fff" }}>
             <View >
                 <SafeAreaView>
-                    <HeaderWithBackButton title={'Đặt hẹn'} />
+                    <HeaderWithBackButton title={'Đặt hẹn'} navigation={navigation} />
                 </SafeAreaView>
             </View>
             <ScrollView contentContainerStyle={styles.container}>
