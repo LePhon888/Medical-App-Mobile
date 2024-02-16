@@ -5,7 +5,7 @@ import HeaderWithBackButton from '../common/HeaderWithBackButton';
 import COLORS from '../constants/colors';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { dataNews, newsItems } from '../config/data';
+import { category, dataNews, newsItems } from '../config/data';
 import Apis, { endpoints } from "../config/Apis";
 import Premium from '../components/Premium';
 import { ActivityIndicator } from "react-native";
@@ -44,6 +44,19 @@ export default function News({ navigation }) {
     fetchData();
   }, [selectedCategory])
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await Apis.get(
+          endpoints["news"]
+        );
+        setNews(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, [])
   return (
     <View style={{ flex: 1, backgroundColor: '#fff', marginBottom: 40 }}>
       <View>
@@ -148,10 +161,10 @@ export default function News({ navigation }) {
           <View style={{ marginTop: 8 }}>
             <View style={{ marginTop: 18, flexDirection: 'row', marginLeft: 14 }}>
               <MaterialCommunityIcons name="chart-bell-curve-cumulative" size={22} style={{ marginTop: 2 }} />
-              <Text style={{ fontSize: 20, fontWeight: 600, marginLeft: 13 }}>Các bài viết theo chuyên mục</Text>
+              <Text style={{ fontSize: 20, fontWeight: 600, marginLeft: 13 }}>Các bài viết mới</Text>
             </View>
             <View style={{ marginLeft: 16, marginVertical: 5 }}>
-              {newsByCategory ? newsByCategory.map((item, index) => {
+              {news ? news.map((item, index) => {
                 return (
                   index == 0 ?
                     <TouchableOpacity key={index} style={{
@@ -265,8 +278,8 @@ export default function News({ navigation }) {
                 );
               }) : <ActivityIndicator size="large" color={COLORS.primary} style={{ marginTop: 50 }} />}
             </View>
-          </View>
-        </View>
+          </View >
+        </View >
       </ScrollView >
     </View >
   );
