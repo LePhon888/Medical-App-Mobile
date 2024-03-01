@@ -24,6 +24,11 @@ export const endpoints = {
   news: `${SERVER}/api/scrape`,
   googleLogin: `${SERVER}/login-google/auth-google`,
   chatbot: `${CHATBOT}/api/get/`,
+  medicine: `${SERVER}/api/medicine`,
+  medicineUnit: `${SERVER}/api/medicine-unit`,
+  medicationSchedule: `${SERVER}/api/medication-schedule`,
+  scheduleTime: `${SERVER}/api/schedule-time`,
+  scheduleTimeDetail: `${SERVER}/api/schedule-time-detail`,
 };
 
 // export const authApi = async () => {

@@ -158,9 +158,13 @@ const RatingContent = ({ doctorId, userId, ratingStats, listRating, doctorRating
                         <Text style={styles.dateText}>{moment(r.createdDate).fromNow()}</Text>
                     </View>
                     {/* User Comment */}
-                    <View style={styles.commentContainer}>
-                        <Text style={styles.commentText}>{r.comment}</Text>
-                    </View>
+                    {r.comment && r.comment !== '' && (
+                        <View style={styles.commentContainer}>
+                            <Text style={styles.commentText}>{r.comment}</Text>
+                        </View>
+                    )}
+                    {/*  Horizontal Line */}
+                    <View style={{ width: '100%', borderWidth: 0.3, borderColor: 'gray', marginBottom: 3, marginTop: 13, opacity: 0.1 }}></View>
                 </View>
             ))}
 
@@ -169,8 +173,7 @@ const RatingContent = ({ doctorId, userId, ratingStats, listRating, doctorRating
                 animationType="slide"
                 transparent={true}
                 visible={isShowPopup}
-                onRequestClose={() => togglePopup(false)}
-            >
+                onRequestClose={() => togglePopup(false)}>
                 <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center' }}>
                     {/* Overlay */}
                     <TouchableWithoutFeedback onPress={() => togglePopup(false)}>
@@ -178,11 +181,11 @@ const RatingContent = ({ doctorId, userId, ratingStats, listRating, doctorRating
                     </TouchableWithoutFeedback>
                     <View style={styles.popupContainer}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                            <Text style={styles.title}>Thông tin đánh giá bác sĩ</Text>
-                            <FontAwesome name='close' style={{ marginLeft: 'auto' }} size={22} color={COLORS.textLabel} onPress={() => togglePopup(false)} />
+                            <Text style={styles.title}>Đánh Giá Bác Sĩ</Text>
+                            <FontAwesome name='close' style={{ marginLeft: 'auto', padding: 5, }} size={22} color={COLORS.textLabel} onPress={() => togglePopup(false)} />
                         </View>
 
-                        <Text style={styles.label}>Đánh giá chất lượng</Text>
+                        <Text style={styles.label}>Đánh giá chất lượng bác sĩ</Text>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <StarRating
                                 rating={ratingSubmitted.star}
@@ -197,7 +200,7 @@ const RatingContent = ({ doctorId, userId, ratingStats, listRating, doctorRating
                             </Text>
                         </View>
 
-                        <Text style={styles.label}>Nhận xét</Text>
+                        <Text style={styles.label}>Nhận xét và góp ý</Text>
                         <TextInput
                             style={styles.ratingInput}
                             multiline
@@ -209,7 +212,7 @@ const RatingContent = ({ doctorId, userId, ratingStats, listRating, doctorRating
                         />
                         <Text style={{ marginTop: 10, textAlign: "right", color: 'gray', fontSize: 13 }}>{`${ratingSubmitted.comment.length}/250`}</Text>
                         <TouchableOpacity style={styles.ratingButton} onPress={submit} disabled={isSubmitted}>
-                            <Text style={styles.ratingButtonText}>Gửi đánh giá</Text>
+                            <Text style={styles.ratingButtonText}>Hoàn tất đánh giá</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -239,6 +242,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginLeft: 5,
         fontSize: 12,
+        color: COLORS.textLabel
     },
     userRatingContainer: {
         flexDirection: 'column',
@@ -257,6 +261,8 @@ const styles = StyleSheet.create({
     },
     userName: {
         fontSize: 12,
+        color: COLORS.textLabel,
+        fontWeight: '700'
     },
     ratingContainer: {
         flexDirection: 'row',
@@ -268,6 +274,7 @@ const styles = StyleSheet.create({
     },
     commentContainer: {
         marginTop: 10,
+        height: 'auto'
     },
     commentText: {
         fontSize: 13,
@@ -312,7 +319,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontWeight: '500',
         fontSize: 14,
-        color: '#666968'
+        color: COLORS.textLabel
     },
     ratingInputContainer: {
         marginVertical: 5,
@@ -331,26 +338,14 @@ const styles = StyleSheet.create({
     },
     ratingButton: {
         backgroundColor: COLORS.primary,
-        width: 120,
-        paddingVertical: 7,
-        borderRadius: 20,
+        padding: 12,
+        borderRadius: 10,
         alignSelf: 'center'
     },
     modalOverlay: {
         ...StyleSheet.absoluteFillObject,
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
         zIndex: 100,
-    },
-    popupContainer: {
-        backgroundColor: '#f8f9fd',
-        padding: 20,
-        borderRadius: 10,
-        elevation: 10,
-        position: 'absolute',
-        bottom: 150,
-        left: 20,
-        right: 20,
-        zIndex: 101,
     },
     ratingInputContainer: {
         marginVertical: 5,
@@ -375,7 +370,7 @@ const styles = StyleSheet.create({
         color: COLORS.textLabel,
         fontSize: 14,
         fontWeight: '700',
-        marginVertical: 10,
+        marginVertical: 15,
     },
     title: {
         fontSize: 15,

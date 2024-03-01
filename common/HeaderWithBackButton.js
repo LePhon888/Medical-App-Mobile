@@ -10,9 +10,11 @@ import Entypo from "react-native-vector-icons/Entypo";
  * @param navigation - (optional) If not using isCustomEvent then need to pass this one.
  * @param isCustomEvent - (optional) Flag indicating if the user wants to handle on back instead of going back to the previous screen.
  * @param OnBack - (optional) Function to be called if isCustomEvent is true.
+ * @param headerStyle - (optional) provide the style to override the existing one
+ * @param titleStyle - (optional) provide the style to override the existing one
  * @returns {JSX.Element} Header component.
  */
-const HeaderWithBackButton = ({ title, navigation, isCustomEvent, OnBack, customIcons }) => {
+const HeaderWithBackButton = ({ title, navigation, isCustomEvent, OnBack, customIcons, headerStyle, titleStyle }) => {
     const OnBackPressed = () => {
         if (isCustomEvent) {
             return OnBack()
@@ -21,11 +23,11 @@ const HeaderWithBackButton = ({ title, navigation, isCustomEvent, OnBack, custom
     }
 
     return (
-        <View style={styles.header}>
+        <View style={{ ...styles.header, ...headerStyle }}>
             <TouchableOpacity onPress={() => OnBackPressed()}>
                 <Entypo name="chevron-thin-left" size={19} />
             </TouchableOpacity>
-            <Text style={styles.titleText}>{title}</Text>
+            <Text style={{ ...styles.titleText, ...titleStyle }}>{title}</Text>
             <View style={{ position: 'absolute', right: 6, flexDirection: 'row' }}>
                 {customIcons && customIcons.map((icon, index) => (
                     <TouchableOpacity key={index} style={{ marginHorizontal: 12 }}>
@@ -49,7 +51,7 @@ const styles = StyleSheet.create({
     },
     titleText: {
         color: COLORS.black,
-        fontSize: 21,
+        fontSize: 16,
         fontWeight: "bold",
         marginLeft: 18,
     },

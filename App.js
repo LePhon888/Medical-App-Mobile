@@ -13,7 +13,12 @@ import DoctorAppointment from "./screens/DoctorAppointment";
 import EditProfile from "./screens/EditProfile";
 import Doctors from "./screens/Doctors";
 import DoctorDetail from "./screens/DoctorDetail";
-import MedicationBox from "./screens/MedicationBox";
+import MedicationBox from "./screens/MedicationSchedule/MedicationBox";
+import AddMedicine from "./screens/MedicationSchedule/AddMedicine";
+import ScheduleTime from "./screens/MedicationSchedule/ScheduleTime";
+import MedicationSchedule from "./screens/MedicationSchedule/MedicationSchedule";
+import ToastConfig from "./config/Toast";
+import Toast from "react-native-toast-message";
 
 const Stack = createNativeStackNavigator();
 export const UserContext = createContext();
@@ -24,7 +29,7 @@ export default function App() {
     AsyncStorage.getItem("user") || null
   );
 
-  const initScreen = 'Doctors'
+  const initScreen = 'MedicationBox'
 
   return (
     <UserContext.Provider value={[user, dispatch]}>
@@ -52,6 +57,9 @@ export default function App() {
           <Stack.Screen name="Notification" component={Notification} options={{ headerShown: false }} />
           <Stack.Screen name="MedicineList" component={MedicineList} options={{ headerShown: false }} />
           <Stack.Screen name="MedicationBox" component={MedicationBox} options={{ headerShown: false }} />
+          <Stack.Screen name="AddMedicine" component={AddMedicine} options={{ headerShown: false }} />
+          <Stack.Screen name="MedicationSchedule" component={MedicationSchedule} options={{ headerShown: false }} />
+          <Stack.Screen name="ScheduleTime" component={ScheduleTime} options={{ headerShown: false }} />
           <Stack.Screen name="Status" component={Status} options={{ headerShown: false }} />
           <Stack.Screen name="JoinScreen" component={JoinScreen} options={{ headerShown: false }} />
           <Stack.Screen name="IncomingCallScreen" component={IncomingCallScreen} options={{ headerShown: false }} />
