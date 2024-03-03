@@ -9,7 +9,6 @@ import moment from "moment";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import BottomSheet from "../../components/BottomSheet";
 import Toast from "react-native-toast-message";
-import ToastConfig from "../../config/Toast";
 import Loading from "../../components/Loading";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { formatDate, formatDateMoment, formatDateTimetoTime, formatDuration } from "../../config/date";
@@ -174,7 +173,7 @@ const MedicationSchedule = ({ navigation, route }) => {
         toggleShowDatePicker()
         setSchedule((prevSchedule) => ({
             ...prevSchedule,
-            startDate: formatDateMoment(moment(selectedDate)),
+            startDate: moment(selectedDate).toDate(),
         }));
     }
 
@@ -241,19 +240,18 @@ const MedicationSchedule = ({ navigation, route }) => {
             Toast.show({ type: 'error', text1: 'Cần nhập thời gian uống thuốc.' });
         } else {
             try {
+                console.log(schedule)
                 const res = await Apis.post(`${endpoints["medicationSchedule"]}/create`, {
                     ...schedule,
                     startDate: formatDateMoment(moment(schedule.startDate))
                 });
                 if (res.status === 201) {
+                    console.log(schedule.scheduleTimes)
                     Toast.show({
                         type: 'success',
-                        text1: `Lưu thuốc và lịch trình thành công.`
+                        text1: `${schedule.id > 0 ? 'Đổi thông tin thuốc thành công.' : 'Lưu thuốc và lịch trình thành công.'}`
                     })
-
-                    setTimeout(() => {
-                        navigation.navigate('MedicationBox', { saveScheduleSuccess: true });
-                    }, 1200);
+                    navigation.navigate('MedicationBox', { saveScheduleSuccess: true });
                 }
             } catch (error) {
                 console.error('API Error:', error);
@@ -470,7 +468,7 @@ const MedicationSchedule = ({ navigation, route }) => {
             {(isSubmitted || !isFetched) && (
                 <Loading transparent={true} />
             )}
-            <ToastConfig />
+
         </View >
     )
 }

@@ -1,5 +1,5 @@
 import { Modal, StyleSheet, TouchableWithoutFeedback, View } from "react-native"
-import ToastConfig from "../config/Toast";
+import ToastConfig from "./ToastConfig";
 
 /**
  * 
@@ -8,6 +8,8 @@ import ToastConfig from "../config/Toast";
  * @param bodyComponent a component use as a body content
  * @param style use this to override the existing style of popup. Better define a style name and use it in here.
  * @returns 
+ * 
+ * 
  */
 const BottomSheet = ({ visible, onClose, children, style }) => {
     return (

@@ -21,6 +21,10 @@ import {
     GoogleSignin,
     statusCodes,
 } from "@react-native-google-signin/google-signin";
+import { useNavigation } from "@react-navigation/native";
+import { getUserFromStorage } from "../utils/GetUserFromStorage";
+import { useUser } from "../context/UserContext";
+import Loading from "../components/Loading";
 
 const Login = ({ navigation }) => {
     const [isPasswordShown, setIsPasswordShown] = useState(true);
@@ -31,7 +35,7 @@ const Login = ({ navigation }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [userInfo, setUserInfo] = useState(null);
     const [error, setError] = useState(null);
-
+    const { userId, storeUserId } = useUser()
     const login = () => {
         const processLogin = async () => {
             try {
@@ -63,16 +67,19 @@ const Login = ({ navigation }) => {
                 });
 
                 await AsyncStorage.setItem("user", JSON.stringify(data));
-
                 dispatch({
                     type: "login",
                     payload: data,
                 });
 
                 const userData = await AsyncStorage.getItem("user");
-                if (userData) navigation.navigate("MainScreen");
+                if (userData) {
+                    if (navigation)
+                        navigation.navigate('MainScreen');
+                }
+
             } catch (error) {
-                // console.error("Login error:", error);
+                console.error("Login error:", error);
                 setError("Không tìm thấy tài khoản hoặc chưa xác thực email");
             } finally {
                 setIsLoading(false);
@@ -103,7 +110,7 @@ const Login = ({ navigation }) => {
             });
 
             const userData = await AsyncStorage.getItem("user");
-            if (userData) navigation.navigate("MainScreen");
+            if (userData) navigation.navigate('MainScreen');
         } catch (error) {
             if (error.code === statusCodes.SIGN_IN_CANCELLED) {
                 console.log("Google Sign-In Cancelled");
@@ -120,13 +127,15 @@ const Login = ({ navigation }) => {
             webClientId:
                 "30139582015-5ftl3a00g106h5pjbj8jr64jucnk038g.apps.googleusercontent.com",
         });
-    });
+
+    }, []);
 
     useEffect(() => {
         const loadStoredCredentials = async () => {
             try {
                 const storedEmail = await AsyncStorage.getItem("email");
                 const storedPassword = await AsyncStorage.getItem("password");
+                const userInfo = await getUserFromStorage()
 
                 if (storedEmail) {
                     setEmail(storedEmail);
@@ -134,6 +143,13 @@ const Login = ({ navigation }) => {
                 if (storedPassword) {
                     setPassword(storedPassword);
                 }
+
+                if (userInfo) {
+                    setUserInfo(userInfo)
+                    storeUserId(userInfo.id)
+                    navigation.navigate('MainScreen');
+                }
+
             } catch (error) {
                 console.error("Error loading stored credentials:", error);
             }
@@ -334,6 +350,8 @@ const Login = ({ navigation }) => {
                     </Pressable>
                 </View>
             </View>
+            {isLoading && <Loading transparent={true} />}
+
         </SafeAreaView>
     );
 };

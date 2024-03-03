@@ -9,15 +9,21 @@ import Setting from "../screens/Setting";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Doctors from "../screens/Doctors";
 import AppointmentRegister from "../screens/AppointmentRegister";
+import { useUser } from "../context/UserContext";
 
 const Tab = createBottomTabNavigator();
 
 function BottomNavigation({ navigation }) {
   const [user, setUser] = useState(null);
+  const { userId, storeUserId } = useUser();
   useEffect(() => {
     const getUserInfo = async () => {
       const res = await AsyncStorage.getItem("user");
-      setUser(JSON.parse(res));
+      const userInfo = JSON.parse(res)
+      if (userInfo) {
+        setUser(userInfo)
+        storeUserId(userInfo.id)
+      }
     };
     getUserInfo();
   }, []);

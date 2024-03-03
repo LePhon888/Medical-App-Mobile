@@ -8,10 +8,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment";
 import COLORS from "../../constants/colors";
 import Octicons from "react-native-vector-icons/Octicons";
-import { formatDateMoment, formatDuration } from "../../config/date";
+import { formatDateMoment, formatDateTimeFromNow, formatDuration } from "../../config/date";
 import Loading from "../../components/Loading";
-import ToastConfig from "../../config/Toast";
 import Toast from "react-native-toast-message";
+import { getUserFromStorage } from "../../utils/GetUserFromStorage";
 
 const StatusIcon = ({ iconName, iconColor, lightColor = false, text, onPress }) => (
     <TouchableOpacity style={styles.iconContainer} onPress={onPress}>
@@ -76,15 +76,15 @@ const MedicationBox = ({ navigation, route }) => {
     const getscheduleTimes = async () => {
         try {
             setFetched(false);
-            const user = await AsyncStorage.getItem("user");
-            const userId = JSON.parse(user)?.id || 2
+            const user = await getUserFromStorage()
+            const userId = user.id || 2
             const scheduleTimes = await Apis.get(`${endpoints["scheduleTime"]}/user/${userId}?startDate=${formatDateMoment(selectedMoment)}`)
             setScheduleTimes(scheduleTimes.data)
             setUserId(userId)
         } catch (error) {
             Toast.show({
                 type: "error",
-                text1: error
+                text1: error,
             })
             console.error(error)
         } finally {
@@ -105,13 +105,22 @@ const MedicationBox = ({ navigation, route }) => {
     }
 
     useEffect(() => {
-        if (route.params?.saveScheduleSuccess) {
-            console.log('im here')
-            if (bottomActiveTab === 2) {
-                getMedicationSchedule()
-            } else {
-                setMedActiveTab(1)
-                setBottomActiveTab(2)
+        if (route.params) {
+            const saveScheduleSuccess = route.params.saveScheduleSuccess
+            const startDate = route.params.startDate
+
+            if (saveScheduleSuccess) {
+                if (bottomActiveTab === 2)
+                    getMedicationSchedule()
+                else {
+                    setMedActiveTab(1)
+                    setBottomActiveTab(2)
+                }
+            }
+
+            if (startDate) {
+                console.log('moment(startDate)', moment(startDate))
+                setSelectedMoment(moment(startDate))
             }
         }
     }, [route.params]);
@@ -338,7 +347,7 @@ const MedicationBox = ({ navigation, route }) => {
                                             <View style={{ width: '80%' }}>
                                                 <Text style={styles.medicineName}>{item.medicineName}</Text>
                                                 <Text style={styles.usage}>
-                                                    {!item.dateTime ? `Chưa có lịch uống thuốc` : `Liều tiếp theo: ${moment(item.dateTime).format('DD/MM/YYYY, hh:mm A').replace('SA', 'AM').replace('CH', 'PM')}`}
+                                                    {!item.dateTime ? `Chưa có lịch uống thuốc` : `Liều tiếp theo: ${formatDateTimeFromNow(item.dateTime)}`}
                                                 </Text>
 
                                             </View>
@@ -405,8 +414,6 @@ const MedicationBox = ({ navigation, route }) => {
             {!isFetched && (
                 <Loading transparent={true} animationType="none" />
             )}
-
-            <ToastConfig />
         </View >
     );
 };

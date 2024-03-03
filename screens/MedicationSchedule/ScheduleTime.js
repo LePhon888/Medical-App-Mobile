@@ -8,15 +8,14 @@ import DatePicker from "react-native-date-picker";
 import moment from "moment/moment";
 import { formatDateTimetoTime, formatDuration, formatTime } from "../../config/date";
 import Toast from "react-native-toast-message";
-import ToastConfig from "../../config/Toast";
-
 
 const ScheduleTime = ({ route, navigation }) => {
-
+    const localDate = moment().startOf('day').toDate();
     const [scheduleTimes, setScheduleTimes] = useState([])
     const [unitName, setUnitName] = useState('')
     const [showPopup, setShowPopup] = useState(false)
     const [tempSchedule, setTempSchedule] = useState({
+        id: 0,
         time: new Date(),
         quantity: 1,
     })
@@ -30,12 +29,13 @@ const ScheduleTime = ({ route, navigation }) => {
     }, [route.params]);
 
     const togglePopup = () => {
+        if (!showPopup) {
+            handleOnTimeChange(localDate)
+        }
         setShowPopup(!showPopup)
     }
 
     const createScheduleTime = () => {
-        console.log(scheduleTimes);
-        console.log((tempSchedule.time));
 
         const isDuplicate = scheduleTimes.some(
             (schedule) =>
@@ -52,12 +52,20 @@ const ScheduleTime = ({ route, navigation }) => {
 
         // Add the new schedule time to the array and sort
         setScheduleTimes((prevScheduleTimes) =>
-            [...prevScheduleTimes, { quantity: tempSchedule.quantity, time: formatDateTimetoTime(tempSchedule.time) }]
-                .sort((a, b) => a.time - b.time)
+            [...prevScheduleTimes, {
+                id: tempSchedule.id,
+                quantity: tempSchedule.quantity,
+                time: formatDateTimetoTime(tempSchedule.time)
+            }]
+                .sort((a, b) => a.time.localeCompare(b.time))
         );
+
+
+        console.log(scheduleTimes)
 
         // Reset tempSchedule
         setTempSchedule({
+            id: 0,
             time: new Date(),
             quantity: 1,
         });
@@ -80,6 +88,10 @@ const ScheduleTime = ({ route, navigation }) => {
             route.params.setScheduleTimes({ scheduleTimes })
         }
         navigation.goBack()
+    }
+
+    const handleOnTimeChange = (time) => {
+        setTempSchedule({ ...tempSchedule, time: time })
     }
 
     return (
@@ -135,10 +147,9 @@ const ScheduleTime = ({ route, navigation }) => {
                     <Text style={styles.label}>Thời gian</Text>
                     <DatePicker
                         mode="time"
-                        date={new Date()}
-                        onDateChange={(time) => setTempSchedule({ ...tempSchedule, time: time })}
+                        date={localDate}
+                        onDateChange={(time) => handleOnTimeChange(time)}
                         androidVariant="nativeAndroid"
-                        is24hourSource="locale"
                         locale="en"
                         style={{
                             flex: 1, justifyContent: 'center', alignSelf: 'center',

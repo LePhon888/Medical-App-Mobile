@@ -14,7 +14,7 @@ import Entypo from "react-native-vector-icons/Entypo";
  * @param titleStyle - (optional) provide the style to override the existing one
  * @returns {JSX.Element} Header component.
  */
-const HeaderWithBackButton = ({ title, navigation, isCustomEvent, OnBack, customIcons, headerStyle, titleStyle }) => {
+const HeaderWithBackButton = ({ title, navigation, isCustomEvent = false, OnBack, customIcons, headerStyle, titleStyle }) => {
     const OnBackPressed = () => {
         if (isCustomEvent) {
             return OnBack()

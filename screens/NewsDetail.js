@@ -17,7 +17,7 @@ import axios from "axios";
 import "url-search-params-polyfill";
 import HeaderWithBackButton from "../common/HeaderWithBackButton";
 
-export default function NewsDetail({ navigation: { goBack } }) {
+export default function NewsDetail({ navigation }) {
   const route = useRoute();
   // const { news } = route.params;
   const news = {
