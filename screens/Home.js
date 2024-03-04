@@ -12,15 +12,19 @@ import COLORS from "../constants/colors";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Carousel from 'react-native-anchor-carousel';
 import FeatherIcon from 'react-native-vector-icons/Feather';
+import { useUser } from "../context/UserContext";
+import Apis, { endpoints } from "../config/Apis";
+import { useNotification } from "../context/NotificationContext";
 
 const { width: windowWidth } = Dimensions.get('window');
 
 const INITIAL_INDEX = 1;
-const Home = ({ navigation: { goBack } }) => {
-  const navigation = useNavigation();
+const Home = ({ navigation, route }) => {
   const carouselRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(INITIAL_INDEX);
-
+  const [countUnread, setCountUnread] = useState(0)
+  const { userId } = useUser()
+  const { state, dispatch } = useNotification();
   const slideForward = () => {
     const nextIndex = (currentIndex + 1) % data.length;
     carouselRef.current.scrollToIndex(nextIndex);
@@ -34,6 +38,27 @@ const Home = ({ navigation: { goBack } }) => {
 
     return () => clearInterval(interval);
   }, [currentIndex]);
+
+  const countUnreadNotification = async () => {
+    const res = await Apis.get(`${endpoints["notification"]}/unread-count/${userId}`)
+    setCountUnread(res.data)
+  }
+
+  useEffect(() => {
+    if (userId || route.params?.refreshBell) {
+      countUnreadNotification()
+    }
+  }, [userId, route.params])
+
+  useEffect(() => {
+    console.log('refreshHere')
+    console.log(state)
+    if (state.refreshData && userId) {
+      countUnreadNotification()
+      dispatch({ type: 'TOGGLE_REFRESH_DATA' });
+    }
+  }, [state, dispatch]);
+
 
   function handleCarouselScrollEnd(item, index) {
     setCurrentIndex(index);
@@ -57,16 +82,16 @@ const Home = ({ navigation: { goBack } }) => {
       <View style={style.categoryContainer}>
         {categoryIcons.map((item, index) => (
           <View key={index} style={style.iconContainer}>
-            <View style={{
+            <TouchableOpacity style={{
               justifyContent: 'center',
               alignItems: 'center',
               margin: 6
             }}
-            // onPress={() => navigation.navigate("AppointmentList")}
+              onPress={() => navigation.navigate("MedicationBox")}
             >
               <Image source={item.path} style={{ width: 32, height: 32, marginBottom: 3 }} />
               <Text style={{ textAlign: 'center' }}>{item.text}</Text>
-            </View>
+            </TouchableOpacity>
           </View>
         ))
         }
@@ -165,11 +190,12 @@ const Home = ({ navigation: { goBack } }) => {
             <View style={{ padding: 6, backgroundColor: COLORS.white, width: 40, height: 40, marginRight: 10, borderRadius: 50 }}>
               <AntDesign name="search1" size={21} color={COLORS.black} style={{ marginLeft: 3, marginTop: 2 }} />
             </View>
+            {/* Notification bell */}
             <TouchableOpacity style={{ padding: 6, backgroundColor: COLORS.white, width: 40, height: 40, borderRadius: 50, position: 'relative' }}
               onPress={() => navigation.navigate('Notification')}>
               <AntDesign name="bells" size={21} color={COLORS.black} style={{ marginLeft: 3, marginTop: 2 }} />
               <View style={{ backgroundColor: '#f44236', width: 18, height: 18, borderRadius: 50, alignItems: 'center', position: 'absolute', top: 3, right: 4 }}>
-                <Text style={{ color: COLORS.white, fontWeight: 600, fontSize: 12 }}>4</Text>
+                <Text style={{ color: COLORS.white, fontWeight: 600, fontSize: 12 }}>{countUnread < 100 ? countUnread : '99+'}</Text>
               </View>
             </TouchableOpacity>
           </View>

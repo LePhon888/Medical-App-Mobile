@@ -16,6 +16,7 @@ import Apis, { endpoints } from "../config/Apis";
 import { useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 const SECTIONS = [
   {
     header: "Cài đặt",
@@ -84,6 +85,28 @@ export default function Setting({ navigation, route }) {
     getUserAndToken();
   }, [isFocused]);
 
+  const handleLogout = async () => {
+    try {
+      if (userInfo && userInfo.provider === "GOOGLE") {
+        await GoogleSignin.signOut();
+      }
+
+      await AsyncStorage.removeItem("token");
+      await AsyncStorage.removeItem("user");
+
+      dispatch({
+        type: "logout",
+      });
+
+      navigation.navigate("Login");
+
+    } catch (error) {
+      // Handle errors if needed
+      console.error("Error during logout:", error);
+    }
+  };
+
+
   return (
     <SafeAreaView style={{ backgroundColor: '#f8f9fd', paddingBottom: 48 }}>
       <ScrollView contentContainerStyle={styles.container}>
@@ -141,10 +164,7 @@ export default function Setting({ navigation, route }) {
                     <TouchableOpacity
                       onPress={() => {
                         if (id === "logout") {
-                          dispatch({
-                            type: "logout",
-                          });
-                          navigation.navigate("Login");
+                          handleLogout()
                         } else {
                           // Handle other item actions
                         }

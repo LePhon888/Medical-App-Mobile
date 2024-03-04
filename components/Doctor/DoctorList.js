@@ -1,31 +1,52 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import Icon from "react-native-vector-icons/Ionicons";
 import Feather from "react-native-vector-icons/Feather";
-import doctors from "../../assets/SampleDoctors.json"
+import Apis, { endpoints } from '../../config/Apis';
+import DoctorItemLoading from './DoctorItemLoading';
 /** 
  * This one use to display list of doctors, include information about each doctor
  * @param onItemclickEvent (optional) Function to hanlde when click the item of the list, can navigate to the detail
  */
 const DoctorList = ({ onItemclickEvent }) => {
+    const [doctors, setDoctors] = useState([])
+    const [isDataFetched, setDataFetched] = useState(false)
+
+    useEffect(() => {
+        const getDoctorList = async () => {
+            try {
+                const res = await Apis.get(`${endpoints["doctors"]}/`);
+                console.log(res.data)
+                setDoctors(res.data)
+                setDataFetched(true)
+            } catch (error) {
+                console.error("Error fetching doctor list:", error);
+            }
+        };
+        getDoctorList();
+    }, []);
 
     // On click item
     const onItemClick = (item) => {
         onItemclickEvent(item)
     }
 
+    if (doctors.length === 0) {
+        return <DoctorItemLoading />
+    }
+
     const renderItem = (item, index) => (
-        <TouchableOpacity key={index} style={styles.itemContainer} onPress={() => onItemClick(item)}>
+        <TouchableOpacity key={index} style={styles.itemContainer} onPress={() => onItemClick(item.userId)}>
             {/* Avatar, Name, Rating, Department, Direct or Indirect */}
             <View style={{ flexDirection: 'row' }}>
                 {/* Avatar */}
-                <Image source={{ uri: item.avatar }} style={styles.avatar} />
+                <Image source={{ uri: item.image }} style={styles.avatar} />
                 {/* Info container */}
                 <View style={styles.textContainer}>
                     <View style={styles.flexRow}>
                         {/* Name */}
-                        <Text style={styles.name}>BS.CKI {item.name}</Text>
+                        <Text style={styles.name}>BS.CKI {item.fullName}</Text>
                         {/* Rating */}
                         {item.rating && item.rating > 0 ? (
                             <View style={styles.rating}>
@@ -35,7 +56,7 @@ const DoctorList = ({ onItemclickEvent }) => {
                         ) : ""}
                     </View>
                     {/* Department, hospital */}
-                    <Text numberOfLines={1} ellipsizeMode="tail" style={styles.department}><Icon name='git-branch-outline' /> {item.department}</Text>
+                    <Text numberOfLines={1} ellipsizeMode="tail" style={styles.department}><Icon name='git-branch-outline' /> {item.departmentName}</Text>
                     <Text numberOfLines={1} ellipsizeMode="tail" style={styles.hospital}><Icon name='location-outline' /> {item.hospital}</Text>
                     {/* Consultation */}
                     <View style={{ flex: 1, flexDirection: 'row' }}>
@@ -48,11 +69,9 @@ const DoctorList = ({ onItemclickEvent }) => {
             <View style={styles.dashedLine}></View>
             {/* Target: children or adult */}
             <View style={{ flexDirection: 'row' }}>
-                {item.target.map((target, index) => (
-                    <Text style={styles.target} key={index}>
-                        {target === 'adult' ? 'Dành cho người lớn' : target === 'children' ? 'Dành cho trẻ em' : ''}
-                    </Text>
-                ))}
+                {item.target.split(',').map((label, index) => {
+                    return (<Text style={styles.target} key={index}>{label}</Text>)
+                })}
             </View>
             {/* Fee */}
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -61,16 +80,6 @@ const DoctorList = ({ onItemclickEvent }) => {
                 </View>
                 <Text style={styles.fee}>
                     Phí thăm khám cố định<Text style={{ fontSize: 13, color: '#0e8558', fontWeight: '500' }}>{` ${Number(item.fee).toLocaleString('vi-VN')} đ`}</Text></Text>
-            </View>
-            {/* Next appointment and schedule */}
-            <View style={styles.nextAppointmentContainer}>
-                <Text style={styles.nextAppointment}>Giờ đặt tiếp theo</Text>
-                <Text style={styles.appointmentTime}> {item.nextAppointment.date} - {item.nextAppointment.time}</Text>
-                <View style={styles.verticalLine}></View>
-                <TouchableOpacity style={styles.flexRow} onPress={() => console.log('clickled the child')}>
-                    <Text style={styles.appoint}>Đặt hẹn </Text>
-                    <Feather size={20} style={{ color: '#4581cc' }} name='chevron-right'></Feather>
-                </TouchableOpacity>
             </View>
         </TouchableOpacity >
     );
@@ -82,14 +91,25 @@ const DoctorList = ({ onItemclickEvent }) => {
     //     showsVerticalScrollIndicator={false}
     //     scrollEventThrottle={16}
     //     onScroll={onScroll}
+    //{/* Next appointment and schedule */}
+    // <View style={styles.nextAppointmentContainer}>
+    //     <Text style={styles.nextAppointment}>Giờ đặt tiếp theo</Text>
+    //     <Text style={styles.appointmentTime}> {item.nextAppointment.date} - {item.nextAppointment.time}</Text>
+    //     <View style={styles.verticalLine}></View>
+    //     <TouchableOpacity style={styles.flexRow} onPress={() => console.log('clickled the child')}>
+    //         <Text style={styles.appoint}>Đặt hẹn </Text>
+    //         <Feather size={20} style={{ color: '#4581cc' }} name='chevron-right'></Feather>
+    //     </TouchableOpacity>
+    // </View>
     // />
+
     return (
         <ScrollView key='Doctors' style={styles.container} showsVerticalScrollIndicator={false} nestedScrollEnabled={true}>
-            {doctors && doctors.length > 0 && (
-                doctors.map((item, index) => {
+            {isDataFetched ? (
+                doctors.length > 0 && doctors.map((item, index) => {
                     return renderItem(item, index)
                 })
-            )}
+            ) : <DoctorItemLoading />}
         </ScrollView>
     );
 };

@@ -1,25 +1,28 @@
-import { Animated, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Animated, Image, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import DoctorList from "../components/Doctor/DoctorList";
 import Feather from "react-native-vector-icons/Feather"
 import FontAwesome from "react-native-vector-icons/FontAwesome"
 import Ionicons from "react-native-vector-icons/Ionicons"
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import COLORS from "../constants/colors";
+import Apis, { endpoints } from "../config/Apis";
 const Doctors = ({ navigation }) => {
 
     const [activeTab, setActiveTab] = useState(2);
+    const [isShowFilterPopup, setShowFilterPopup] = useState(false)
     const tabs = [
         { key: 1, title: 'Bệnh viện & Phòng khám', },
         { key: 2, title: 'Bác sỹ' },
     ];
 
-    const navigateDoctorDetail = (item) => {
-        console.log(item)
-        navigation.navigate('DoctorDetail', { doctor: item });
+    const navigateDoctorDetail = (doctorId) => {
+        console.log(doctorId)
+        navigation.navigate('DoctorDetail', doctorId);
     }
 
-    const Header = () => {
-        return (
+    return (
+        <ScrollView style={styles.container} nestedScrollEnabled={true} stickyHeaderIndices={[1]} showsVerticalScrollIndicator={false}>
+            {/*Header View */}
             <View style={styles.header}>
                 {/* Location */}
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -42,13 +45,6 @@ const Doctors = ({ navigation }) => {
                     </View>
                 </TouchableOpacity>
             </View>
-        )
-    }
-
-    return (
-        <ScrollView style={styles.container} nestedScrollEnabled={true} stickyHeaderIndices={[1]} showsVerticalScrollIndicator={false}>
-            {/*Header View */}
-            <Header />
             {/* Tab View */}
             <View style={styles.stickyContent}>
                 <View style={styles.tabContainer}>
@@ -63,13 +59,27 @@ const Doctors = ({ navigation }) => {
                 {/* Filter and Result */}
                 <View style={styles.filterContainer}>
                     <Text style={{ fontWeight: '500' }}>2 Kết quả</Text>
-                    <TouchableOpacity style={styles.filter}>
+                    <TouchableOpacity style={styles.filter} onPress={() => setShowFilterPopup(true)}>
                         <Text><FontAwesome size={17} name="sliders" color={'#6199d1'}></FontAwesome>  Lọc</Text>
                     </TouchableOpacity>
                 </View>
             </View>
-
             {activeTab === 2 && <DoctorList onItemclickEvent={navigateDoctorDetail} />}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={isShowFilterPopup}
+                onRequestClose={() => togglePopup(false)}>
+                <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center' }}>
+                    {/* Overlay */}
+                    <TouchableWithoutFeedback onPress={() => setShowFilterPopup(false)}>
+                        <View style={styles.modalOverlay} />
+                    </TouchableWithoutFeedback>
+                    <View style={styles.popupContainer}>
+                        <Text>HI</Text>
+                    </View>
+                </View>
+            </Modal>
         </ScrollView >
     );
 };
@@ -77,7 +87,6 @@ const Doctors = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#FFFF',
-        marginBottom: 30
     },
     header: {
         backgroundColor: '#e1f1ff',
@@ -150,7 +159,23 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         backgroundColor: '#e1f1ff',
         borderRadius: 5,
-    }
+    },
+    modalOverlay: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        zIndex: 100,
+    },
+    popupContainer: {
+        backgroundColor: '#f8f9fd',
+        padding: 20,
+        borderRadius: 10,
+        elevation: 10,
+        position: 'absolute',
+        bottom: 150,
+        left: 20,
+        right: 20,
+        zIndex: 101,
+    },
 });
 
 export default Doctors;

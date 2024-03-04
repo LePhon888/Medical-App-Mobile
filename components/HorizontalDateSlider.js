@@ -3,7 +3,6 @@ import moment from 'moment';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
-
 /**
  * 
  * @param  selectedMoment the moment() that initial calendar based on its week
@@ -47,6 +46,7 @@ const HorizontalDateSlider = ({ selectedMoment, onSelectDate }) => {
     const goToCurrentWeek = () => {
         setCurrentWeek(moment())
         setSelectedDate(today)
+        onSelectDate(today)
     }
 
     // Display view of selected date and have the buttons to go back to current date
