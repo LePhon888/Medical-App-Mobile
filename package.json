@@ -30,6 +30,7 @@
     "@zegocloud/zego-uikit-prebuilt-video-conference-rn": "^1.0.0",
     "@zegocloud/zego-uikit-rn": "^1.2.0",
     "axios": "^1.5.0",
+    "base-64": "^1.0.0",
     "expo": "~49.0.11",
     "expo-checkbox": "~2.4.0",
     "expo-linear-gradient": "~12.3.0",

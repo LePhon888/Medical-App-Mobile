@@ -1,15 +1,5 @@
 import React, { useState } from 'react';
-import {
-    StyleSheet,
-    View,
-    Text,
-    TouchableOpacity,
-    SafeAreaView,
-    Image,
-    TextInput,
-    ScrollView,
-    TouchableWithoutFeedback
-} from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView, Image, TextInput, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import HeaderWithBackButton from '../common/HeaderWithBackButton';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Feather from 'react-native-vector-icons/Feather';

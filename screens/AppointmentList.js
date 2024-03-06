@@ -24,6 +24,7 @@ export default function AppointmentList({ navigation }) {
       dateComponents[2]
     );
 
+
     const formattedDate = `${dateObject.getDate()}-${(dateObject.getMonth() + 1)
       .toString()
       .padStart(2, "0")}-${dateObject.getFullYear()}`;

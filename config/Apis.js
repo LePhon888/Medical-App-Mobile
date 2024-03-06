@@ -30,7 +30,9 @@ export const endpoints = {
   scheduleTime: `${SERVER}/api/schedule-time`,
   scheduleTimeDetail: `${SERVER}/api/schedule-time-detail`,
   userDevice: `${FIREBASEMODULE}/api/user-device`,
-  notification: `${FIREBASEMODULE}/api/notification`
+  notification: `${FIREBASEMODULE}/api/notification`,
+  category: `${SERVER}/api/category`,
+  postBycategory: `${SERVER}/api/post/`,
 };
 
 // export const authApi = async () => {

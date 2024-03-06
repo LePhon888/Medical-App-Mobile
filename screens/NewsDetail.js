@@ -7,6 +7,7 @@ import {
   Text,
   Image,
   TouchableOpacity,
+  Slider
 } from "react-native";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -17,7 +18,11 @@ import "url-search-params-polyfill";
 import HeaderWithBackButton from "../common/HeaderWithBackButton";
 import RenderHtml from 'react-native-render-html';
 import { useWindowDimensions } from 'react-native';
-// import { HTMLParser } from 'react-native-html-parser';
+import { HTMLParser } from 'react-native-html-parser';
+import Sound from 'react-native-sound';
+import Button from "../components/Button";
+import axios from "axios";
+import { decode } from 'base-64';
 
 export default function NewsDetail({ navigation, route }) {
   const news = route.params;
@@ -28,39 +33,14 @@ export default function NewsDetail({ navigation, route }) {
   const initialFontSize = 16;
   const [fontSize, setFontSize] = useState(initialFontSize);
   const [clickCount, setClickCount] = useState(0);
-
-  const [audioBase64, setAudioBase64] = useState(null)
+  const [audioBase64, setAudioBase64] = useState();
   const [header, setHeader] = useState(null);
-
-  // const parsedHtml = HTMLParser(news.content);
-  // const extractedText = parsedHtml.text;
-  // console.log(extractedText);
-
-  const endpoint = 'https://text-to-speech-neural-google.p.rapidapi.com/generateAudioFiles';
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await Apis.post(
-  //         endpoint,
-  //         {
-  //           "audioFormat": "ogg",
-  //           "paragraphChunks": [
-  //             news?.content
-  //           ],
-  //           "voiceParams": {
-  //               "name": "hoaimy",
-  //               "engine": "azure",
-  //               "languageCode": "vi-VN"
-  //           }
-  //       });
-  //       setAudioBase64(response.data.audioStream);
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   };
-  //   fetchData();
-  // }, [news.id])
+  const [audioPlayer, setAudioPlayer] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [sliderValue, setSliderValue] = useState(0);
+  var htmlRegexG = /<(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+>/g;
+  var modifiedContent = news.content.replace(htmlRegexG, '').replace(/undefined/g, '').replace(/&nbsp;/g, '').replace(/\s+/g, ' ');
+  const chunkSize = 3000;
 
   const customIcons = [
     <MaterialCommunityIcons
@@ -108,7 +88,6 @@ export default function NewsDetail({ navigation, route }) {
           <Text style={styles.headerTitle}>
             {header ? header : news.header}
           </Text>
-
           <View style={styles.headerRow}>
             <View style={styles.headerLocation}>
               <Text style={styles.headerLocationText}>
@@ -145,6 +124,9 @@ export default function NewsDetail({ navigation, route }) {
             tagsStyles={{ div: { fontSize }, span: { fontSize } }}
           />
         </View>
+        <View>
+        </View>
+
       </ScrollView>
     </View>
   );

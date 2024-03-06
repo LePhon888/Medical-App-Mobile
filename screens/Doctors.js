@@ -87,6 +87,7 @@ const Doctors = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#FFFF',
+        marginBottom: 60
     },
     header: {
         backgroundColor: '#e1f1ff',

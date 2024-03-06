@@ -92,7 +92,7 @@ function BottomNavigation({ navigation }) {
         />
       ) : (
         <Tab.Screen
-          name="Lịch hẹn "
+          name="Đặt hẹn "
           component={Doctors}
           options={{
             tabBarIcon: ({ color, size }) => (
