@@ -5,7 +5,7 @@ import HeaderWithBackButton from '../common/HeaderWithBackButton';
 import COLORS from '../constants/colors';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { category, dataNews, newsItems } from '../config/data';
+import { dataNews, newsItems } from '../config/data';
 import Apis, { endpoints } from "../config/Apis";
 import Premium from '../components/Premium';
 import { ActivityIndicator } from "react-native";
@@ -47,9 +47,9 @@ export default function News({ navigation }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await Apis.get(
-          endpoints["news"]
-        );
+        const resCategory = await Apis.get(endpoints["category"])
+        const response = await Apis.get(endpoints["news"]);
+        setCategory(resCategory.data);
         setNews(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -57,6 +57,18 @@ export default function News({ navigation }) {
     };
     fetchData();
   }, [])
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await Apis.get(`${endpoints["postBycategory"]}${selectedCategory}`)
+        setNewsByCategory(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, [selectedCategory])
+
   return (
     <View style={{ flex: 1, backgroundColor: '#fff', marginBottom: 40 }}>
       <View>
@@ -161,10 +173,10 @@ export default function News({ navigation }) {
           <View style={{ marginTop: 8 }}>
             <View style={{ marginTop: 18, flexDirection: 'row', marginLeft: 14 }}>
               <MaterialCommunityIcons name="chart-bell-curve-cumulative" size={22} style={{ marginTop: 2 }} />
-              <Text style={{ fontSize: 20, fontWeight: 600, marginLeft: 13 }}>Các bài viết mới</Text>
+              <Text style={{ fontSize: 20, fontWeight: 600, marginLeft: 13 }}>Các bài viết theo chuyên mục</Text>
             </View>
             <View style={{ marginLeft: 16, marginVertical: 5 }}>
-              {news ? news.map((item, index) => {
+              {newsByCategory ? newsByCategory.map((item, index) => {
                 return (
                   index == 0 ?
                     <TouchableOpacity key={index} style={{

@@ -33,39 +33,14 @@ export default function NewsDetail({ navigation, route }) {
   const initialFontSize = 16;
   const [fontSize, setFontSize] = useState(initialFontSize);
   const [clickCount, setClickCount] = useState(0);
-
-  const [audioBase64, setAudioBase64] = useState(null)
+  const [audioBase64, setAudioBase64] = useState();
   const [header, setHeader] = useState(null);
-
-  // const parsedHtml = HTMLParser(news.content);
-  // const extractedText = parsedHtml.text;
-  // console.log(extractedText);
-
-  const endpoint = 'https://text-to-speech-neural-google.p.rapidapi.com/generateAudioFiles';
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await Apis.post(
-  //         endpoint,
-  //         {
-  //           "audioFormat": "ogg",
-  //           "paragraphChunks": [
-  //             news?.content
-  //           ],
-  //           "voiceParams": {
-  //               "name": "hoaimy",
-  //               "engine": "azure",
-  //               "languageCode": "vi-VN"
-  //           }
-  //       });
-  //       setAudioBase64(response.data.audioStream);
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   };
-  //   fetchData();
-  // }, [news.id])
+  const [audioPlayer, setAudioPlayer] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [sliderValue, setSliderValue] = useState(0);
+  var htmlRegexG = /<(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+>/g;
+  var modifiedContent = news.content.replace(htmlRegexG, '').replace(/undefined/g, '').replace(/&nbsp;/g, '').replace(/\s+/g, ' ');
+  const chunkSize = 3000;
 
   const customIcons = [
     <MaterialCommunityIcons

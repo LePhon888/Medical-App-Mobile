@@ -44,7 +44,7 @@ export default function App() {
   }, []);
 
 
-  const initScreen = 'News'
+  const initScreen = 'MainScreen'
 
   return (
     <NotificationProvider>
