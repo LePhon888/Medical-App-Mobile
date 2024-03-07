@@ -97,7 +97,7 @@ const ScheduleTime = ({ route, navigation }) => {
     return (
         <View style={styles.content}>
             <View style={styles.topContainer}>
-                <HeaderWithBackButton title={'Liều thuốc và thời gian'} navigation={navigation} />
+                <HeaderWithBackButton title={'Liều thuốc và thời gian'} />
             </View>
             <ScrollView style={styles.centerContainer}>
                 <View style={{ ...styles.input, marginHorizontal: 16, height: 'auto', paddingVertical: 16, }}>

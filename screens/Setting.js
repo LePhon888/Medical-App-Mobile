@@ -17,6 +17,7 @@ import { useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import { useUser } from "../context/UserContext";
 const SECTIONS = [
   {
     header: "Cài đặt",
@@ -67,6 +68,7 @@ export default function Setting({ navigation, route }) {
   const [userInfo, setUserInfo] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const isFocused = useIsFocused();
+  const { userId, storeUserId } = useUser()
 
   useEffect(() => {
     const getUserAndToken = async () => {
@@ -90,6 +92,8 @@ export default function Setting({ navigation, route }) {
       if (userInfo && userInfo.provider === "GOOGLE") {
         await GoogleSignin.signOut();
       }
+
+      await Apis.delete(`${endpoints["userDevice"]}/delete/user/${userId}`)
 
       await AsyncStorage.removeItem("token");
       await AsyncStorage.removeItem("user");

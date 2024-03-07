@@ -45,14 +45,13 @@ const Home = ({ navigation, route }) => {
   }
 
   useEffect(() => {
-    if (userId || route.params?.refreshBell) {
-      countUnreadNotification()
+    if (userId) {
+      countUnreadNotification();
     }
-  }, [userId, route.params])
+  }, []);
+
 
   useEffect(() => {
-    console.log('refreshHere')
-    console.log(state)
     if (state.refreshData && userId) {
       countUnreadNotification()
       dispatch({ type: 'TOGGLE_REFRESH_DATA' });

@@ -35,16 +35,22 @@ const Notification = ({ navigation, route }) => {
 
     const getNotificationList = async () => {
         try {
-            const res = await Apis.get(`${endpoints["notification"]}/user/${userId}?page${page}`);
-            setNotificationList(res.data.content);
-            setMaxPage(res.data.totalPages)
+            const res = await Apis.get(`${endpoints["notification"]}/user/${userId}?page=${page}`);
+            setMaxPage(res.data.totalPages);
+
+            // Combine existing notificationList and new data for distinct and sorted update
+            const combinedNotifications = page > 0 ? [...notificationList, ...res.data.content] : res.data.content;
+
+            // Call setDistinctNotificationList with the combined data
+            setDistinctNotificationList(combinedNotifications);
         } catch (error) {
-            console.error(error)
+            console.error(error);
         } finally {
-            setFetched(true)
-            setListUpdating(false)
+            setFetched(true);
+            setListUpdating(false);
         }
-    }
+    };
+
 
     useEffect(() => {
         if (userId) {
@@ -58,33 +64,53 @@ const Notification = ({ navigation, route }) => {
         getNotificationList()
     }, [page])
 
+    const onEndReached = () => {
+        console.log(maxPage)
+        if (page < maxPage) {
+            setListUpdating(true)
+            setPage((prev) => prev + 1)
+        }
+    }
+
+    const setDistinctNotificationList = (newNotifications) => {
+        const uniqueNotificationsMap = new Map();
+        newNotifications.forEach((notification) => {
+            uniqueNotificationsMap.set(notification.id, notification);
+        });
+        const uniqueNotifications = Array.from(uniqueNotificationsMap.values());
+        const sortedNotifications = uniqueNotifications.sort((a, b) => new Date(b.sentOn) - new Date(a.sentOn));
+        setNotificationList(sortedNotifications);
+    };
+
+
     useEffect(() => {
         if (state.refreshData && route.name === 'Notification') {
-            getNotificationList();
             countUnreadNotification();
             dispatch({ type: 'TOGGLE_REFRESH_DATA' });
             console.log('already refreshed data on Notification');
+            if (page === 0) {
+                getNotificationList()
+            } else {
+                setPage(0)
+            }
         }
-    }, [state.refreshData, navigation, dispatch]);
+    }, [state.refreshData, dispatch]);
 
 
-    const onClickNotification = async ({ item }) => {
+    const onClickNotification = ({ item }) => {
         try {
             if (!item.isRead) {
                 setFetched(false)
-                const updateRead = await Apis.put(`${endpoints["notification"]}/${item.id}`);
-                if (updateRead.status === 200) {
-                    // Find the index of the clicked notification
-                    const index = notificationList.findIndex((notification) => notification.id === item.id);
-
-                    // Update the isRead property to true
-                    if (index !== -1) {
-                        const updatedList = [...notificationList];
-                        updatedList[index].isRead = true;
-                        setNotificationList(updatedList);
-                        setCountUnread((previos) => previos - 1)
-                        setRefreshBell(true)
-                    }
+                Apis.put(`${endpoints["notification"]}/update-read/${item.id}`);
+                // Find the index of the clicked notification
+                const index = notificationList.findIndex((notification) => notification.id === item.id);
+                // Update the isRead property to true
+                if (index !== -1) {
+                    const updatedList = [...notificationList];
+                    updatedList[index].isRead = true;
+                    setNotificationList(updatedList);
+                    setCountUnread((previos) => previos - 1)
+                    setRefreshBell(true)
                 }
             }
             const { screen, ...params } = item.clickAction;
@@ -105,29 +131,21 @@ const Notification = ({ navigation, route }) => {
     const filteredSections = [
         {
             title: headerTitle.today,
-            data: notificationList.filter((item) => moment(item.sentOn).isSame(now, 'day')),
+            data: notificationList?.filter((item) => moment(item.sentOn).isSame(now, 'day')),
         },
         {
             title: headerTitle.thisWeek,
-            data: notificationList.filter((item) => !moment(item.sentOn).isSame(now, 'day') && moment(item.sentOn).isSame(now, 'week')),
+            data: notificationList?.filter((item) => !moment(item.sentOn).isSame(now, 'day') && moment(item.sentOn).isSame(now, 'week')),
         },
         {
             title: headerTitle.older,
-            data: notificationList.filter((item) => !moment(item.sentOn).isSame(now, 'day') && !moment(item.sentOn).isSame(now, 'week')),
+            data: notificationList?.filter((item) => !moment(item.sentOn).isSame(now, 'day') && !moment(item.sentOn).isSame(now, 'week')),
         },
     ].filter((section) => section.data.length > 0);
 
-    const onEndReached = () => {
-        if (page < maxPage) {
-            setListUpdating(true)
-            setPage((prev) => prev + 1)
-        }
-    }
-
     const onBack = () => {
-        navigation.navigate('MainScreen', refreshBell)
-    }
-
+        navigation.goBack({ refreshBell: !refreshBell });
+    };
 
     return (
         <View style={styles.container}>

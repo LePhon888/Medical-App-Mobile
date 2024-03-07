@@ -4,9 +4,14 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import 'moment/locale/vi';
 import moment from 'moment';
 import COLORS from '../../constants/colors';
-import { faL } from '@fortawesome/free-solid-svg-icons';
+import Feather from "react-native-vector-icons/Feather";
+import Loading from "../Loading"
+
 import Apis, { endpoints } from '../../config/Apis';
 import { Alert } from 'react-native';
+import BottomSheet from '../BottomSheet';
+import Toast from 'react-native-toast-message';
+import ToastConfig from '../ToastConfig';
 
 const StarRating = ({ rating, onSelectStar }) => {
     const stars = [1, 2, 3, 4, 5];
@@ -32,7 +37,7 @@ const StarRating = ({ rating, onSelectStar }) => {
 };
 
 const RatingContent = ({ doctorId, userId, ratingStats, listRating, doctorRating, enableRating, refreshRating }) => {
-
+    console.log(enableRating)
     const [isShowPopup, setShowPopup] = useState(false)
     const [isSubmitted, setSubmitted] = useState(false)
 
@@ -77,8 +82,8 @@ const RatingContent = ({ doctorId, userId, ratingStats, listRating, doctorRating
         return colors[index];
     };
 
-    const togglePopup = (isShow) => {
-        setShowPopup(isShow)
+    const togglePopup = () => {
+        setShowPopup(!isShowPopup)
         setSubmitted(false)
     }
 
@@ -91,10 +96,10 @@ const RatingContent = ({ doctorId, userId, ratingStats, listRating, doctorRating
             setSubmitted(true);
             const res = await Apis.post(endpoints["rating"], ratingSubmitted);
 
+
             if (res.status === 200) {
                 // Successful response, handle as needed
                 setRatingSubmitted(prevRating => ({ ...prevRating, comment: '', star: 5 }));
-                Alert.alert("Thông báo", "Thêm đánh giá mới thành công");
                 togglePopup(false)
                 refreshRating()
             } else {
@@ -128,7 +133,7 @@ const RatingContent = ({ doctorId, userId, ratingStats, listRating, doctorRating
             </View>
             {/* Add new rating, only visible based on the prop enableRating */}
             {enableRating && (
-                <TouchableOpacity style={{ marginBottom: 25 }} onPress={() => togglePopup(true)}>
+                <TouchableOpacity style={{ marginBottom: 25 }} onPress={() => togglePopup()}>
                     <Text style={{ color: COLORS.primary, fontWeight: 'bold', textAlign: 'center' }}>+ Thêm đánh giá</Text>
                 </TouchableOpacity>
             )}
@@ -169,29 +174,25 @@ const RatingContent = ({ doctorId, userId, ratingStats, listRating, doctorRating
             ))}
 
             {/* popup add */}
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={isShowPopup}
-                onRequestClose={() => togglePopup(false)}>
-                <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center' }}>
-                    {/* Overlay */}
-                    <TouchableWithoutFeedback onPress={() => togglePopup(false)}>
-                        <View style={styles.modalOverlay} />
-                    </TouchableWithoutFeedback>
-                    <View style={styles.popupContainer}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                            <Text style={styles.title}>Đánh Giá Bác Sĩ</Text>
-                            <FontAwesome name='close' style={{ marginLeft: 'auto', padding: 5, }} size={22} color={COLORS.textLabel} onPress={() => togglePopup(false)} />
-                        </View>
-
+            <BottomSheet visible={isShowPopup} onClose={() => togglePopup()}>
+                <View>
+                    {/* Popup Header */}
+                    <View style={{ flexDirection: 'row' }}>
+                        <Text style={styles.popupTitle}>Thêm đánh giá bác sỹ</Text>
+                        <TouchableOpacity style={{ marginLeft: 'auto' }} onPress={() => togglePopup()}>
+                            <Feather name="x" size={24} color={COLORS.textLabel} />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.line}></View>
+                    {/* Popup Body */}
+                    <View style={styles.formContainer}>
                         <Text style={styles.label}>Đánh giá chất lượng bác sĩ</Text>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <StarRating
                                 rating={ratingSubmitted.star}
                                 onSelectStar={handleStarSelection}
                             />
-                            <Text style={{ marginLeft: 10, color: 'red', fontSize: 14 }}>
+                            <Text style={{ marginLeft: 10, color: COLORS.toastError, fontSize: 14, fontWeight: 'bold' }}>
                                 {ratingSubmitted.star === 1 && 'Rất tệ'}
                                 {ratingSubmitted.star === 2 && 'Tệ'}
                                 {ratingSubmitted.star === 3 && 'Bình thường'}
@@ -199,7 +200,9 @@ const RatingContent = ({ doctorId, userId, ratingStats, listRating, doctorRating
                                 {ratingSubmitted.star === 5 && 'Xuất sắc'}
                             </Text>
                         </View>
+                    </View>
 
+                    <View style={styles.formContainer}>
                         <Text style={styles.label}>Nhận xét và góp ý</Text>
                         <TextInput
                             style={styles.ratingInput}
@@ -211,12 +214,15 @@ const RatingContent = ({ doctorId, userId, ratingStats, listRating, doctorRating
                             maxLength={250}
                         />
                         <Text style={{ marginTop: 10, textAlign: "right", color: 'gray', fontSize: 13 }}>{`${ratingSubmitted.comment.length}/250`}</Text>
-                        <TouchableOpacity style={styles.ratingButton} onPress={submit} disabled={isSubmitted}>
-                            <Text style={styles.ratingButtonText}>Hoàn tất đánh giá</Text>
-                        </TouchableOpacity>
+
                     </View>
+                    {/* Popup Footer */}
+                    <TouchableOpacity style={styles.ratingButton} onPress={submit} disabled={isSubmitted}>
+                        <Text style={styles.ratingButtonText}>Hoàn tất đánh giá</Text>
+                    </TouchableOpacity>
                 </View>
-            </Modal>
+            </BottomSheet>
+            {isSubmitted && <Loading transparent={true} />}
         </View>
     );
 };
@@ -297,7 +303,7 @@ const styles = StyleSheet.create({
     initialText: {
         fontSize: 14,
         fontWeight: 'bold',
-        color: '#FFF', // Text color for initials
+        color: '#FFF',
     },
     ratingStatsContainer: {
         flexDirection: 'row', alignItems: 'center',
@@ -337,10 +343,11 @@ const styles = StyleSheet.create({
         backgroundColor: 'white'
     },
     ratingButton: {
-        backgroundColor: COLORS.primary,
+
+        backgroundColor: '#2d86f3',
         padding: 12,
-        borderRadius: 10,
-        alignSelf: 'center'
+        borderRadius: 5,
+        marginBottom: 15
     },
     modalOverlay: {
         ...StyleSheet.absoluteFillObject,
@@ -353,12 +360,11 @@ const styles = StyleSheet.create({
     },
     ratingInput: {
         borderWidth: 1,
-        borderColor: '#e5e7eb',
-        paddingVertical: 20,
-        paddingHorizontal: 20,
-        fontSize: 13,
+        borderColor: "#d0d6dd",
+        paddingVertical: 16,
+        paddingHorizontal: 16,
         backgroundColor: 'white',
-        borderRadius: 12,
+        borderRadius: 5,
     },
     ratingButtonText: {
         textAlign: 'center',
@@ -369,27 +375,27 @@ const styles = StyleSheet.create({
     label: {
         color: COLORS.textLabel,
         fontSize: 14,
-        fontWeight: '700',
-        marginVertical: 15,
+        fontWeight: "bold",
+        marginBottom: 10
     },
-    title: {
-        fontSize: 15,
-        color: COLORS.textLabel,
+    popupTitle: {
+        fontSize: 18,
         textAlign: 'center',
+        color: COLORS.textLabel,
         fontWeight: 'bold',
         marginLeft: 'auto'
     },
-    popupContainer: {
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        backgroundColor: 'white',
-        padding: 15,
-        elevation: 10,
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        zIndex: 101,
+    line: {
+        width: '100%',
+        borderBottomColor: 'gray',
+        borderWidth: 0.3,
+        opacity: 0.2,
+        marginVertical: 16,
     },
+    formContainer: {
+        marginHorizontal: 10,
+        marginBottom: 16
+    }
 });
 
 export default RatingContent;

@@ -8,6 +8,7 @@ import COLORS from "../constants/colors";
 import { useRef } from "react";
 import moment from "moment";
 import { useNavigation } from "@react-navigation/native";
+import { Swipeable } from "react-native-gesture-handler";
 
 
 const config = {
@@ -50,8 +51,11 @@ const config = {
             </View>
             <Text style={styles.notificationTitle}>{props.title}</Text>
             <Text style={styles.notificationBody}>{props.body}</Text>
-        </TouchableOpacity>
-    )
+            <TouchableOpacity style={styles.closeButton} onPress={props.hide}>
+                <Text style={styles.buttonText}>Bỏ qua</Text>
+            </TouchableOpacity>
+        </TouchableOpacity>)
+
 
 };
 
@@ -81,9 +85,9 @@ const styles = StyleSheet.create({
     notificationContainer: {
         width: '95%',
         paddingHorizontal: 16,
-        backgroundColor: 'white',
+        backgroundColor: '#FFFFF0',
         paddingVertical: 10,
-        borderRadius: 8,
+        borderRadius: 15,
         elevation: 5,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
@@ -118,17 +122,16 @@ const styles = StyleSheet.create({
         marginBottom: 7
     },
     appName: {
-        color: '#0080b2'
+
     },
     closeButton: {
-        marginTop: 8,
         marginLeft: 'auto'
     },
     buttonText: {
         color: '#0080b2',
         fontSize: 15,
         fontWeight: '500'
-    }
+    },
 });
 
 const ToastConfig = () => {

@@ -73,6 +73,10 @@ const MedicationBox = ({ navigation, route }) => {
         navigation.goBack()
     }
 
+    const navigateHistoryMedication = () => {
+        navigation.navigate('HistoryMedication')
+    }
+
     const getscheduleTimes = async () => {
         try {
             setFetched(false);
@@ -222,7 +226,7 @@ const MedicationBox = ({ navigation, route }) => {
                     {/* Header title */}
                     <Text style={styles.headerTitle}>Nhắc nhở uống thuốc</Text>
                     {/* History button */}
-                    <TouchableOpacity style={{ ...styles.backButton, marginLeft: 'auto' }}>
+                    <TouchableOpacity style={{ ...styles.backButton, marginLeft: 'auto' }} onPress={() => navigateHistoryMedication()}>
                         <FontAwesome name='history' size={20} color={'white'} />
                     </TouchableOpacity>
                 </View>
@@ -586,7 +590,6 @@ const styles = StyleSheet.create({
         width: '100%'
     },
     listItem: {
-        borderColor: 'red',
         borderWidth: 1,
         marginHorizontal: 16,
         marginVertical: 7,
