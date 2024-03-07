@@ -12,11 +12,13 @@ export const data = [
 export const categoryIcons = [
     {
         path: require('../assets/images/health.png'),
-        text: 'Sức khỏe của tôi'
+        text: 'Sức khỏe của tôi',
+        nav: 'AppointmentList'
     },
     {
         path: require('../assets/images/drugs.png'),
-        text: 'Thư viện thuốc'
+        text: 'Thư viện thuốc',
+        nav: 'MedicineList'
     },
     {
         path: require('../assets/images/first-aid-kit.png'),
@@ -24,11 +26,13 @@ export const categoryIcons = [
     },
     {
         path: require('../assets/images/medical-history.png'),
-        text: 'Lịch sử đăng ký'
+        text: 'Lịch sử đăng ký',
+        nav: 'AppointmentList'
     },
     {
         path: require('../assets/images/medical-report.png'),
-        text: 'Đăng ký khám'
+        text: 'Đăng ký khám',
+        nav: 'AppointmentRegister'
     },
     {
         path: require('../assets/images/video-call.png'),
@@ -36,11 +40,13 @@ export const categoryIcons = [
     },
     {
         path: require('../assets/images/medicine.png'),
-        text: 'Hộp thuốc cá nhân'
+        text: 'Hộp thuốc cá nhân',
+        nav: 'MedicationBox'
     },
     {
         path: require('../assets/images/customer-behavior.png'),
-        text: 'Tùy chọn'
+        text: 'Tùy chọn',
+        nav: 'Setting'
     },
 ]
 export const dataCategoryNews = [

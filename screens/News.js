@@ -1,17 +1,48 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Dimensions, SafeAreaView, View, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import HeaderWithBackButton from '../common/HeaderWithBackButton';
 import COLORS from '../constants/colors';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { category, dataNews, newsItems } from '../config/data';
+import { dataNews, newsItems } from '../config/data';
+import Apis, { endpoints } from "../config/Apis";
 import Premium from '../components/Premium';
+import { ActivityIndicator } from "react-native";
+import { formatDateMilisecond } from '../config/date';
 
 const CARD_WIDTH = Math.min(Dimensions.get('screen').width * 0.84, 400);
 
-export default function News() {
+export default function News({ navigation }) {
   const [value, setValue] = React.useState(0);
+  const [news, setNews] = useState();
+  const [category, setCategory] = useState();
+  const [selectedCategory, setSelectedCategory] = useState(1394);
+  const [newsByCategory, setNewsByCategory] = useState();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const resCategory = await Apis.get(endpoints["category"])
+        const response = await Apis.get(endpoints["news"]);
+        setCategory(resCategory.data);
+        setNews(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, [])
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await Apis.get(`${endpoints["postBycategory"]}${selectedCategory}`)
+        setNewsByCategory(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, [selectedCategory])
 
   return (
     <View style={{ flex: 1, backgroundColor: '#fff', marginBottom: 40 }}>
@@ -27,28 +58,14 @@ export default function News() {
           </View>
           {/* category */}
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} nestedScrollEnabled={true}>
-            {category.map(({ name }, index) => {
+            {category && category.map(({ id, name }, index) => {
               const isActive = index === value;
               return (
-                <TouchableOpacity
-                  key={name}
-                  onPress={() => {
-                    setValue(index);
-                  }}
-                  style={[
-                    styles.tabsItemWrapper,
-                    isActive && { color: COLORS.white, backgroundColor: COLORS.primary },
-                  ]}>
+                <TouchableOpacity key={id} onPress={() => { setValue(index); setSelectedCategory(id); }}
+                  style={[styles.tabsItemWrapper, isActive && { color: COLORS.white, backgroundColor: COLORS.primary },]}>
                   <View style={styles.tabsItem}>
-                    <Text
-                      style={[
-                        styles.tabsItemText,
-                        isActive && { color: COLORS.white }
-                      ]}>
-                      {name}
-                    </Text>
+                    <Text style={[styles.tabsItemText, isActive && { color: COLORS.white }]}>{name}</Text>
                   </View>
-
                   {isActive && <View style={styles.tabsItemLine} />}
                 </TouchableOpacity>
               );
@@ -58,35 +75,33 @@ export default function News() {
         {/* List news */}
         <View style={styles.list}>
           <ScrollView contentContainerStyle={styles.listContent} horizontal={true} showsHorizontalScrollIndicator={false} nestedScrollEnabled={true}>
-            {dataNews.map(({ img, name, category, time }, index) => {
+            {news ? news.map((item, index) => {
               return (
                 <TouchableOpacity
                   key={index}
-                  onPress={() => {
-                    // handle onPress
-                  }}>
+                  onPress={() => navigation.navigate("NewsDetail", item)}
+                >
                   <View style={styles.card}>
-
                     <View style={styles.cardBody}>
                       <View style={{ height: '80%' }}>
-                        <Text style={{ color: '#e67a32', fontWeight: 500, marginBottom: 2, textTransform: 'uppercase', fontSize: 13 }}>{category}</Text>
-                        <Text style={styles.cardTitle}>{name}</Text>
+                        <Text style={{ color: '#e67a32', fontWeight: 500, marginBottom: 2, textTransform: 'uppercase', fontSize: 13 }}>{item.category.name}</Text>
+                        <Text style={styles.cardTitle}>{item.header}</Text>
                       </View>
                       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <Text style={styles.cardSubtitle}>{time}</Text>
+                        <Text style={styles.cardSubtitle}>{new Date(parseInt(item.createdDate)).toLocaleDateString('vi')}</Text>
                         <FontAwesome name="bookmark-o" size={18} />
                       </View>
                     </View>
-                    <Image alt="img" source={{ uri: img }} style={styles.cardCover} />
+                    <Image alt="img" source={{ uri: item.image }} style={styles.cardCover} />
 
                   </View>
                 </TouchableOpacity>
               );
-            })}
+            }) : <ActivityIndicator size="large" color={COLORS.primary} style={{ marginTop: 50 }} />}
           </ScrollView>
         </View>
         {/* Premium list */}
-        <TouchableOpacity style={{ backgroundColor: "#dff9fb", paddingBottom: 20 }}>
+        {/* <TouchableOpacity style={{ backgroundColor: "#dff9fb", paddingBottom: 20 }}>
           <Premium size='large' />
           <Text style={{ fontSize: 16, color: '#243b58', marginHorizontal: 20, marginVertical: 16 }}>Các thông tin sức khỏe đặc biệt được nghiên cứu và tham vấn y khoa</Text>
           <ScrollView contentContainerStyle={styles.listContentNews} horizontal={true} showsHorizontalScrollIndicator={false} nestedScrollEnabled={true}>
@@ -98,12 +113,6 @@ export default function News() {
                     // handle onPress
                   }}>
                   <View style={styles.newsCard}>
-
-                    {/* <View style={styles.cardBody}>
-                      <View style={{ height: '80%' }}>
-                        <Text style={styles.cardTitle}>{name}</Text>
-                      </View>
-                    </View> */}
                     <Image alt="" source={{ uri: img }} style={{ width: '100%', height: 222, borderRadius: 16 }} />
                     <View style={{
                       position: 'absolute',
@@ -133,16 +142,16 @@ export default function News() {
               );
             })}
           </ScrollView>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         {/* Recent news */}
         <View>
           <View style={{ marginTop: 8 }}>
             <View style={{ marginTop: 18, flexDirection: 'row', marginLeft: 14 }}>
               <MaterialCommunityIcons name="chart-bell-curve-cumulative" size={22} style={{ marginTop: 2 }} />
-              <Text style={{ fontSize: 20, fontWeight: 600, marginLeft: 13 }}>Bài viết mới nhất</Text>
+              <Text style={{ fontSize: 20, fontWeight: 600, marginLeft: 13 }}>Các bài viết theo chuyên mục</Text>
             </View>
             <View style={{ marginLeft: 16, marginVertical: 5 }}>
-              {newsItems.map(({ img, title, author, authorImg, tag, date }, index) => {
+              {newsByCategory ? newsByCategory.map((item, index) => {
                 return (
                   index == 0 ?
                     <TouchableOpacity key={index} style={{
@@ -151,7 +160,8 @@ export default function News() {
                       borderBottomWidth: 0.7,
                       paddingBottom: 30,
                       marginTop: 14
-                    }}>
+                    }}
+                      onPress={() => navigation.navigate("NewsDetail", item)}>
                       <View style={{
                         flexDirection: 'column',
                         alignItems: 'stretch',
@@ -164,7 +174,7 @@ export default function News() {
                         <Image
                           alt=""
                           resizeMode="cover"
-                          source={{ uri: img }}
+                          source={{ uri: item.image }}
                           style={{ width: '96%', height: 220, borderRadius: 10 }}
                         />
 
@@ -175,7 +185,8 @@ export default function News() {
                           flexDirection: 'column',
                           justifyContent: 'flex-start',
                           alignItems: 'flex-start',
-                          marginTop: 10
+                          marginTop: 10,
+                          marginRight: 10
                         }}>
                           <Text style={{
                             fontWeight: "500",
@@ -183,26 +194,25 @@ export default function News() {
                             marginBottom: 7,
                             textTransform: "capitalize",
                             color: '#fb741a'
-                          }}>{tag}</Text>
+                          }}>{item.category.name}</Text>
 
-                          <Text style={styles.cardTitleNews}>{title}</Text>
+                          <Text style={styles.cardTitleNews}>{item.header}</Text>
 
                           <View style={styles.cardRowNews}>
                             <View style={styles.cardRowItemNews}>
                               <Image
                                 alt=""
-                                source={{ uri: authorImg }}
+                                source={{ uri: item.authorImage ? item.authorImage : item.image }}
                                 style={styles.cardRowItemImgNews}
                               />
 
-                              <Text style={styles.cardRowItemTextNews}>{author}</Text>
+                              <Text style={styles.cardRowItemTextNews}>{item.author}</Text>
                             </View>
 
                             <Text style={styles.cardRowDividerNews}>·</Text>
 
                             <View style={styles.cardRowItemNews}>
-                              <Text style={styles.cardRowItemTextNews}>{date}</Text>
-
+                              <Text style={styles.cardRowItemTextNews}>{new Date(parseInt(item.createdDate)).toLocaleDateString('vi')}</Text>
                             </View>
                           </View>
                           <FontAwesome name="bookmark-o" size={19} style={{ position: 'absolute', right: 20, bottom: -20 }} />
@@ -211,9 +221,7 @@ export default function News() {
                     </TouchableOpacity> :
                     <TouchableOpacity
                       key={index}
-                      onPress={() => {
-                        // handle onPress
-                      }}
+                      onPress={() => navigation.navigate("NewsDetail", item)}
                       style={{
                         borderBottomColor: '#f3f4f6',
                         borderBottomWidth: 0.7,
@@ -224,31 +232,30 @@ export default function News() {
                         <Image
                           alt=""
                           resizeMode="cover"
-                          source={{ uri: img }}
+                          source={{ uri: item.image }}
                           style={styles.cardImgNews}
                         />
 
                         <View style={styles.cardBodyNews}>
-                          <Text style={styles.cardTagNews}>{tag}</Text>
+                          <Text style={styles.cardTagNews}>{item.category.name}</Text>
 
-                          <Text style={styles.cardTitleNews}>{title}</Text>
+                          <Text style={styles.cardTitleNews}>{item.header}</Text>
 
                           <View style={styles.cardRowNews}>
                             <View style={styles.cardRowItemNews}>
                               <Image
                                 alt=""
-                                source={{ uri: authorImg }}
+                                source={{ uri: item.authorImage ? item.authorImage : item.image }}
                                 style={styles.cardRowItemImgNews}
                               />
 
-                              <Text style={styles.cardRowItemTextNews}>{author}</Text>
+                              <Text style={styles.cardRowItemTextNews}>{item.author}</Text>
                             </View>
 
                             <Text style={styles.cardRowDividerNews}>·</Text>
 
                             <View style={styles.cardRowItemNews}>
-                              <Text style={styles.cardRowItemTextNews}>{date}</Text>
-
+                              <Text style={styles.cardRowItemTextNews}>{new Date(parseInt(item.createdDate)).toLocaleDateString('vi')}</Text>
                             </View>
                           </View>
                           <FontAwesome name="bookmark-o" size={19} style={{ position: 'absolute', right: 20, bottom: 4 }} />
@@ -256,11 +263,11 @@ export default function News() {
                       </View>
                     </TouchableOpacity>
                 );
-              })}
+              }) : <ActivityIndicator size="large" color={COLORS.primary} style={{ marginTop: 50 }} />}
             </View>
           </View>
         </View>
-      </ScrollView>
+      </ScrollView >
     </View >
   );
 }

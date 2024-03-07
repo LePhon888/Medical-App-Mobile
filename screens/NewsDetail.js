@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -7,102 +7,56 @@ import {
   Text,
   Image,
   TouchableOpacity,
+  Slider
 } from "react-native";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { useRoute } from "@react-navigation/native";
 import COLORS from "../constants/colors";
-import axios from "axios";
+import Apis from "../config/Apis";
 import "url-search-params-polyfill";
 import HeaderWithBackButton from "../common/HeaderWithBackButton";
+import RenderHtml from 'react-native-render-html';
+import { useWindowDimensions } from 'react-native';
+import { HTMLParser } from 'react-native-html-parser';
+import Sound from 'react-native-sound';
+import Button from "../components/Button";
+import axios from "axios";
+import { decode } from 'base-64';
 
-export default function NewsDetail({ navigation }) {
-  const route = useRoute();
-  // const { news } = route.params;
-  const news = {
-    image: 'https://plus.unsplash.com/premium_photo-1663050986883-a5bdd99a7fa5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2362&q=80',
-    header: 'Cách hạ huyết áp cho người lớn tuổi dễ thực hiện, hiệu quả cao',
-    author: 'Emily Chen',
-    authorImg:
-      'https://images.unsplash.com/photo-1515621061946-eff1c2a352bd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1389&q=80',
-    tag: 'Tăng huyết áp',
-    content: 'Ăn uống các loại thực phẩm giúp làm giảm và tiêu đờm Cách tống đờm ra khỏi cổ họng đó là tăng cường tiêu thụ thực phẩm và đồ uống có chứa chanh, gừng và tỏi.Những thực phẩm này có thể hỗ trợ điều trị cảm lạnh, ho và đờm.Thực phẩm cay có chứa capsaicin, chẳng hạn như ớt cayenne hoặc ớt, cũng có thể giúp làm sạch xoang tạm thời và tống đờm ra ngoài khỏi cổ họng.Ngoài ra, món súp gà có thể mang lại nhiều lợi ích trong việc điều trị cảm lạnh và loại bỏ đờm dư thừa.Điều này là do súp gà làm chậm chuyển động của bạch cầu trung tính trong cơ thể bạn.Khi di chuyển chậm, bạch cầu trung tính sẽ ở lại những vùng bị nhiễm trùng lâu hơn, giúp chống lại nhiễm trùng. Ăn uống các loại thực phẩm giúp làm giảm và tiêu đờm Cách tống đờm ra khỏi cổ họng đó là tăng cường tiêu thụ thực phẩm và đồ uống có chứa chanh, gừng và tỏi.Những thực phẩm này có thể hỗ trợ điều trị cảm lạnh, ho và đờm.Thực phẩm cay có chứa capsaicin, chẳng hạn như ớt cayenne hoặc ớt, cũng có thể giúp làm sạch xoang tạm thời và tống đờm ra ngoài khỏi cổ họng.Ngoài ra, món súp gà có thể mang lại nhiều lợi ích trong việc điều trị cảm lạnh và loại bỏ đờm dư thừa.Điều này là do súp gà làm chậm chuyển động của bạch cầu trung tính trong cơ thể bạn.Khi di chuyển chậm, bạch cầu trung tính sẽ ở lại những vùng bị nhiễm trùng lâu hơn, giúp chống lại nhiễm trùng.',
-    date: '11/12/2023',
+export default function NewsDetail({ navigation, route }) {
+  const news = route.params;
+  const { width } = useWindowDimensions();
+  const source = {
+    html: `${news?.content}`
   };
+  const initialFontSize = 16;
+  const [fontSize, setFontSize] = useState(initialFontSize);
+  const [clickCount, setClickCount] = useState(0);
+  const [audioBase64, setAudioBase64] = useState();
   const [header, setHeader] = useState(null);
-  const [content, setContent] = useState(null);
-  const [currentLanguage, setCurrentLanguage] = useState("en");
-
-  const encodedParams = new URLSearchParams();
-  encodedParams.set("source_language", "en");
-  encodedParams.set("target_language", "vi");
-  encodedParams.set("text", news.header);
-
-  const translate = async () => {
-    try {
-      const sourceLanguage = currentLanguage === "en" ? "en" : "vi";
-      const targetLanguage = currentLanguage === "en" ? "vi" : "en";
-
-      const headerParams = new URLSearchParams();
-      headerParams.set("source_language", sourceLanguage);
-      headerParams.set("target_language", targetLanguage);
-      headerParams.set("text", news.header);
-
-      const contentParams = new URLSearchParams();
-      contentParams.set("source_language", sourceLanguage);
-      contentParams.set("target_language", targetLanguage);
-      contentParams.set("text", news.content);
-
-      const headerOptions = {
-        method: "POST",
-        url: "https://text-translator2.p.rapidapi.com/translate",
-        headers: {
-          "content-type": "application/x-www-form-urlencoded",
-          "X-RapidAPI-Key":
-            "0d190faf13msh1adb3499dd9a912p1e3358jsn7cdb1d58159a",
-          "X-RapidAPI-Host": "text-translator2.p.rapidapi.com",
-        },
-        data: headerParams,
-      };
-
-      const contentOptions = {
-        method: "POST",
-        url: "https://text-translator2.p.rapidapi.com/translate",
-        headers: {
-          "content-type": "application/x-www-form-urlencoded",
-          "X-RapidAPI-Key":
-            "0d190faf13msh1adb3499dd9a912p1e3358jsn7cdb1d58159a",
-          "X-RapidAPI-Host": "text-translator2.p.rapidapi.com",
-        },
-        data: contentParams,
-      };
-
-      const headerResponse = await axios.request(headerOptions);
-      const contentResponse = await axios.request(contentOptions);
-
-      const halfwayIndex = Math.floor(
-        contentResponse.data.data.translatedText.length / 2
-      );
-      const trimmedContent = contentResponse.data.data.translatedText.slice(
-        0,
-        halfwayIndex
-      );
-
-      setHeader(headerResponse.data.data.translatedText);
-      setContent(trimmedContent);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const toggleLanguage = () => {
-    setCurrentLanguage((prevLanguage) => (prevLanguage === "en" ? "vi" : "en"));
-    translate();
-  };
+  const [audioPlayer, setAudioPlayer] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [sliderValue, setSliderValue] = useState(0);
+  var htmlRegexG = /<(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+>/g;
+  var modifiedContent = news.content.replace(htmlRegexG, '').replace(/undefined/g, '').replace(/&nbsp;/g, '').replace(/\s+/g, ' ');
+  const chunkSize = 3000;
 
   const customIcons = [
-    <MaterialCommunityIcons name="format-letter-case" size={23} />,
+    <MaterialCommunityIcons
+      name="format-letter-case"
+      size={23}
+      onPress={() => {
+        setClickCount(prevCount => prevCount + 1);
+
+        if (clickCount >= 2) {
+          setFontSize(initialFontSize);
+          setClickCount(0);
+        } else {
+          setFontSize(prevSize => prevSize + 5);
+        }
+      }}
+    />,
     <FontAwesome name="bookmark-o" size={19} />,
     <FeatherIcon color="#242329" name="share" size={19} />
   ];
@@ -110,7 +64,7 @@ export default function NewsDetail({ navigation }) {
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <View >
         <SafeAreaView>
-          <HeaderWithBackButton title={'Tin tức'} customIcons={customIcons} />
+          <HeaderWithBackButton title={'Tin tức'} customIcons={customIcons} navigation={navigation} />
         </SafeAreaView>
       </View>
 
@@ -134,7 +88,6 @@ export default function NewsDetail({ navigation }) {
           <Text style={styles.headerTitle}>
             {header ? header : news.header}
           </Text>
-
           <View style={styles.headerRow}>
             <View style={styles.headerLocation}>
               <Text style={styles.headerLocationText}>
@@ -154,7 +107,7 @@ export default function NewsDetail({ navigation }) {
           >
             <FeatherIcon color="#242329" name="calendar" size={16} />
             <Text style={styles.pickerDatesText}>
-              Ngày phát hành: {news.date}
+              Ngày phát hành: <Text style={styles.cardRowItemTextNews}>{new Date(parseInt(news.createdDate)).toLocaleDateString('vi')}</Text>
             </Text>
           </TouchableOpacity>
         </View>
@@ -162,10 +115,18 @@ export default function NewsDetail({ navigation }) {
           <View style={styles.statsItem}></View>
         </View>
         <View style={styles.about}>
-          <Text style={styles.aboutDescription}>
+          {/* <Text style={styles.aboutDescription}>
             {content ? content : news.content}
-          </Text>
+          </Text> */}
+          <RenderHtml
+            contentWidth={width}
+            source={source}
+            tagsStyles={{ div: { fontSize }, span: { fontSize } }}
+          />
         </View>
+        <View>
+        </View>
+
       </ScrollView>
     </View>
   );

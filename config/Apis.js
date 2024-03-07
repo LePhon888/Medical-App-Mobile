@@ -5,10 +5,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // const SERVER = "http://localhost:8080";
 
-const SERVER = "http://192.168.1.14:8080";
-const CHATBOT = "http://192.168.1.14:8000";
-const FIREBASEMODULE = "http://192.168.1.14:8085"
-//const SERVER = "http://medicalapp.com";
+const SERVER = "http://192.168.1.7:8080";
+const CHATBOT = "http://192.168.1.7:8000";
 
 export const endpoints = {
   login: `${SERVER}/auth/login`,
@@ -23,7 +21,7 @@ export const endpoints = {
   payment: `${SERVER}/api/payment/create-payment`,
   user: `${SERVER}/api/user`,
   websocket: `${SERVER}/ws`,
-  news: `${SERVER}/api/scrape`,
+  news: `${SERVER}/api/post`,
   googleLogin: `${SERVER}/login-google/auth-google`,
   chatbot: `${CHATBOT}/api/get/`,
   medicine: `${SERVER}/api/medicine`,
@@ -32,7 +30,9 @@ export const endpoints = {
   scheduleTime: `${SERVER}/api/schedule-time`,
   scheduleTimeDetail: `${SERVER}/api/schedule-time-detail`,
   userDevice: `${FIREBASEMODULE}/api/user-device`,
-  notification: `${FIREBASEMODULE}/api/notification`
+  notification: `${FIREBASEMODULE}/api/notification`,
+  category: `${SERVER}/api/category`,
+  postBycategory: `${SERVER}/api/post/`,
 };
 
 // export const authApi = async () => {

@@ -7,7 +7,7 @@ import COLORS from "../constants/colors";
 import { useState } from "react";
 import { medicines } from '../config/data';
 
-export default function MedicineList() {
+export default function MedicineList({ navigation }) {
     const [searchQuery, setSearchQuery] = useState('');
 
     const handleSearch = (text) => {
@@ -26,7 +26,7 @@ export default function MedicineList() {
                         <Text style={{ marginHorizontal: 10 }}>Chuyên mục</Text>
                     </View>
                 ]
-            } />
+            } navigation={navigation} />
             <View style={{ flexDirection: 'row', borderWidth: 1, borderColor: '#ccc', marginHorizontal: 12, paddingVertical: 10, borderRadius: 10, marginBottom: 10, marginTop: 10 }}>
                 <AntDesign name="search1" size={21} color={COLORS.black} style={{ marginLeft: 15, marginTop: 3 }} />
                 <TextInput

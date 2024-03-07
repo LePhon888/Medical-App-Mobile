@@ -87,7 +87,7 @@ const Home = ({ navigation, route }) => {
               alignItems: 'center',
               margin: 6
             }}
-              onPress={() => navigation.navigate("MedicationBox")}
+              onPress={() => navigation.navigate(item.nav)}
             >
               <Image source={item.path} style={{ width: 32, height: 32, marginBottom: 3 }} />
               <Text style={{ textAlign: 'center' }}>{item.text}</Text>
@@ -187,7 +187,7 @@ const Home = ({ navigation, route }) => {
         <View style={style.header}>
           <View style={{ marginTop: 4 }}><Text style={{ color: COLORS.white, fontSize: 20, fontWeight: 700 }}>Chào bạn !</Text></View>
           <View style={{ flexDirection: 'row' }}>
-            <View style={{ padding: 6, backgroundColor: COLORS.white, width: 40, height: 40, marginRight: 10, borderRadius: 50 }}>
+            {/* <View style={{ padding: 6, backgroundColor: COLORS.white, width: 40, height: 40, marginRight: 10, borderRadius: 50 }}>
               <AntDesign name="search1" size={21} color={COLORS.black} style={{ marginLeft: 3, marginTop: 2 }} />
             </View>
             {/* Notification bell */}
