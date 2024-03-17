@@ -5,7 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 //const SERVER = "http://localhost:8080";
 
-const SERVER = "http://192.168.1.14:8080";
+const SERVER = "http://192.168.1.8:8080";
 const CHATBOT = "http://192.168.1.14:8000";
 //const SERVER = "http://medicalapp.com";
 

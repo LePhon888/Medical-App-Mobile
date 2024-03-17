@@ -26,6 +26,7 @@ import ToastConfig from "./components/ToastConfig";
 import { NotificationProvider } from "./context/NotificationContext";
 import { navigationRef } from "./utils/GlobalNavigation";
 import HistoryMedication from "./screens/MedicationSchedule/HistoryMedication";
+import VideoChat from "./screens/VideoChat";
 
 const Stack = createNativeStackNavigator();
 export const UserContext = createContext();
@@ -46,7 +47,7 @@ export default function App() {
   }, []);
 
 
-  const initScreen = 'Login'
+  const initScreen = 'VideoHome'
 
   return (
     <NotificationProvider>
@@ -70,6 +71,7 @@ export default function App() {
               <Stack.Screen name="EditProfile" component={EditProfile} options={{ headerShown: false }} />
               <Stack.Screen name="Doctors" component={Doctors} options={{ headerShown: false }} />
               <Stack.Screen name="DoctorDetail" component={DoctorDetail} options={{ headerShown: false }} />
+              <Stack.Screen name="VideoChat" component={VideoChat} options={{ headerShown: false }} />
               <Stack.Screen name="VideoHome" component={VideoHome} options={{ headerShown: false }} />
               <Stack.Screen name="Call" component={Call} options={{ headerShown: false }} />
               <Stack.Screen name="Category" component={Category} options={{ headerShown: false }} />
