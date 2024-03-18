@@ -3,10 +3,11 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// const SERVER = "http://localhost:8080";
+//const SERVER = "http://localhost:8080";
 
-const SERVER = "http://192.168.1.7:8080";
-const CHATBOT = "http://192.168.1.7:8000";
+const SERVER = "http://192.168.1.8:8080";
+const CHATBOT = "http://192.168.1.14:8000";
+//const SERVER = "http://medicalapp.com";
 
 export const endpoints = {
   login: `${SERVER}/auth/login`,
@@ -29,10 +30,10 @@ export const endpoints = {
   medicationSchedule: `${SERVER}/api/medication-schedule`,
   scheduleTime: `${SERVER}/api/schedule-time`,
   scheduleTimeDetail: `${SERVER}/api/schedule-time-detail`,
-  userDevice: `${FIREBASEMODULE}/api/user-device`,
-  notification: `${FIREBASEMODULE}/api/notification`,
   category: `${SERVER}/api/category`,
   postBycategory: `${SERVER}/api/post/`,
+  userDevice: `${SERVER}/api/user-device`,
+  notification: `${SERVER}/api/notification`
 };
 
 // export const authApi = async () => {

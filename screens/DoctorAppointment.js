@@ -8,332 +8,202 @@ import {
     TouchableOpacity,
     Alert,
     Image,
-    TextInput,
     Button,
+    SectionList,
+    SafeAreaView,
 } from "react-native";
+import { TextInput } from 'react-native-paper';
 import moment from "moment/moment";
-import { Col, Row, Grid } from "react-native-easy-grid";
-import Modal from "react-native-modal";
 import COLORS from "../constants/colors";
 import Icon from "react-native-vector-icons/FontAwesome";
-import RNDateTimePicker from "@react-native-community/datetimepicker";
-import FeatherIcon from "react-native-vector-icons/Feather";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Header from "../common/Header";
+import { useUser } from "../context/UserContext";
+import DateRangePicker from "../components/DateRangePicker";
+import { formatDateMoment } from "../config/date";
+import Loading from "../components/Loading";
 
 const DoctorAppointment = () => {
+    const [tempList, setTempList] = useState([])
     const [appointment, setAppointment] = useState([]);
-    const [selectedRow, setSelectedRow] = useState(null);
     const [isVisible, setVisible] = useState(false);
     const [showDatePicker, setShowDatePicker] = useState(false);
-    const [date, setDate] = useState(moment());
-    const [kw, setKw] = useState("");
-    const [user, setUser] = useState(null);
+    const [searchText, setSearchText] = useState('');
+    const { userId } = useUser()
+    const currentDate = new Date()
+    const [startDate, setStartDate] = useState(new Date())
+    const [endDate, setEndDate] = useState(currentDate.setDate(currentDate.getDate() + 3))
+    const [isFetched, setFetched] = useState(false)
 
     useEffect(() => {
         const getUserAndToken = async () => {
             try {
-                const userInfo = await AsyncStorage.getItem("user");
+                setFetched(false)
                 const tokenInfo = await AsyncStorage.getItem("token");
-                const parsedUser = JSON.parse(userInfo);
-
-                setUser(parsedUser);
-
-                if (parsedUser && tokenInfo) {
-                    const e = `${endpoints["appointment"]}/?userId=${parsedUser.id}`;
-                    const response = await Apis.get(e, {
+                if (userId && tokenInfo) {
+                    const e = `${endpoints["appointment"]}/doctor/${userId}?startDate=${formatDateMoment(moment(startDate))}&endDate=${formatDateMoment(moment(endDate))}`;
+                    const res = await Apis.get(e, {
                         headers: { Authorization: `Bearer ${tokenInfo}` },
                     });
-                    setAppointment(response.data);
-                    console.log(response.data)
+
+                    const groupedData = res.data.reduce((acc, item) => {
+                        const date = item.date;
+                        if (!acc[date]) {
+                            acc[date] = [];
+                        }
+                        acc[date].push(item);
+                        return acc;
+                    }, {});
+
+                    // Convert grouped data to SectionList format
+                    const sections = Object.keys(groupedData).map((date) => ({
+                        title: date,
+                        data: groupedData[date],
+                    }));
+
+                    setAppointment(sections);
+                    setTempList(sections)
+                    console.log(sections)
                 }
             } catch (error) {
                 console.error(error);
+            } finally {
+                setFetched(true)
             }
         };
 
         getUserAndToken();
-    }, []);
+    }, [userId, startDate, endDate]);
 
-    const toggleModal = () => {
-        setVisible(!isVisible);
+    const removeDiacritics = (str) => {
+        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     };
 
-    const handleRowClick = (row) => {
-        setSelectedRow(row);
-        toggleModal();
+    const onChangeSearchText = (text) => {
+        const searchTextWithoutDiacritics = removeDiacritics(text);
+        setSearchText(text);
+
+        // Perform search and update tempList state
+        const filteredAppointments = appointment.map((section) => ({
+            title: section.title,
+            data: section.data.filter((item) =>
+                removeDiacritics(item.patientName.toLowerCase()).includes(searchTextWithoutDiacritics.toLowerCase())
+            ),
+        })).filter((section) => section.data.length > 0);
+
+        setTempList(filteredAppointments);
     };
 
-    const showDatepicker = () => {
-        setShowDatePicker(true);
+
+    const toggleDatePicker = () => {
+        setShowDatePicker(!showDatePicker)
     };
 
-    const handleDateChange = (event, selectedDate) => {
-        setShowDatePicker(false);
-        if (selectedDate) {
-            setDate(moment(selectedDate));
+    const onSelectedDateRange = (startDate, endDate) => {
+        setStartDate(startDate)
+        setEndDate(endDate)
+        if (startDate && endDate) {
+            toggleDatePicker()
         }
-    };
-
-    const clear = () => {
-        setKw(null)
-        setDate(null)
-    };
-
-    const renderFilter = () => {
-        return (
-            <Grid style={{ paddingTop: 5 }}>
-                <Row style={{ alignItems: "center" }}>
-                    <Col style={{ width: "15", padding: 10 }}>
-                        <Text>
-                            <Icon style={{ fontSize: 30 }} name="filter"></Icon>
-                        </Text>
-                    </Col>
-                    <Col style={{ padding: 5 }}>
-                        <Text>Theo ngày</Text>
-                        <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-                            <Text
-                                style={{
-                                    borderWidth: 1,
-                                    borderColor: "gray",
-                                    padding: 5,
-                                    marginTop: 5,
-                                    borderRadius: 5,
-                                }}
-                            >
-                                {date.format("DD-MM-YYYY")}{" "}
-                                <Icon style={{ fontSize: 15 }} name="calendar"></Icon>
-                            </Text>
-                        </TouchableOpacity>
-                    </Col>
-                    <Col style={{ padding: 5 }}>
-                        <Text>Theo tên</Text>
-                        <TextInput
-                            autoCorrect={false}
-                            autoCapitalize="none"
-                            style={{
-                                borderWidth: 1,
-                                borderColor: "gray",
-                                paddingHorizontal: 5,
-                                marginTop: 5,
-                                borderRadius: 5,
-                            }}
-                            value={kw}
-                            onChangeText={(val) => setKw(val)}
-                            placeholder="Nhập tên...."
-                        />
-                    </Col>
-                </Row>
-            </Grid>
-        );
-    };
-
-    const renderPopup = (selectedRow) => {
-        const ModalText = ({ children }) => (
-            <Text style={styles.modalText}>{children}</Text>
-        );
-
-        const TextStatus = ({ children, isConfirmed }) => (
-            <Text
-                style={{
-                    padding: 5,
-                    color: "white",
-                    textAlign: "center",
-                    width: "50%",
-                    borderRadius: 5,
-                    backgroundColor: isConfirmed ? COLORS.primary : COLORS.secondary,
-                }}
-            >
-                {children}
-            </Text>
-        );
-        const updateConfirm = async (selectedRow, isConfirmed) => {
-            try {
-                const e = `${endpoints["appointment"]}/${selectedRow.id}/is-confirm?isConfirm=${isConfirmed}`;
-                console.log(e);
-                const response = await Apis.put(e);
-                console.log(response.status);
-
-                if (response.status === 200) {
-                    Alert.alert("Thông báo", "Cập nhật thành công", [
-                        { text: "OK", onPress: () => toggleModal() },
-                    ]);
-
-                    selectedRow.isConfirm = isConfirmed;
-                } else {
-                    Alert.alert("Thông báo", "Cập nhật thất bại");
-                }
-            } catch (error) {
-                Alert.alert("Thông báo", "Lỗi hệ thống...");
-                console.error(error);
-            }
-        };
-        return (
-            <Modal isVisible={isVisible}>
-                <View style={styles.modalContainer}>
-                    <Text style={styles.modalTitle}>Lịch khám {selectedRow.id}</Text>
-                    <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
-                        <Text style={styles.closeButtonText}>Đóng</Text>
-                    </TouchableOpacity>
-                    <View>
-                        <ModalText>Ngày khám: {moment(selectedRow.date).format("DD-MM-YYYY")}</ModalText>
-                        <ModalText>Giờ khám: {selectedRow.hour.hour}</ModalText>
-                        <ModalText>
-                            Bệnh nhân: {selectedRow.user.firstName}{" "}
-                            {selectedRow.user.lastName}
-                        </ModalText>
-                        <ModalText>Lý do: {selectedRow.reason}</ModalText>
-                        <ModalText>
-                            Bác sỹ khám: {selectedRow.doctor.user.firstName}{" "}
-                            {selectedRow.doctor.user.lastName}
-                        </ModalText>
-                        <TextStatus isConfirmed={selectedRow.isConfirm}>
-                            Trạng thái:{" "}
-                            {selectedRow.isConfirm === 1 ? "Đã duyệt" : "Chờ duyệt"}
-                        </TextStatus>
-                    </View>
-                    <View style={styles.buttonContainer}>
-                        {selectedRow.isConfirm === 0 ? (
-                            <TouchableOpacity
-                                style={styles.acceptButton}
-                                onPress={() => updateConfirm(selectedRow, 1)}
-                            >
-                                <Text style={styles.acceptButtonText}>Duyệt</Text>
-                            </TouchableOpacity>
-                        ) : (
-                            <TouchableOpacity
-                                style={styles.cancelButton}
-                                onPress={() => updateConfirm(selectedRow, 0)}
-                            >
-                                <Text style={styles.cancelButtonText}>Hủy</Text>
-                            </TouchableOpacity>
-                        )}
-                    </View>
-                </View>
-            </Modal>
-        );
-    };
-    const renderAppointment = () => {
-        const filteredAppointments = appointment.filter((a) => {
-            if (kw && kw.length > 0) {
-                const fullName = `${a.user.firstName} ${a.user.lastName}`;
-                return fullName.toLowerCase().includes(kw.toLowerCase());
-            }
-            if (date) {
-                return moment(a.date).isSame(date, "day");
-            }
-            return true;
-        });
-        console.log("filteredAppointments " + filteredAppointments);
-        return filteredAppointments.length === 0 ? (
-            <Text>Danh sách rỗng</Text>
-        ) : (
-            <Grid style={{ padding: 10 }}>
-                <Row></Row>
-                {filteredAppointments.map((a, index) => (
-                    <TouchableOpacity
-                        key={a.id}
-                        style={{
-                            backgroundColor: "white",
-                            padding: 5,
-                            borderRadius: 10,
-                            marginVertical: 5,
-                        }}
-                        onPress={() => handleRowClick(a)}
-                    >
-                        <Row style={{ alignItems: "center" }}>
-                            <Col style={{ width: "15%" }}>
-                                <Image
-                                    source={{
-                                        uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfZTQUVvurX87J2tBgAeq4_oFgv6FBgIOUVXw1b3_YsJaF7c3hE6mQcDMv3AWbM18pdyY&usqp=CAU",
-                                    }}
-                                    style={{
-                                        width: 50,
-                                        height: 50,
-                                        alignSelf: "center",
-                                        marginBottom: 10,
-                                    }}
-                                />
-                            </Col>
-                            <Col style={{ flex: 1, marginLeft: 15, marginTop: 20 }}>
-                                <Text style={{ fontSize: 17 }}>
-                                    {a.user.firstName} {a.user.lastName}
-                                </Text>
-                                <Text
-                                    style={{
-                                        marginVertical: 5,
-                                        color: "#818181",
-                                        fontSize: 14,
-                                        fontWeight: "500",
-                                        paddingRight: 20,
-                                    }}
-                                >
-                                    Lý do hẹn: {a.reason}/
-                                </Text>
-                            </Col>
-                        </Row>
-                        <Row
-                            style={{
-                                flex: 1,
-                                flexDirection: "row",
-                                justifyContent: "space-between",
-                            }}
-                        >
-                            <Text
-                                style={{
-                                    fontSize: 14,
-                                    fontWeight: 500,
-                                    color: "#464646",
-                                    marginVertical: 5,
-                                    textAlign: "left",
-                                    padding: 5,
-                                }}
-                            >
-                                <FeatherIcon color="#464646" name="briefcase" size={14} /> Tình
-                                trạng: {a.isConfirm === 1 ? "Đã xác nhận" : "Chờ xác nhận"}
-                            </Text>
-
-                            <Text
-                                style={{
-                                    fontSize: 14,
-                                    fontWeight: 500,
-                                    color: "#464646",
-                                    marginVertical: 5,
-                                    textAlign: "left",
-                                    padding: 5,
-                                }}
-                            >
-                                <FeatherIcon color="#464646" name="clock" size={14} />{" "}
-                                {a.hour.hour}
-                            </Text>
-                        </Row>
-                    </TouchableOpacity>
-                ))}
-            </Grid>
-        );
-    };
+    }
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.dateText}>
-                <FeatherIcon color="white" name="chevron-left" size={20} />
-                Danh sách lịch khám
-            </Text>
-            <ScrollView>
-                {renderFilter()}
-                {renderAppointment()}
-            </ScrollView>
-            {isVisible && renderPopup(selectedRow)}
+        <SafeAreaView style={styles.container}>
+            <Header title={'Danh sách lịch khám'} />
+            {/* Filter view */}
+            <View style={styles.filterView}>
+                <View style={styles.flexCenter}>
+                    <TextInput
+                        style={styles.searchIpnut}
+                        placeholder={'Tìm theo tên bệnh nhân'}
+                        contentStyle={{ marginLeft: 45, verticalAlign: 'middle', paddingTop: 0, paddingBottom: 0 }}
+                        mode="outlined"
+                        outlineColor={COLORS.grey}
+                        activeOutlineColor={COLORS.grey}
+                        outlineStyle={{ borderRadius: 15, borderWidth: 1 }}
+                        value={searchText}
+                        onChangeText={(text) => onChangeSearchText(text)}
+                        left={<TextInput.Icon icon="magnify" disabled size={20} style={{ marginLeft: 0, backgroundColor: 'transparent' }} />}
+                        right={<TextInput.Icon icon="close-circle" size={20} onPress={() => onChangeSearchText('')} />}
+                    />
+                    <TouchableOpacity style={styles.calenderIcon} onPress={toggleDatePicker}>
+                        <Icon size={20} name="calendar" />
+                    </TouchableOpacity>
+                </View>
+                {startDate && endDate && (
+                    <View style={{ ...styles.flexCenter, marginTop: 15, marginLeft: 5 }}>
+                        <Text style={styles.displayDateRange}>
+                            {`${moment(startDate).format('DD/MM/YYYY')} - ${moment(endDate).format('DD/MM/YYYY')}`}
+                        </Text>
+                        <TouchableOpacity onPress={() => { onSelectedDateRange(null, null); setSearchText('') }}>
+                            <MaterialCommunityIcons name="close-circle" size={18} color={COLORS.textLabel} />
+                        </TouchableOpacity>
+                    </View>
+                )}
+                {isFetched && tempList.length === 0 && <Text style={styles.reason}>Không tìm thấy lịch khám...</Text>}
+            </View>
+
+            <SectionList
+                style={styles.list}
+                showsVerticalScrollIndicator={false}
+                sections={tempList}
+                keyExtractor={(item, index) => item + index}
+                renderItem={({ item, index }) => (
+                    <View style={styles.listItem} key={index}>
+                        <Image source={{
+                            uri: item.patientImageUrl ? item.patientImageUrl :
+                                'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2.5&w=256&h=256&q=80'
+                        }} style={styles.patientAvatar} />
+                        <View style={styles.patientInfo}>
+                            <View style={styles.flexCenter}>
+                                <Text style={styles.patientName}>{item.patientName}</Text>
+                                <View style={styles.hourContainer}>
+                                    <Image source={require('../assets/images/chronometer.png')} style={{ width: 16, height: 16, marginRight: 2 }} />
+                                    <Text style={styles.hourText}>{item.hour}</Text>
+                                </View>
+                            </View>
+                            <Text style={styles.reason}>{'Lý do khám: ' + item.reason}</Text>
+                        </View>
+                    </View>
+                )}
+                renderSectionHeader={({ section: { title }, }) => {
+                    return (
+                        <Text style={{ ...styles.sectionTitle, marginTop: tempList.length > 0 && tempList[0].title === title ? 0 : 15 }}>
+                            {moment(title).format('DD/MM/YYYY')}
+                        </Text>
+                    );
+                }}
+            />
             {showDatePicker && (
-                <RNDateTimePicker value={new Date()} onChange={handleDateChange} />
+                <DateRangePicker
+                    startDateIn={startDate}
+                    endDateIn={endDate}
+                    onSelectedDateRange={onSelectedDateRange}
+                    style={{
+                        top: 110,
+                        right: 0,
+                    }} />
             )}
-        </View>
+
+            {!isFetched && <Loading transparent={true} />}
+
+        </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         backgroundColor: "white",
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        paddingBottom: 60,
+    },
+    flexCenter: {
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     dateText: {
         fontSize: 20,
@@ -342,58 +212,78 @@ const styles = StyleSheet.create({
         color: "white",
         backgroundColor: COLORS.primary,
     },
-    modalContainer: {
-        backgroundColor: "white",
-        padding: 20,
-        borderRadius: 10,
+    filterView: {
+        marginTop: 10,
+        marginHorizontal: 10,
     },
-    modalTitle: {
-        fontSize: 18,
-        fontWeight: "bold",
+    calenderIcon: {
+        marginLeft: 'auto',
+        fontSize: 20,
+    },
+    searchIpnut: {
+        backgroundColor: 'white',
+        paddingVertical: 0,
+        width: '90%',
+        height: 46,
+        fontSize: 14
+    },
+    displayDateRange: {
+        color: COLORS.textLabel,
+        fontWeight: '400',
+        fontSize: 13,
+        marginRight: 10
+    },
+    list: {
+        flex: 1,
+        marginTop: 20
+    },
+    listItem: {
+        backgroundColor: '#fff',
+        padding: 10,
+        borderRadius: 6,
+        borderWidth: 0.8,
+        borderColor: COLORS.grey,
+        marginHorizontal: 16,
+        marginBottom: 16,
+        flexDirection: 'row',
+        alignItems: 'flex-start'
+    },
+    patientAvatar: {
+        width: 40,
+        height: 40,
+        borderRadius: 25,
+        marginRight: 10,
+    },
+    patientName: {
+        fontSize: 15,
+        fontWeight: '600',
+        color: '#111827',
+        marginBottom: 3,
+    },
+    hourContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginLeft: 'auto'
+    },
+    hourText: {
+        fontSize: 12,
+        fontWeight: "500",
+        color: "#464646",
+    }
+    ,
+    sectionTitle: {
+        fontSize: 16,
+        fontWeight: '500',
+        marginLeft: 16,
         marginBottom: 10,
     },
-
-    modalText: {
-        fontSize: 15,
-        marginVertical: 5,
-    },
-    buttonContainer: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        marginTop: 20,
-    },
-    acceptButton: {
+    patientInfo: {
         flex: 1,
-        backgroundColor: COLORS.primary,
-        padding: 10,
-        borderRadius: 15,
-        alignItems: "center",
     },
-    acceptButtonText: {
-        color: "white",
-        fontSize: 16,
-    },
-    cancelButton: {
-        flex: 1,
-        backgroundColor: COLORS.secondary,
-        padding: 10,
-        borderRadius: 15,
-        alignItems: "center",
-        marginLeft: 10,
-    },
-    cancelButtonText: {
-        color: "white",
-        fontSize: 16,
-    },
-    closeButton: {
-        position: "absolute",
-        top: 10,
-        right: 10,
-    },
-    closeButtonText: {
-        fontSize: 16,
-        color: COLORS.primary,
-    },
+    reason: {
+        marginTop: 3,
+        lineHeight: 14 * 1.5,
+    }
 });
 
 export default DoctorAppointment;

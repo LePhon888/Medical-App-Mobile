@@ -10,19 +10,16 @@ export default function VideoHome(props) {
     //     </View>
     // )
     const navigation = useNavigation();
+    const [roomId, setRoomId] = useState('')
     const onJoinConferencePress = () => {
-        navigation.navigate('VideoConferencePage', {
-            userID: userID,
-            userName: userID,
-            conferenceID: conferenceID,
+        navigation.navigate('VideoChat', {
+            userId: Math.floor(Math.random() * 100000),
+            userName: Math.floor(Math.random() * 100000),
+            roomId: 1,
+            userImage: 'https://d38b044pevnwc9.cloudfront.net/cutout-nuxt/enhancer/2.jpg'
         });
     };
-    const [userID, setUserID] = useState('');
-    const [conferenceID, setConferenceID] = useState('');
-    useEffect(() => {
-        setUserID(String(Math.floor(Math.random() * 100000)));
-        setConferenceID(String(Math.floor(Math.random() * 10000)));
-    }, []);
+
     const insets = useSafeAreaInsets();
     return (
         <View
@@ -30,22 +27,17 @@ export default function VideoHome(props) {
                 styles.container,
                 { paddingTop: insets.top, paddingBottom: insets.bottom },
             ]}>
-            <Text style={styles.userID}>Your User ID: {userID}</Text>
             <Text style={[styles.conferenceID, styles.leftPadding]}>
-                Conference ID:
+                RoomId:
             </Text>
             <TextInput
-                placeholder="Enter the Conference ID. e.g. 6666"
+                placeholder="Enter the Room ID. e.g. 6666"
                 style={[styles.input]}
-                onChangeText={text =>
-                    setConferenceID(text.replace(/[^0-9A-Za-z_]/g, ''))
-                }
-                maxLength={4}
-                value={conferenceID}
+                onChangeText={text => setRoomId(text)}
+                value={roomId}
             />
             <View style={[styles.buttonLine, styles.leftPadding]}>
                 <Button
-                    disabled={conferenceID.length === 0}
                     style={styles.button}
                     title="Start a conference"
                     onPress={() => {

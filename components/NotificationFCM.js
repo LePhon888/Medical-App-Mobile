@@ -1,20 +1,43 @@
 import React, { useContext, useEffect, useState } from 'react';
 import messaging from '@react-native-firebase/messaging';
 import Toast from 'react-native-toast-message';
-import { UserContext } from '../App';
 import Apis, { endpoints } from '../config/Apis';
 import { useUser } from '../context/UserContext';
 import { useNotification } from '../context/NotificationContext';
-const NotificationFCM = () => {
+import * as GlobalNavigation from '../utils/GlobalNavigation';
+import { UserContext } from '../App';
 
+const NotificationFCM = () => {
     const { userId } = useUser()
     const [isFetched, setFetched] = useState(false)
     const { state, dispatch } = useNotification()
+    const [user, dispatchUser] = useState(UserContext)
     const [userDevice, setUserDevice] = useState({
         id: 0,
         userId: 0,
         tokenRegistration: '',
     })
+
+
+    const navigateToScreen = (data) => {
+        Toast.hide()
+        console.log('dataNavigate', data)
+        const { screen, ...params } = data;
+
+        data.notificationId && Apis.put(`${endpoints["notification"]}/update-read/${data.notificationId}`)
+
+        if (screen) {
+            GlobalNavigation.navigate(screen, params);
+        } else {
+            console.error("Screen name not provided in navigation data:", data);
+        }
+    };
+    const fetchInitialNotification = async () => {
+        const message = await messaging().getInitialNotification();
+        if (message) {
+            navigateToScreen(message.data)
+        }
+    };
 
     const registerDevice = async () => {
         try {
@@ -38,31 +61,31 @@ const NotificationFCM = () => {
         }
     };
 
-    const onMessageRecieved = async (message) => {
-        console.log('Android: ', message);
+    const onMessageRecieved = (message) => {
+        console.log(message.data)
         Toast.show({
             type: 'notification',
             props: {
                 title: message.notification.title,
                 body: message.notification.body,
                 sentTime: message.sentTime,
-                clickAction: (() => {
-                    console.log('message.data', message.data)
-                    console.log('message.data.screen', message.data.screen)
-                })
+                clickAction: () => {
+                    navigateToScreen(message.data);
+                },
+                hide: () => {
+                    Toast.hide()
+                }
             },
             autoHide: true,
-            onShow: (() => {
-                console.log('New notification')
+            visibilityTime: 5000,
+            onShow: () => {
+                console.log('New notification');
                 dispatch({ type: 'TOGGLE_REFRESH_DATA' });
-            })
+            },
         });
+
     };
 
-    const onBackgoundMessage = async (message) => {
-        console.log('Message in background', message);
-        console.log('Message in background', message.android);
-    }
 
     const createUserDevice = async (fcmToken) => {
         try {
@@ -102,13 +125,19 @@ const NotificationFCM = () => {
 
     useEffect(() => {
         if (isFetched && userDevice.userId && userDevice.userId > 0) {
+            fetchInitialNotification()
             registerDevice()
             const onMessageUnsubscribe = messaging().onMessage(onMessageRecieved)
             const onTokenRefreshUnsubscribe = messaging().onTokenRefresh(onTokenRefresh)
-            messaging().setBackgroundMessageHandler(onBackgoundMessage);
+            const onNotificationOpenedAppUnsubscribe = messaging().onNotificationOpenedApp(remoteMessage => {
+                navigateToScreen(remoteMessage.data)
+                console.log('Notification opened in foreground:', remoteMessage);
+            });
+
             return () => {
                 onMessageUnsubscribe()
                 onTokenRefreshUnsubscribe()
+                onNotificationOpenedAppUnsubscribe()
             };
         }
     }, [isFetched])

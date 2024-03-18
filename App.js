@@ -1,4 +1,4 @@
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React, { createContext, useReducer } from "react";
 import UserReducer from "./reducers/UserReducer";
@@ -24,6 +24,9 @@ import { getUserFromStorage } from "./utils/GetUserFromStorage";
 import { UserProvider } from "./context/UserContext";
 import ToastConfig from "./components/ToastConfig";
 import { NotificationProvider } from "./context/NotificationContext";
+import { navigationRef } from "./utils/GlobalNavigation";
+import HistoryMedication from "./screens/MedicationSchedule/HistoryMedication";
+import VideoChat from "./screens/VideoChat";
 
 const Stack = createNativeStackNavigator();
 export const UserContext = createContext();
@@ -44,13 +47,13 @@ export default function App() {
   }, []);
 
 
-  const initScreen = 'Login'
+  const initScreen = 'VideoHome'
 
   return (
     <NotificationProvider>
       <UserProvider>
         <UserContext.Provider value={[user, dispatch]}>
-          <NavigationContainer>
+          <NavigationContainer ref={navigationRef}>
             <Stack.Navigator initialRouteName={initScreen}>
               <Stack.Screen name="Welcome" component={Welcome} options={{ headerShown: false }} />
               <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
@@ -68,6 +71,7 @@ export default function App() {
               <Stack.Screen name="EditProfile" component={EditProfile} options={{ headerShown: false }} />
               <Stack.Screen name="Doctors" component={Doctors} options={{ headerShown: false }} />
               <Stack.Screen name="DoctorDetail" component={DoctorDetail} options={{ headerShown: false }} />
+              <Stack.Screen name="VideoChat" component={VideoChat} options={{ headerShown: false }} />
               <Stack.Screen name="VideoHome" component={VideoHome} options={{ headerShown: false }} />
               <Stack.Screen name="Call" component={Call} options={{ headerShown: false }} />
               <Stack.Screen name="Category" component={Category} options={{ headerShown: false }} />
@@ -75,6 +79,7 @@ export default function App() {
               <Stack.Screen name="MedicineList" component={MedicineList} options={{ headerShown: false }} />
               <Stack.Screen name="MedicationBox" component={MedicationBox} options={{ headerShown: false }} />
               <Stack.Screen name="AddMedicine" component={AddMedicine} options={{ headerShown: false }} />
+              <Stack.Screen name="HistoryMedication" component={HistoryMedication} options={{ headerShown: false }} />
               <Stack.Screen name="MedicationSchedule" component={MedicationSchedule} options={{ headerShown: false }} />
               <Stack.Screen name="ScheduleTime" component={ScheduleTime} options={{ headerShown: false }} />
               <Stack.Screen name="Status" component={Status} options={{ headerShown: false }} />
@@ -89,7 +94,5 @@ export default function App() {
         </UserContext.Provider>
       </UserProvider>
     </NotificationProvider>
-
-
   );
 }

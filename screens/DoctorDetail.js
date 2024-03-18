@@ -14,6 +14,7 @@ import BulletContent from '../components/Doctor/BulletContent';
 import SkeletonLoading from '../components/Doctor/DoctorDetailLoading';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RatingContent from '../components/Doctor/RatingContent';
+import ToastConfig from '../components/ToastConfig';
 /**
  * The doctor detail screen
  * 
@@ -22,7 +23,6 @@ import RatingContent from '../components/Doctor/RatingContent';
 const DoctorDetail = ({ navigation, route }) => {
 
     const doctorId = route.params // get the doctorId from route
-    console.log(doctorId)
     const [doctor, setDoctor] = useState(null)
     const [detail, setDetail] = useState([]);
     const [rating, setRating] = useState([])
@@ -253,7 +253,7 @@ const DoctorDetail = ({ navigation, route }) => {
                         ratingStats={ratingStats}
                         listRating={rating}
                         doctorRating={doctor.rating}
-                        enableToRating={isEnableRating}
+                        enableRating={isEnableRating}
                         refreshRating={refreshRating} />
                 )}
             </ScrollView >

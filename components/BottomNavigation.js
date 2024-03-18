@@ -10,6 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Doctors from "../screens/Doctors";
 import AppointmentRegister from "../screens/AppointmentRegister";
 import { useUser } from "../context/UserContext";
+import DoctorAppointment from "../screens/DoctorAppointment";
 
 const Tab = createBottomTabNavigator();
 

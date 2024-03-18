@@ -138,7 +138,7 @@ const AddMedicine = ({ navigation, route }) => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <HeaderWithBackButton title={"Thêm thuốc"} navigation={navigation} />
+                <HeaderWithBackButton title={"Thêm thuốc"} />
             </View>
             <View style={styles.searchContainer}>
                 <Feather name="search" size={20} color="#000" style={styles.icon} />

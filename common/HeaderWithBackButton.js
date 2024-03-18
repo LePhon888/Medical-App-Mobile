@@ -2,6 +2,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 import { StyleSheet } from "react-native";
 import COLORS from "../constants/colors";
 import Entypo from "react-native-vector-icons/Entypo";
+import * as GlobalNavigation from "../utils/GlobalNavigation"
 
 /**
  * This component is used as a header with the back icon on the left.
@@ -14,12 +15,12 @@ import Entypo from "react-native-vector-icons/Entypo";
  * @param titleStyle - (optional) provide the style to override the existing one
  * @returns {JSX.Element} Header component.
  */
-const HeaderWithBackButton = ({ title, navigation, isCustomEvent = false, OnBack, customIcons, headerStyle, titleStyle }) => {
+const HeaderWithBackButton = ({ title, isCustomEvent = false, OnBack, customIcons, headerStyle, titleStyle }) => {
     const OnBackPressed = () => {
         if (isCustomEvent) {
             return OnBack()
         }
-        return navigation.goBack()
+        return GlobalNavigation.goBack()
     }
 
     return (
