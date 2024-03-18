@@ -18,7 +18,6 @@ const BulletContent = ({ field, title, iconComponent }) => {
             </View>
             {/* Bullet list */}
             {field.map((item, index) => {
-                console.log('Current item:', item);
                 return (
                     <View key={index} style={styles.bulletPoint}>
                         <View style={styles.bulletIcon}>

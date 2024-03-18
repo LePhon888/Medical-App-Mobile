@@ -33,7 +33,6 @@ export const UserContext = createContext();
 
 export default function App() {
   const [user, dispatch] = useReducer(UserReducer, null);
-
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -45,9 +44,7 @@ export default function App() {
     };
     fetchUser();
   }, []);
-
-
-  const initScreen = 'VideoHome'
+  const initScreen = 'Login'
 
   return (
     <NotificationProvider>

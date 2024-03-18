@@ -73,6 +73,7 @@
     "react-native-vector-icons": "^10.0.0",
     "react-native-web": "~0.19.6",
     "react-native-webrtc": "^118.0.2",
+    "react-native-webview": "^11.23.1",
     "react-navigation": "^4.4.4",
     "sockjs-client": "^1.6.1",
     "source-map-loader": "^4.0.1",
