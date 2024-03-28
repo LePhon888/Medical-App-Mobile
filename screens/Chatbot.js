@@ -1,10 +1,5 @@
-import React, { useState, useCallback, useEffect } from "react";
-import { GiftedChat } from "react-native-gifted-chat";
-import TypingIndicator from "../components/TypingIndicator";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome"; // Import an icon library
-import COLORS from "../constants/colors";
-import { endpoints } from "../config/Apis";
+import React from "react";
+import { StyleSheet, View } from "react-native";
 import HeaderWithBackButton from "../common/HeaderWithBackButton";
 import MessageUI from "../components/Chat/MessageUI";
 
@@ -12,7 +7,7 @@ const ChatBot = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <HeaderWithBackButton title={"Chat AI"} navigation={navigation} />
+      <HeaderWithBackButton title={"Chatbot AI"} navigation={navigation} />
       <MessageUI isBotMode={true} />
     </View>
   );

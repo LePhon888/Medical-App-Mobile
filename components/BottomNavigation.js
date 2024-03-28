@@ -107,7 +107,7 @@ function BottomNavigation({ navigation }) {
         />
       )}
 
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Chat"
         component={Chatbot}
         options={{
@@ -119,7 +119,7 @@ function BottomNavigation({ navigation }) {
           },
           headerShown: false,
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Cài đặt"
         component={Setting}

@@ -30,7 +30,7 @@ const InitSocket = ({ userId, userName, roomId, sendMessage, onMessageReceived, 
     useEffect(() => {
         const connectToWebSocket = () => {
             const socket = new SockJS(endpoints["websocket"]);
-            const client = Stomp.over(socket, { debug: false });
+            const client = Stomp.over(socket, { debug: true });
             client.connect(headers, () => {
                 stompClientRef.current = client;
                 subscribeToRoom(client);
