@@ -16,7 +16,6 @@ const Doctors = ({ navigation }) => {
     ];
 
     const navigateDoctorDetail = (doctorId) => {
-        console.log(doctorId)
         navigation.navigate('DoctorDetail', doctorId);
     }
 

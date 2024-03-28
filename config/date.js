@@ -42,7 +42,6 @@ export const formatDateTimetoTime = (dateTime) => {
  * @returns string text with format yyyy-mm-dd
  */
 export const formatDateMoment = (moment) => {
-    console.log(moment)
     return moment.format('YYYY-MM-DD')
 }
 
@@ -61,8 +60,6 @@ export const formatDateTimeFromNow = (dateTime) => {
 
 export const formatDateMilisecond = (milliseconds) => {
     const date = new Date(milliseconds);
-    console.log(milliseconds);
-    console.log(date);
     const day = date.getDate();
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
@@ -71,4 +68,11 @@ export const formatDateMilisecond = (milliseconds) => {
     const formattedMonth = month < 10 ? `0${month}` : month;
 
     return `${formattedDay}/${formattedMonth}/${year}`;
+};
+
+export const convertDateToMilliseconds = (dateString) => {
+    const date = new Date(dateString);
+    const milliseconds = date.getTime();
+
+    return milliseconds;
 };

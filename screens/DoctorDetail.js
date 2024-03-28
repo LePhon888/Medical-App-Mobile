@@ -258,7 +258,7 @@ const DoctorDetail = ({ navigation, route }) => {
                 )}
             </ScrollView >
             <View style={{ backgroundColor: 'white' }}>
-                <TouchableOpacity style={styles.buttonSchedule} onPress={() => navigation.navigate("AppointmentRegister")}                >
+                <TouchableOpacity style={styles.buttonSchedule} onPress={() => navigation.navigate("AppointmentRegister", doctor)}                >
                     <Text style={styles.textSchedule}>Đặt lịch hẹn</Text>
                 </TouchableOpacity>
             </View>

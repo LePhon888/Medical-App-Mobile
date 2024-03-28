@@ -11,9 +11,9 @@ export const data = [
 ];
 export const categoryIcons = [
     {
-        path: require('../assets/images/health.png'),
-        text: 'Sức khỏe của tôi',
-        nav: 'AppointmentList'
+        path: require('../assets/images/robot.png'),
+        text: 'Chatbot AI',
+        nav: 'Chatbot'
     },
     {
         path: require('../assets/images/drugs.png'),

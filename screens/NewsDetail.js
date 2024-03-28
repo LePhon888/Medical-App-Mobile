@@ -11,18 +11,16 @@ import {
 } from "react-native";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import COLORS from "../constants/colors";
-import Apis from "../config/Apis";
 import "url-search-params-polyfill";
 import HeaderWithBackButton from "../common/HeaderWithBackButton";
 import RenderHtml from 'react-native-render-html';
 import { useWindowDimensions } from 'react-native';
-import { HTMLParser } from 'react-native-html-parser';
+import axios from "axios";
 import Sound from 'react-native-sound';
 import Button from "../components/Button";
-import axios from "axios";
-import { decode } from 'base-64';
 
 export default function NewsDetail({ navigation, route }) {
   const news = route.params;
@@ -33,15 +31,10 @@ export default function NewsDetail({ navigation, route }) {
   const initialFontSize = 16;
   const [fontSize, setFontSize] = useState(initialFontSize);
   const [clickCount, setClickCount] = useState(0);
-  const [audioBase64, setAudioBase64] = useState();
   const [header, setHeader] = useState(null);
-  const [audioPlayer, setAudioPlayer] = useState(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [sliderValue, setSliderValue] = useState(0);
+  const [audio, setAudio] = useState(null);
   var htmlRegexG = /<(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+>/g;
   var modifiedContent = news.content.replace(htmlRegexG, '').replace(/undefined/g, '').replace(/&nbsp;/g, '').replace(/\s+/g, ' ');
-  const chunkSize = 3000;
-
   const customIcons = [
     <MaterialCommunityIcons
       name="format-letter-case"
@@ -60,6 +53,50 @@ export default function NewsDetail({ navigation, route }) {
     <FontAwesome name="bookmark-o" size={19} />,
     <FeatherIcon color="#242329" name="share" size={19} />
   ];
+  const playSound = async (url) => {
+    const sound = new Sound(url, Sound.MAIN_BUNDLE, (error) => {
+      if (error) {
+        console.log('Failed to load the sound', error);
+        return;
+      }
+      sound.play((success) => {
+        if (success) {
+          console.log('Successfully finished playing');
+        } else {
+          console.log('Playback failed due to audio decoding errors');
+        }
+      });
+    });
+  };
+  useEffect(() => {
+    const fetchAudio = async () => {
+      const url = 'https://api.fpt.ai/hmi/tts/v5';
+      const headers = {
+        'api-key': 'XBzh8Evbm8BmnSLTyiEKbpAIZfI0RYcu',
+        'speed': '',
+        'voice': 'linhsan'
+      };
+      const data = modifiedContent.slice(0, 5000);
+      try {
+        const response = await axios.post(url, data, { headers });
+        setAudio(response.data.async);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+    fetchAudio();
+  }, []);
+  useEffect(() => {
+    const findAudio = async () => {
+      try {
+        const res = await axios.get(audio);
+        res.status === 200 ? console.log('URL found') : console.log('URL not found');
+      } catch (error) {
+        error.response && error.response.status === 404 ? console.log('URL not found') : console.error('Error:', error);
+      }
+    };
+    findAudio();
+  }, [audio]);
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <View >
@@ -93,6 +130,9 @@ export default function NewsDetail({ navigation, route }) {
               <Text style={styles.headerLocationText}>
                 Tác giả: {news.author}
               </Text>
+              <TouchableOpacity onPress={() => playSound(audio)}>
+                <Ionicons name="play-circle-outline" size={36} color={COLORS.primary} />
+              </TouchableOpacity>
             </View>
 
             {/* <Text style={styles.headerPrice}>$650.00</Text> */}
@@ -224,6 +264,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     color: "#7b7c7e",
     marginLeft: 4,
+    marginRight: 5,
   },
   headerPrice: {
     fontWeight: "700",

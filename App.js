@@ -33,7 +33,6 @@ export const UserContext = createContext();
 
 export default function App() {
   const [user, dispatch] = useReducer(UserReducer, null);
-
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -45,9 +44,7 @@ export default function App() {
     };
     fetchUser();
   }, []);
-
-
-  const initScreen = 'VideoHome'
+  const initScreen = 'MainScreen'
 
   return (
     <NotificationProvider>
@@ -59,7 +56,7 @@ export default function App() {
               <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
               <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
               <Stack.Screen name="MainScreen" component={MainScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="ChatBot" component={ChatBot} options={{ headerShown: false }} />
+              <Stack.Screen name="Chatbot" component={ChatBot} options={{ headerShown: false }} />
               <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
               <Stack.Screen name="Setting" component={Setting} options={{ headerShown: false }} />
               <Stack.Screen name="MedicalRegister" component={MedicalRegister} options={{ headerShown: false }} />

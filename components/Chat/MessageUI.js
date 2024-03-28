@@ -22,9 +22,9 @@ const MessageUI = ({ isBotMode }) => {
     const [roomId, setRoomId] = useState('public')
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
-    const toggleEmojiPicker = () => {
-        setShowEmojiPicker(!showEmojiPicker);
-    };
+    // const toggleEmojiPicker = () => {
+    //     setShowEmojiPicker(!showEmojiPicker);
+    // };
 
     const onEmojiSelected = (emoji) => {
         setInputText(inputText + emoji);
@@ -132,11 +132,18 @@ const MessageUI = ({ isBotMode }) => {
             </View>
         );
     };
+    console.log('listMessage', listMessage);
+
+    const onWebSocketConnected = (stompClient) => {
+        if (!stompClient) {
+            console.error('Connect to websocket failed')
+        }
+    }
 
     return (
         <View style={styles.container}>
             {/* Init the websocket connection */}
-            <InitSocket roomId={roomId} payload={message} onMessageReceived={onMessageReceived} />
+            <InitSocket roomId={roomId} sendMessage={message} onMessageReceived={onMessageReceived} onWebSocketConnected={(stompClient) => onWebSocketConnected(stompClient)} />
 
             {/* View of messages list */}
             <FlatList
@@ -155,12 +162,12 @@ const MessageUI = ({ isBotMode }) => {
                     onChangeText={(text) => setInputText(text)}
                 />
                 {/* Emoji button */}
-                <TouchableOpacity style={styles.emojiButton} onPress={toggleEmojiPicker}>
+                {/* <TouchableOpacity style={styles.emojiButton} onPress={toggleEmojiPicker}>
                     <MaterialCommunityIcons name="emoticon-happy-outline" size={20} color="#a5abb3" />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 {/* Send button */}
                 <TouchableOpacity style={styles.sendButton} onPress={sendOnClick} disabled={!user || isInputTextEmpty()}>
-                    <Icon name="send-outline" size={20} color={isInputTextEmpty() ? '#a5abb3' : '#52D3D8'} />
+                    <Icon name="send-outline" size={24} color={isInputTextEmpty() ? '#a5abb3' : '#52D3D8'} />
                 </TouchableOpacity>
             </View>
             {showEmojiPicker && <EmojiPicker onEmojiSelected={onEmojiSelected} />}
@@ -219,17 +226,16 @@ const styles = StyleSheet.create({
     inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingHorizontal: 10,
-        paddingVertical: 5,
+        paddingHorizontal: 15,
+        paddingVertical: 15,
         backgroundColor: 'white',
-        marginBottom: 10,
     },
     input: {
         flex: 1,
-        height: 40,
+        height: 50,
         borderWidth: 1,
         borderColor: '#e5e7eb',
-        borderRadius: 20,
+        borderRadius: 30,
         paddingVertical: 10,
         paddingHorizontal: 15,
         marginRight: 10,

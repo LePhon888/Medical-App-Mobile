@@ -61,8 +61,6 @@ const ScheduleTime = ({ route, navigation }) => {
         );
 
 
-        console.log(scheduleTimes)
-
         // Reset tempSchedule
         setTempSchedule({
             id: 0,

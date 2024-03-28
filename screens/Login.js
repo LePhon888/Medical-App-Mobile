@@ -36,30 +36,21 @@ const Login = ({ navigation }) => {
     const [userInfo, setUserInfo] = useState(null);
     const [error, setError] = useState(null);
     const { userId, storeUserId } = useUser()
+
     const login = () => {
         const processLogin = async () => {
             try {
                 setIsLoading(true);
                 setError(null);
 
-                let res = await Apis.post(endpoints["login"], {
-                    email,
-                    password,
-                });
+                let res = await Apis.post(endpoints["login"], { email, password });
 
                 if (res && res.data) {
-                    await AsyncStorage.setItem("token", res.data);
+                    await AsyncStorage.setItem("accessToken", res.data.accessToken);
+                    await AsyncStorage.setItem("refreshToken", res.data.refreshToken);
                 }
-                const token = res.data;
-
-                if (isChecked && email) {
-                    await AsyncStorage.setItem("email", email);
-                }
-
-                if (isChecked && password) {
-                    await AsyncStorage.setItem("password", password);
-                }
-
+                const token = res.data.accessToken;
+                console.log(res.data)
                 let { data } = await axios.get(endpoints["currentUser"], {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -67,10 +58,7 @@ const Login = ({ navigation }) => {
                 });
 
                 await AsyncStorage.setItem("user", JSON.stringify(data));
-                dispatch({
-                    type: "login",
-                    payload: data,
-                });
+                dispatch({ type: "login", payload: data, });
 
                 const userData = await AsyncStorage.getItem("user");
                 if (userData) {
@@ -228,22 +216,6 @@ const Login = ({ navigation }) => {
                             )}
                         </TouchableOpacity>
                     </View>
-                </View>
-
-                <View
-                    style={{
-                        flexDirection: "row",
-                        marginVertical: 6,
-                    }}
-                >
-                    <Checkbox
-                        style={{ marginRight: 8 }}
-                        value={isChecked}
-                        onValueChange={setIsChecked}
-                        color={isChecked ? COLORS.primary : undefined}
-                    />
-
-                    <Text>Nhớ mật khẩu</Text>
                 </View>
 
                 <Button

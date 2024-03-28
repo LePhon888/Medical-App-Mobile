@@ -5,11 +5,8 @@ import HeaderWithBackButton from '../common/HeaderWithBackButton';
 import COLORS from '../constants/colors';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { dataNews, newsItems } from '../config/data';
 import Apis, { endpoints } from "../config/Apis";
-import Premium from '../components/Premium';
 import { ActivityIndicator } from "react-native";
-import { formatDateMilisecond } from '../config/date';
 
 const CARD_WIDTH = Math.min(Dimensions.get('screen').width * 0.84, 400);
 
@@ -48,7 +45,7 @@ export default function News({ navigation }) {
     <View style={{ flex: 1, backgroundColor: '#fff', marginBottom: 40 }}>
       <View>
         <SafeAreaView>
-          <HeaderWithBackButton title={'Chuyên mục'} />
+          <HeaderWithBackButton title={'Chuyên mục'} navigation={navigation} />
         </SafeAreaView>
       </View>
       <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
@@ -97,7 +94,7 @@ export default function News({ navigation }) {
                   </View>
                 </TouchableOpacity>
               );
-            }) : <ActivityIndicator size="large" color={COLORS.primary} style={{ marginTop: 50 }} />}
+            }) : <ActivityIndicator size="large" color={COLORS.primary} style={{ marginTop: 50, alignItems: 'center' }} />}
           </ScrollView>
         </View>
         {/* Premium list */}
