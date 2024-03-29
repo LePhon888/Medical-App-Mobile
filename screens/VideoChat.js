@@ -23,17 +23,18 @@ const VideoChat = (props) => {
     const [isFrontCamera, setFrontCamera] = useState(true)
     const [localStream, setLocalStream] = useState(null)
     const [remoteStream, setRemoteStream] = useState(null)
+    const [stompClient, setStompClient] = useState(null)
 
     const makingOffer = useRef(false)
     const ignoreOffer = useRef(false)
     const polite = useRef(true)
-    const stompClientRef = useRef(null)
     const videoCallConnected = useRef(false)
     const socketDisconnected = useRef(false)
     const remoteCandidates = useRef([])
     const peerConnection = useRef(null)
     const broadCaster = useRef(true)
     const doneOffer = useRef(false)
+
 
     const { route } = props;
     const { params } = route;
@@ -100,18 +101,18 @@ const VideoChat = (props) => {
     }, []);
 
     useEffect(() => {
-        if (videoCallConnected.current && !doneOffer.current) {
+        if (videoCallConnected.current) {
             sendDeviceInfo()
-            doneOffer.current = false
         }
     }, [localDevice])
 
 
     useEffect(() => {
-        if (localStream) {
+        if (stompClient && localStream && !doneOffer.current) {
             sendMessage({ destination: `/app/ready-offer/${roomId}`, data: localDevice });
+            doneOffer.current = false
         }
-    }, [localStream]);
+    }, [localStream, stompClient]);
 
 
     const createPeerConnection = () => {
@@ -366,7 +367,7 @@ const VideoChat = (props) => {
                 visibilityTime: 5000
             })
         }
-        stompClientRef.current = stompClient
+        setStompClient(stompClient)
     }
 
     return (
