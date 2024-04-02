@@ -1,5 +1,5 @@
 import { SectionList, StyleSheet, Text, TouchableOpacity, View } from "react-native"
-import Feather from 'react-native-vector-icons/Feather';
+import Entypo from 'react-native-vector-icons/Entypo';
 import { useUser } from "../../context/UserContext";
 import { useEffect, useState } from "react";
 import Apis, { endpoints } from "../../config/Apis";
@@ -8,6 +8,7 @@ import { formatDuration } from "../../config/date";
 import moment from "moment";
 import Loading from "../../components/Loading";
 import { ActivityIndicator } from "react-native-paper";
+import HeaderWithBackButton from "../../common/HeaderWithBackButton";
 const HistoryMedication = ({ navigation }) => {
 
     const { userId } = useUser()
@@ -70,16 +71,16 @@ const HistoryMedication = ({ navigation }) => {
 
     return (
         <View style={styles.screen}>
-            <View style={styles.header}>
-                <View style={styles.flexRowCenter}>
-                    {/* Back button */}
-                    <TouchableOpacity style={{ ...styles.backButton, marginRight: 'auto' }} onPress={() => goBack()}>
-                        <Feather name='arrow-left' size={20} color={'white'} />
+            <HeaderWithBackButton title={'Lịch sử dùng thuốc'} navigation={navigation} />
+            {/* <View style={styles.header}> */}
+            {/* <View style={styles.flexRowCenter}> */}
+            {/* <TouchableOpacity style={{ ...styles.backButton, marginRight: 'auto' }} onPress={() => goBack()}>
+                        <Entypo name="chevron-thin-left" size={19} style={{ color: COLORS.white }} />
                     </TouchableOpacity>
-                    {/* Header title */}
-                    <Text style={styles.headerTitle}>{'Lịch sử dùng thuốc'}</Text>
-                </View>
-            </View>
+                    <Text style={styles.headerTitle}>{'Lịch sử dùng thuốc'}</Text> */}
+
+            {/* </View> */}
+            {/* </View> */}
             <View style={styles.container}>
                 <SectionList
                     showsVerticalScrollIndicator={false}
@@ -124,7 +125,6 @@ const HistoryMedication = ({ navigation }) => {
 const styles = StyleSheet.create({
     screen: {
         flex: 1,
-        backgroundColor: '#2d74e0',
         flexDirection: 'column',
         justifyContent: 'space-between'
     },
@@ -135,7 +135,6 @@ const styles = StyleSheet.create({
         height: 55
     },
     backButton: {
-        backgroundColor: '#4b8ae4',
         padding: 5,
         borderRadius: 8,
     },

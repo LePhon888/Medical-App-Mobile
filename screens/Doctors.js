@@ -6,12 +6,25 @@ import Ionicons from "react-native-vector-icons/Ionicons"
 import { useEffect, useRef, useState } from "react";
 import COLORS from "../constants/colors";
 import Apis, { endpoints } from "../config/Apis";
+import Category from "./Category";
 const Doctors = ({ navigation }) => {
 
     const [activeTab, setActiveTab] = useState(2);
     const [isShowFilterPopup, setShowFilterPopup] = useState(false)
+    const [isSearch, setIsSearch] = useState(false);
+    const [departments, setDepartments] = useState([]);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await Apis.get(endpoints.departments);
+                setDepartments(res.data);
+            } catch (error) {
+                console.error("Error fetching data department:", error);
+            }
+        }
+        fetchData();
+    }, [])
     const tabs = [
-        { key: 1, title: 'Bệnh viện & Phòng khám', },
         { key: 2, title: 'Bác sỹ' },
     ];
 
@@ -31,12 +44,12 @@ const Doctors = ({ navigation }) => {
                         <FontAwesome name='sort-down' style={{ marginBottom: 5 }}></FontAwesome>
                     </TouchableOpacity>
                     {/* Cancel */}
-                    <TouchableOpacity>
+                    {/* <TouchableOpacity>
                         <Text style={styles.cancel}>Hủy</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
                 {/* Search input */}
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => setIsSearch(pre => !pre)}>
                     <View style={styles.searchContainer}>
                         <Image source={require('../assets/health.png')} style={styles.image} />
                         <Text style={styles.searchInput}>Đa khoa</Text>
@@ -46,7 +59,7 @@ const Doctors = ({ navigation }) => {
             </View>
             {/* Tab View */}
             <View style={styles.stickyContent}>
-                <View style={styles.tabContainer}>
+                {/* <View style={styles.tabContainer}>
                     {tabs.map((t) => (
                         <TouchableOpacity
                             key={t.key} style={[styles.tab, { backgroundColor: activeTab === t.key ? COLORS.primary : '#f8f9fd' }]}
@@ -54,7 +67,7 @@ const Doctors = ({ navigation }) => {
                             <Text style={[styles.tabTitle, { color: activeTab === t.key ? '#FFFF' : '#504f54' }]}>{t.title}</Text>
                         </TouchableOpacity>
                     ))}
-                </View>
+                </View> */}
                 {/* Filter and Result */}
                 <View style={styles.filterContainer}>
                     <Text style={{ fontWeight: '500' }}>2 Kết quả</Text>
@@ -79,6 +92,7 @@ const Doctors = ({ navigation }) => {
                     </View>
                 </View>
             </Modal>
+            {isSearch && <Category departments={departments} />}
         </ScrollView >
     );
 };
@@ -86,7 +100,7 @@ const Doctors = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#FFFF',
-        marginBottom: 60
+        position: 'relative',
     },
     header: {
         backgroundColor: '#e1f1ff',
@@ -152,7 +166,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingHorizontal: 20,
         alignItems: 'center',
-        marginBottom: 20,
+        marginVertical: 20,
     },
     filter: {
         paddingVertical: 3,

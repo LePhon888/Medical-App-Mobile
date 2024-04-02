@@ -13,6 +13,7 @@ import { getUserFromStorage } from '../utils/GetUserFromStorage';
 import Apis, { endpoints } from '../config/Apis';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import WebView from 'react-native-webview';
+import moment from 'moment';
 
 export default function AppointmentRegister({ navigation, route }) {
     const tabs = [{ name: 'Chọn giờ đặt hẹn' }];
@@ -28,7 +29,6 @@ export default function AppointmentRegister({ navigation, route }) {
     const [selectedStartDate, setSelectedStartDate] = useState(minDate);
     const [payment, setPayment] = useState(null);
     const [appointment, setAppointment] = useState(null);
-    console.log(selectHour);
     useEffect(() => {
         const fetch = async () => {
             try {
@@ -54,6 +54,8 @@ export default function AppointmentRegister({ navigation, route }) {
         };
         fetchHour();
     }, []);
+    console.log(selectedStartDate);
+    console.log(minDate);
     const onSubmit = async () => {
         const userInfor = {
             userId: user.id,
@@ -131,7 +133,7 @@ export default function AppointmentRegister({ navigation, route }) {
                                         fontWeight: '400',
                                         color: '#848a96',
                                         marginBottom: 1
-                                    }}>{doctor.departmentName}</Text>
+                                    }}>Khoa: {doctor.departmentName}</Text>
                                 </View>
                                 <Text style={{
                                     fontSize: 15,
@@ -150,14 +152,14 @@ export default function AppointmentRegister({ navigation, route }) {
                                 <Image source={require('../assets/images/calendar.png')} style={{ width: 22, height: 22, marginRight: 20, marginTop: 12, marginLeft: 6 }} />
                             </View>
                             <View style={styles.radioTop}>
-                                <Text style={styles.radioLabel}>{formatDate(minDate)}</Text>
+                                <Text style={styles.radioLabel}>Ngày: {selectedStartDate ? moment(selectedStartDate).format('DD/MM/YYYY') : formatDate(minDate)}</Text>
                                 <View >
-                                    <Text style={{ fontSize: 14, fontWeight: '400', color: '#848a96' }}>{selectHour.hour}</Text>
+                                    <Text style={{ fontSize: 14, fontWeight: '400', color: '#848a96' }}>Giờ: {selectHour.hour}</Text>
                                 </View>
                                 <View style={{ position: 'absolute', right: 60, top: 15 }}>
                                     <Entypo name="chevron-thin-down" size={15} style={{ color: '#89919d', transform: [{ rotate: active ? '0deg' : '90deg' }] }} />
                                 </View>
-                                <View style={{ width: 117, position: 'absolute', right: 140, top: 0 }}>
+                                <View style={{ width: 117, position: 'absolute', right: 100, top: 0 }}>
                                     <Text style={styles.consultation}>Tư vấn từ xa</Text>
                                 </View>
                             </View>
@@ -209,14 +211,16 @@ export default function AppointmentRegister({ navigation, route }) {
                                 </View>
                                 <View style={{ marginVertical: 10, flexDirection: 'row', flexWrap: 'wrap' }}>
                                     {hour.map((item, index) => {
+                                        const currentHour = moment().format('HH');
+                                        const isPast = item.hour < currentHour;
                                         return (
                                             <TouchableOpacity
                                                 style={{
-                                                    backgroundColor: index == selectHour.id ? COLORS.primary : COLORS.white, paddingHorizontal: 20,
+                                                    backgroundColor: isPast ? '#ecf0f1' : (index + 1 == selectHour.id ? COLORS.primary : COLORS.white), paddingHorizontal: 20,
                                                     paddingVertical: 6, margin: 5, borderWidth: 0.3, borderColor: '#ccc', borderRadius: 50
-                                                }} onPress={() => setSelectHour(item)} key={index}>
+                                                }} onPress={() => !isPast && setSelectHour(item)} key={index}>
                                                 <Text style={{
-                                                    color: index == selectHour.id ? COLORS.white : '#20344d', fontWeight: 500
+                                                    color: isPast ? '#ccc' : (index + 1 == selectHour.id ? COLORS.white : '#222f3e'), fontWeight: 500
                                                 }}>
                                                     {item.hour}
                                                 </Text>

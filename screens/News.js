@@ -7,6 +7,8 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Apis, { endpoints } from "../config/Apis";
 import { ActivityIndicator } from "react-native";
+import optionCache from '../utils/optionCache';
+import { Cache } from 'react-native-cache';
 
 const CARD_WIDTH = Math.min(Dimensions.get('screen').width * 0.84, 400);
 
@@ -16,13 +18,18 @@ export default function News({ navigation }) {
   const [category, setCategory] = useState();
   const [selectedCategory, setSelectedCategory] = useState(1394);
   const [newsByCategory, setNewsByCategory] = useState();
+  const [posts, setPosts] = useState([]);
+  const [page, setPage] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const cache = new Cache(optionCache);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const resCategory = await Apis.get(endpoints["category"])
-        const response = await Apis.get(endpoints["news"]);
         setCategory(resCategory.data);
-        setNews(response.data);
+        // const resNews = await cache.get("news");
+        // setNews(resNews);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -32,14 +39,42 @@ export default function News({ navigation }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await Apis.get(`${endpoints["postBycategory"]}${selectedCategory}`)
+        setLoading(true);
+        const response = await Apis.get(`${endpoints["postBycategory"]}${selectedCategory}?size=${5}`)
         setNewsByCategory(response.data);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
     fetchData();
   }, [selectedCategory])
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await Apis.get(`${endpoints.news}/random?page=${page}&size=${5}`);
+        console.log(response.data.pageable.pageNumber);
+        setPosts(prevPosts => [...prevPosts, ...response.data.content]);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPosts();
+  }, [page]);
+
+  const handleScroll = event => {
+    const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+    const isCloseToBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
+    if (!loading && isCloseToBottom) {
+      setLoading(true);
+      setPage(prevPage => prevPage + 1);
+    }
+  };
+  var htmlRegexG = /<(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+>/g;
+
 
   return (
     <View style={{ flex: 1, backgroundColor: '#fff', marginBottom: 40 }}>
@@ -48,7 +83,7 @@ export default function News({ navigation }) {
           <HeaderWithBackButton title={'Chuyên mục'} navigation={navigation} />
         </SafeAreaView>
       </View>
-      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false} onScroll={handleScroll}>
         <View style={styles.tabs}>
           <View style={{ backgroundColor: '#eee', paddingHorizontal: 5.5, paddingVertical: 4, borderRadius: 50, marginRight: 7 }}>
             <Ionicons name="options-sharp" size={19} style={{ color: COLORS.primary }} />
@@ -72,7 +107,7 @@ export default function News({ navigation }) {
         {/* List news */}
         <View style={styles.list}>
           <ScrollView contentContainerStyle={styles.listContent} horizontal={true} showsHorizontalScrollIndicator={false} nestedScrollEnabled={true}>
-            {news ? news.map((item, index) => {
+            {!loading && newsByCategory?.map((item, index) => {
               return (
                 <TouchableOpacity
                   key={index}
@@ -80,22 +115,28 @@ export default function News({ navigation }) {
                 >
                   <View style={styles.card}>
                     <View style={styles.cardBody}>
-                      <View style={{ height: '80%' }}>
-                        <Text style={{ color: '#e67a32', fontWeight: 500, marginBottom: 2, textTransform: 'uppercase', fontSize: 13 }}>{item.category.name}</Text>
+                      <View style={{ height: '70%' }}>
+                        {/* <Text>{item.content.replace(htmlRegexG, '').replace(/undefined/g, '').replace(/&nbsp;/g, '').replace(/\s+/g, ' ').length}</Text> */}
+                        <Text style={{ color: '#e67a32', fontWeight: 500, marginBottom: 2, textTransform: 'uppercase', fontSize: 13 }}>{String(item.category.name)}</Text>
                         <Text style={styles.cardTitle}>{item.header}</Text>
                       </View>
                       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <Text style={styles.cardSubtitle}>{new Date(parseInt(item.createdDate)).toLocaleDateString('vi')}</Text>
-                        <FontAwesome name="bookmark-o" size={18} />
+                        {/* <Text style={styles.cardRowItemTextNews}>{String(item.author)}</Text> */}
+                        {/* <Text style={{ ...styles.cardRowDividerNews, marginHorizontal: 6 }}>·</Text> */}
+                        <FontAwesome name="bookmark-o" size={18} style={{ marginLeft: '94%' }} />
+                      </View>
+                      <View style={{ flexDirection: 'row' }}>
+                        <Text style={{ ...styles.cardSubtitle, fontSize: 12 }}>{new Date(parseInt(item.createdDate)).toLocaleDateString('vi')}</Text>
+                        {item.audio && <Ionicons name="volume-high" size={19} style={{ color: '#7f8c8d', marginLeft: -85 }} />}
                       </View>
                     </View>
                     <Image alt="img" source={{ uri: item.image }} style={styles.cardCover} />
-
                   </View>
                 </TouchableOpacity>
               );
-            }) : <ActivityIndicator size="large" color={COLORS.primary} style={{ marginTop: 50, alignItems: 'center' }} />}
+            })}
           </ScrollView>
+          {loading && <ActivityIndicator size="large" color={COLORS.primary} style={{ justifyContent: 'center' }} />}
         </View>
         {/* Premium list */}
         {/* <TouchableOpacity style={{ backgroundColor: "#dff9fb", paddingBottom: 20 }}>
@@ -143,12 +184,12 @@ export default function News({ navigation }) {
         {/* Recent news */}
         <View>
           <View style={{ marginTop: 8 }}>
-            <View style={{ marginTop: 18, flexDirection: 'row', marginLeft: 14 }}>
+            <View style={{ marginTop: 1, flexDirection: 'row', marginLeft: 14 }}>
               <MaterialCommunityIcons name="chart-bell-curve-cumulative" size={22} style={{ marginTop: 2 }} />
-              <Text style={{ fontSize: 20, fontWeight: 600, marginLeft: 13 }}>Các bài viết theo chuyên mục</Text>
+              <Text style={{ fontSize: 20, fontWeight: 600, marginLeft: 13 }}>Các bài viết nổi bật</Text>
             </View>
-            <View style={{ marginLeft: 16, marginVertical: 5 }}>
-              {newsByCategory ? newsByCategory.map((item, index) => {
+            {<View style={{ marginLeft: 16, marginVertical: 5 }}>
+              {posts?.map((item, index) => {
                 return (
                   index == 0 ?
                     <TouchableOpacity key={index} style={{
@@ -191,25 +232,27 @@ export default function News({ navigation }) {
                             marginBottom: 7,
                             textTransform: "capitalize",
                             color: '#fb741a'
-                          }}>{item.category.name}</Text>
+                          }}>{String(item.category.name)}</Text>
 
-                          <Text style={styles.cardTitleNews}>{item.header}</Text>
+                          <Text style={styles.cardTitleNews}>{String(item.header)}</Text>
 
                           <View style={styles.cardRowNews}>
-                            <View style={styles.cardRowItemNews}>
-                              <Image
+                            {/* <View style={styles.cardRowItemNews}> */}
+                            {/* <Image
                                 alt=""
                                 source={{ uri: item.authorImage ? item.authorImage : item.image }}
                                 style={styles.cardRowItemImgNews}
-                              />
+                              /> */}
 
-                              <Text style={styles.cardRowItemTextNews}>{item.author}</Text>
-                            </View>
+                            {/* <Text style={styles.cardRowItemTextNews}>{String(item.author)}</Text> */}
+                            {/* </View> */}
 
-                            <Text style={styles.cardRowDividerNews}>·</Text>
+                            {/* <Text style={styles.cardRowDividerNews}>·</Text> */}
 
                             <View style={styles.cardRowItemNews}>
                               <Text style={styles.cardRowItemTextNews}>{new Date(parseInt(item.createdDate)).toLocaleDateString('vi')}</Text>
+                              {item.audio && <Ionicons name="volume-high" size={19} style={{ color: '#7f8c8d', marginLeft: 8 }} />}
+                              <Text>{item.content.replace(htmlRegexG, '').replace(/undefined/g, '').replace(/&nbsp;/g, '').replace(/\s+/g, ' ').length}</Text>
                             </View>
                           </View>
                           <FontAwesome name="bookmark-o" size={19} style={{ position: 'absolute', right: 20, bottom: -20 }} />
@@ -234,34 +277,38 @@ export default function News({ navigation }) {
                         />
 
                         <View style={styles.cardBodyNews}>
-                          <Text style={styles.cardTagNews}>{item.category.name}</Text>
+                          <Text style={styles.cardTagNews}>{String(item.category.name)}</Text>
 
-                          <Text style={styles.cardTitleNews}>{item.header}</Text>
+                          <Text style={styles.cardTitleNews}>{String(item.header)}</Text>
 
                           <View style={styles.cardRowNews}>
-                            <View style={styles.cardRowItemNews}>
-                              <Image
+                            {/* <View style={styles.cardRowItemNews}> */}
+                            {/* <Image
                                 alt=""
                                 source={{ uri: item.authorImage ? item.authorImage : item.image }}
                                 style={styles.cardRowItemImgNews}
-                              />
+                              /> */}
 
-                              <Text style={styles.cardRowItemTextNews}>{item.author}</Text>
-                            </View>
+                            {/* <Text style={styles.cardRowItemTextNews}>{String(item.author)}</Text> */}
+                            {/* </View> */}
 
-                            <Text style={styles.cardRowDividerNews}>·</Text>
+                            {/* <Text style={styles.cardRowDividerNews}>·</Text> */}
 
                             <View style={styles.cardRowItemNews}>
                               <Text style={styles.cardRowItemTextNews}>{new Date(parseInt(item.createdDate)).toLocaleDateString('vi')}</Text>
+                              {item.audio && <Ionicons name="volume-high" size={20} style={{ color: '#7f8c8d', marginLeft: 8 }} />}
                             </View>
+                            <Text>{item.content.replace(htmlRegexG, '').replace(/undefined/g, '').replace(/&nbsp;/g, '').replace(/\s+/g, ' ').length}</Text>
                           </View>
                           <FontAwesome name="bookmark-o" size={19} style={{ position: 'absolute', right: 20, bottom: 4 }} />
                         </View>
                       </View>
                     </TouchableOpacity>
                 );
-              }) : <ActivityIndicator size="large" color={COLORS.primary} style={{ marginTop: 50 }} />}
-            </View>
+              })}
+              {!posts && <ActivityIndicator size="large" color={COLORS.primary} style={{ marginTop: 50, justifyContent: 'center' }} />}
+              {loading && <ActivityIndicator size="large" color={COLORS.primary} style={{ marginBottom: 20, justifyContent: 'center' }} />}
+            </View>}
           </View>
         </View>
       </ScrollView >
@@ -319,12 +366,12 @@ const styles = StyleSheet.create({
     borderColor: '#ccc'
   },
   cardCover: {
-    width: 84,
-    height: 84,
+    width: 90,
+    height: 90,
     borderRadius: 14,
-    marginRight: 12,
+    marginRight: 10,
     marginLeft: 12,
-    marginTop: 22
+    marginTop: 18
   },
   cardBody: {
     height: '80%',

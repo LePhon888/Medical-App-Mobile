@@ -95,7 +95,7 @@ const ScheduleTime = ({ route, navigation }) => {
     return (
         <View style={styles.content}>
             <View style={styles.topContainer}>
-                <HeaderWithBackButton title={'Liều thuốc và thời gian'} />
+                <HeaderWithBackButton title={'Thời gian dùng thuốc'} />
             </View>
             <ScrollView style={styles.centerContainer}>
                 <View style={{ ...styles.input, marginHorizontal: 16, height: 'auto', paddingVertical: 16, }}>
@@ -123,7 +123,7 @@ const ScheduleTime = ({ route, navigation }) => {
             <View style={styles.bottomContainer}>
                 <TouchableOpacity style={{
                     ...styles.buttonNext, marginTop: 15,
-                    backgroundColor: `${scheduleTimes.length === 0 ? 'rgba(45, 134, 243, 0.5)' : '#2d86f3'}`
+                    backgroundColor: `${scheduleTimes.length === 0 ? 'rgba(83, 82, 237, 0.5)' : COLORS.primary}`
                 }}
                     onPress={() => saveScheduleTime()}
                     disabled={scheduleTimes.length === 0}>
@@ -148,9 +148,10 @@ const ScheduleTime = ({ route, navigation }) => {
                         date={localDate}
                         onDateChange={(time) => handleOnTimeChange(time)}
                         androidVariant="nativeAndroid"
-                        locale="en"
+                        locale="vi"
+                        textColor={COLORS.textLabel}
                         style={{
-                            flex: 1, justifyContent: 'center', alignSelf: 'center',
+                            flex: 1, justifyContent: 'center', alignSelf: 'center'
                         }}
                     />
                     <Text style={styles.label}>Liều uống</Text>
@@ -158,12 +159,12 @@ const ScheduleTime = ({ route, navigation }) => {
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Text style={{ color: COLORS.textLabel }}>{'Uống'}</Text>
                             <TouchableOpacity style={{ marginLeft: 'auto' }}
-                                onPress={() => setTempSchedule({ ...tempSchedule, quantity: Math.max(tempSchedule.quantity - 0.25, 1) })}>
+                                onPress={() => setTempSchedule({ ...tempSchedule, quantity: Math.max(tempSchedule.quantity - 1, 1) })}>
                                 <Feather name="minus-circle" size={20} color={COLORS.textLabel} />
                             </TouchableOpacity>
-                            <Text style={{ marginHorizontal: 24, fontSize: 20 }}>{tempSchedule.quantity}</Text>
+                            <Text style={{ marginHorizontal: 10, fontSize: 20 }}>{tempSchedule.quantity}</Text>
                             <TouchableOpacity style={{ marginRight: 'auto' }}
-                                onPress={() => setTempSchedule({ ...tempSchedule, quantity: tempSchedule.quantity + 0.25 })}>
+                                onPress={() => setTempSchedule({ ...tempSchedule, quantity: tempSchedule.quantity + 1 })}>
                                 <Feather name="plus-circle" size={20} color={COLORS.textLabel} />
                             </TouchableOpacity>
                             <Text style={{ color: COLORS.textLabel }}>{unitName}</Text>
@@ -191,7 +192,8 @@ const styles = StyleSheet.create({
     },
     centerContainer: {
         flex: 1,
-        marginBottom: 16
+        marginBottom: 16,
+        backgroundColor: 'white',
     },
     bottomContainer: {
         height: 80,
@@ -204,7 +206,7 @@ const styles = StyleSheet.create({
     },
     buttonNext: {
         marginTop: 30,
-        backgroundColor: '#2d86f3',
+        backgroundColor: COLORS.primary,
         padding: 12,
         borderRadius: 5,
         marginBottom: 15
@@ -216,9 +218,9 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     input: {
-        borderWidth: 1,
-        borderColor: "#d0d6dd",
-        borderRadius: 5,
+        borderWidth: 0.3,
+        borderColor: "#ccc",
+        borderRadius: 10,
         paddingHorizontal: 16,
         marginHorizontal: 16,
         marginTop: 10,
