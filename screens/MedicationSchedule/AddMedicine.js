@@ -7,10 +7,14 @@ import {
     TextInput,
     ActivityIndicator,
     TouchableOpacity,
+    Image,
 } from "react-native";
 import HeaderWithBackButton from "../../common/HeaderWithBackButton";
 import Apis, { endpoints } from "../../config/Apis";
 import Feather from "react-native-vector-icons/Feather";
+import { Cache } from "react-native-cache";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import optionCache from "../../utils/optionCache";
 
 const AddMedicine = ({ navigation, route }) => {
     const [medicineList, setMedicineList] = useState([]);
@@ -21,7 +25,23 @@ const AddMedicine = ({ navigation, route }) => {
     const [activeAlphabet, setActiveAlphabet] = useState('A')
     const [timer, setTimer] = useState(null)
     const [isTrigger, setTrigger] = useState(false)
+    const [med, setMed] = useState([])
+    const cache = new Cache(optionCache);
 
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const value = await cache.get("medicineList");
+                setMed(value);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+        fetchData();
+    }, [])
+    const filteredMedicines = med.filter((item) =>
+        item.name.toLowerCase().includes(searchText.toLowerCase())
+    );
     const flatListRef = useRef(null);
 
     const loadMoreMedicine = () => {
@@ -33,39 +53,39 @@ const AddMedicine = ({ navigation, route }) => {
         setPage(0);
     };
 
-    useEffect(() => {
-        let debounceFunction;
-        console.log('Loading')
-        const getMedicine = async () => {
-            try {
-                setFetched(false);
-                const res = await Apis.get(
-                    `${endpoints["medicine"]}/?page=${page}&name=${searchText}`
-                );
-                const newMedicineList = res.data.content;
-                setFetched(true);
-                if (page === 0) {
-                    setMedicineList(newMedicineList);
-                    setMaxPage(res.data.totalPages);
-                } else {
-                    setMedicineList((prevMedicineList) => [
-                        ...prevMedicineList,
-                        ...newMedicineList,
-                    ]);
-                }
-            } catch (error) {
-                console.error("Error fetching medicine data:", error);
-            }
-        };
+    // useEffect(() => {
+    //     let debounceFunction;
+    //     console.log('Loading')
+    //     const getMedicine = async () => {
+    //         try {
+    //             setFetched(false);
+    //             const res = await Apis.get(
+    //                 `${endpoints["medicine"]}/?page=${page}&name=${searchText}`
+    //             );
+    //             const newMedicineList = res.data.content;
+    //             setFetched(true);
+    //             if (page === 0) {
+    //                 setMedicineList(newMedicineList);
+    //                 setMaxPage(res.data.totalPages);
+    //             } else {
+    //                 setMedicineList((prevMedicineList) => [
+    //                     ...prevMedicineList,
+    //                     ...newMedicineList,
+    //                 ]);
+    //             }
+    //         } catch (error) {
+    //             console.error("Error fetching medicine data:", error);
+    //         }
+    //     };
 
-        if (maxPage === 0 || page < maxPage) {
-            debounceFunction = setTimeout(() => {
-                getMedicine();
-            }, 650);
-        }
+    //     if (maxPage === 0 || page < maxPage) {
+    //         debounceFunction = setTimeout(() => {
+    //             getMedicine();
+    //         }, 650);
+    //     }
 
-        return () => clearTimeout(debounceFunction);
-    }, [page, searchText]);
+    //     return () => clearTimeout(debounceFunction);
+    // }, [page, searchText]);
 
 
 
@@ -73,14 +93,12 @@ const AddMedicine = ({ navigation, route }) => {
         if (route.params && route.params.schedule) {
             const { schedule, unitList } = route.params;
 
-            console.log(1, route.params)
             const updatedSchedule = {
                 ...schedule,
                 medicine: medicine,
             };
             navigation.navigate('MedicationSchedule', { updatedSchedule: updatedSchedule, unitList: unitList });
         } else {
-            console.log(2)
             navigation.navigate('MedicationSchedule', { medicine: medicine });
         }
     };
@@ -92,35 +110,35 @@ const AddMedicine = ({ navigation, route }) => {
         </TouchableOpacity>
     );
 
-    const renderAlphabets = () => {
-        const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        return (
-            <View style={styles.alphabetContainer}>
-                {alphabets.split("").map((item) => (
-                    <TouchableOpacity
-                        key={item}
-                        onPress={() => scrollToListByAlphabet(item)}
-                        style={{ ...styles.alphabetItem, backgroundColor: activeAlphabet === item ? 'black' : 'transparent' }}>
-                        <Text style={{ ...styles.alphabetText, color: activeAlphabet === item ? 'white' : 'black' }}>{item}</Text>
-                    </TouchableOpacity>
-                ))}
-            </View>
-        );
-    };
+    // const renderAlphabets = () => {
+    //     const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    //     return (
+    //         <View style={styles.alphabetContainer}>
+    //             {alphabets.split("").map((item) => (
+    //                 <TouchableOpacity
+    //                     key={item}
+    //                     onPress={() => scrollToListByAlphabet(item)}
+    //                     style={{ ...styles.alphabetItem, backgroundColor: activeAlphabet === item ? 'black' : 'transparent' }}>
+    //                     <Text style={{ ...styles.alphabetText, color: activeAlphabet === item ? 'white' : 'black' }}>{item}</Text>
+    //                 </TouchableOpacity>
+    //             ))}
+    //         </View>
+    //     );
+    // };
 
-    const scrollToListByAlphabet = (alphabet) => {
-        setActiveAlphabet(alphabet)
-        const filteredList = medicineList.filter(
-            (medicine) =>
-                medicine.name.charAt(0).toUpperCase() === alphabet.toUpperCase()
-        );
-        if (filteredList.length > 0) {
-            flatListRef.current.scrollToIndex({
-                animated: true,
-                index: medicineList.indexOf(filteredList[0]),
-            });
-        }
-    };
+    // const scrollToListByAlphabet = (alphabet) => {
+    //     setActiveAlphabet(alphabet)
+    //     const filteredList = medicineList.filter(
+    //         (medicine) =>
+    //             medicine.name.charAt(0).toUpperCase() === alphabet.toUpperCase()
+    //     );
+    //     if (filteredList.length > 0) {
+    //         flatListRef.current.scrollToIndex({
+    //             animated: true,
+    //             index: medicineList.indexOf(filteredList[0]),
+    //         });
+    //     }
+    // };
 
     const onViewableItemsChanged = ({ viewableItems }) => {
         if (viewableItems.length > 0) {
@@ -148,25 +166,27 @@ const AddMedicine = ({ navigation, route }) => {
                     value={searchText}
                     onChangeText={(text) => onChangeSearchText(text)}
                 />
-                <TouchableOpacity
+                {searchText && <TouchableOpacity
                     style={{ marginLeft: "auto" }}
                     onPress={() => onChangeSearchText("")}
                 >
                     <Feather name="x" size={20} color="#000" style={styles.icon} />
-                </TouchableOpacity>
+                </TouchableOpacity>}
             </View>
 
-            <View>
+            {/* <View>
                 {renderAlphabets()}
-            </View>
+            </View> */}
 
-            {isFetched && medicineList.length === 0 && (
+            {/* {isFetched && medicineList.length === 0 && (
                 <Text style={{ paddingHorizontal: 16, marginTop: 10 }}>Không tìm thấy tên thuốc</Text>
-            )}
-
+            )} */}
+            {/* <View style={{ marginHorizontal: 12 }}>
+                <Image source={require('../assets/images/medicinebanner.png')} style={{ width: '100%', height: 200, marginBottom: 3, borderRadius: 10 }} />
+            </View> */}
             <FlatList
                 ref={flatListRef}
-                data={medicineList}
+                data={filteredMedicines || med}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.id.toString()}
                 onEndReached={loadMoreMedicine}
@@ -174,10 +194,10 @@ const AddMedicine = ({ navigation, route }) => {
                 viewabilityConfigCallbackPairs={
                     viewabilityConfigCallbackPairs.current
                 }
-                style={{ marginTop: 20 }}
+                style={{ marginTop: 20, marrginHorizontal: 20 }}
             />
 
-            {!isFetched && <ActivityIndicator size="large" color="#99999c" style={{ marginBottom: 20 }} />}
+            {/* {!isFetched && <ActivityIndicator size="large" color="#99999c" style={{ marginBottom: 20 }} />} */}
         </View>
     );
 };
@@ -185,11 +205,10 @@ const AddMedicine = ({ navigation, route }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#f8f9fd",
+        backgroundColor: "#fff",
     },
     header: {
         backgroundColor: "white",
-        padding: 10,
     },
     searchContainer: {
         flexDirection: "row",
@@ -205,19 +224,22 @@ const styles = StyleSheet.create({
     },
     searchInput: {
         height: 45,
-        paddingLeft: 5,
+        width: "90%",
+        paddingLeft: 10,
         paddingRight: 50,
     },
     listItem: {
-        padding: 16,
+        paddingVertical: 14,
+        borderBottomWidth: 0.3,
+        borderColor: '#ccc',
+        marginHorizontal: 20,
     },
     itemText: {
         fontWeight: "500",
-        fontSize: 16,
+        fontSize: 15,
     },
     alphabetContainer: {
-        marginTop: 50,
-        marginRight: 20,
+        marginTop: 100,
         position: "absolute",
         right: 0,
         backgroundColor: '#e6e8ec',
@@ -234,8 +256,7 @@ const styles = StyleSheet.create({
         zIndex: 10
     },
     alphabetText: {
-        fontSize: 11,
+        fontSize: 10,
     },
 });
-
 export default AddMedicine;

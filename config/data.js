@@ -32,7 +32,7 @@ export const categoryIcons = [
     {
         path: require('../assets/images/medical-report.png'),
         text: 'Đăng ký khám',
-        nav: 'AppointmentRegister'
+        nav: 'Doctors'
     },
     {
         path: require('../assets/images/video-call.png'),

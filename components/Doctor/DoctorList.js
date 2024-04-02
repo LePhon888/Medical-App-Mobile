@@ -5,6 +5,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import Feather from "react-native-vector-icons/Feather";
 import Apis, { endpoints } from '../../config/Apis';
 import DoctorItemLoading from './DoctorItemLoading';
+import { Category } from '../../screens';
 /** 
  * This one use to display list of doctors, include information about each doctor
  * @param onItemclickEvent (optional) Function to hanlde when click the item of the list, can navigate to the detail
@@ -17,7 +18,6 @@ const DoctorList = ({ onItemclickEvent }) => {
         const getDoctorList = async () => {
             try {
                 const res = await Apis.get(`${endpoints["doctors"]}/`);
-                console.log(res.data)
                 setDoctors(res.data)
                 setDataFetched(true)
             } catch (error) {
@@ -27,7 +27,6 @@ const DoctorList = ({ onItemclickEvent }) => {
         getDoctorList();
     }, []);
 
-    // On click item
     const onItemClick = (item) => {
         onItemclickEvent(item)
     }
@@ -38,36 +37,27 @@ const DoctorList = ({ onItemclickEvent }) => {
 
     const renderItem = (item, index) => (
         <TouchableOpacity key={index} style={styles.itemContainer} onPress={() => onItemClick(item.userId)}>
-            {/* Avatar, Name, Rating, Department, Direct or Indirect */}
             <View style={{ flexDirection: 'row' }}>
-                {/* Avatar */}
                 <Image source={{ uri: item.image }} style={styles.avatar} />
-                {/* Info container */}
                 <View style={styles.textContainer}>
                     <View style={styles.flexRow}>
-                        {/* Name */}
                         <Text style={styles.name}>BS.CKI {item.fullName}</Text>
-                        {/* Rating */}
                         {item.rating && item.rating > 0 ? (
                             <View style={styles.rating}>
                                 <Text style={{ fontSize: 10 }}>⭐</Text>
-                                <Text style={{ fontWeight: '500' }}>{` ${item.rating}/5`}</Text>
+                                <Text style={{ fontWeight: '500', fontSize: 13, color: '#353b48' }}>{` ${item.rating}/5`}</Text>
                             </View>
                         ) : ""}
                     </View>
-                    {/* Department, hospital */}
                     <Text numberOfLines={1} ellipsizeMode="tail" style={styles.department}><Icon name='git-branch-outline' /> {item.departmentName}</Text>
                     <Text numberOfLines={1} ellipsizeMode="tail" style={styles.hospital}><Icon name='location-outline' /> {item.hospital}</Text>
-                    {/* Consultation */}
                     <View style={{ flex: 1, flexDirection: 'row' }}>
                         <Text style={styles.consultation}>{item.consultation}</Text>
                     </View>
 
                 </View>
             </View>
-            {/* Dashed line */}
             <View style={styles.dashedLine}></View>
-            {/* Target: children or adult */}
             <View style={{ flexDirection: 'row' }}>
                 {item.target.split(',').map((label, index) => {
                     return (<Text style={styles.target} key={index}>{label}</Text>)
@@ -79,7 +69,7 @@ const DoctorList = ({ onItemclickEvent }) => {
                     <Feather name='dollar-sign' color={'#f0983f'} size={12} />
                 </View>
                 <Text style={styles.fee}>
-                    Phí thăm khám cố định<Text style={{ fontSize: 13, color: '#0e8558', fontWeight: '500' }}>{` ${Number(item.fee).toLocaleString('vi-VN')} đ`}</Text></Text>
+                    Phí tư vấn từ xa: <Text style={{ fontSize: 13, color: '#0e8558', fontWeight: '500' }}>{` ${Number(item.fee).toLocaleString('vi-VN')} đ`}</Text></Text>
             </View>
         </TouchableOpacity >
     );
@@ -159,7 +149,7 @@ const styles = StyleSheet.create({
         paddingVertical: 3,
         paddingHorizontal: 10,
         textAlign: 'center',
-        fontSize: 13,
+        fontSize: 12,
         fontWeight: '500',
         color: '#0e8558',
         borderWidth: 1,
@@ -180,7 +170,7 @@ const styles = StyleSheet.create({
     fee: {
         marginVertical: 10,
         fontSize: 13,
-        color: '#282828',
+        color: '#636e72',
     },
     nextAppointmentContainer: {
         flexDirection: 'row',
@@ -213,11 +203,12 @@ const styles = StyleSheet.create({
     },
     target: {
         borderRadius: 15,
-        fontSize: 13,
+        fontSize: 12,
         paddingVertical: 5,
         paddingHorizontal: 10,
         marginRight: 5,
-        backgroundColor: '#faf9fe'
+        backgroundColor: '#faf9fe',
+        color: '#636e72'
     },
     dollar: {
         borderWidth: 1,

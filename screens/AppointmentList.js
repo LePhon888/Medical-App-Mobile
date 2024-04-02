@@ -13,6 +13,9 @@ import Feather from "react-native-vector-icons/Feather";
 import Apis, { endpoints } from "../config/Apis";
 import COLORS from "../constants/colors";
 import HeaderWithBackButton from "../common/HeaderWithBackButton";
+import Entypo from 'react-native-vector-icons/Entypo';
+import moment from "moment/moment";
+import { ActivityIndicator } from "react-native-paper";
 
 export default function AppointmentList({ navigation }) {
   function formatDate(inputDate) {
@@ -24,11 +27,9 @@ export default function AppointmentList({ navigation }) {
       dateComponents[2]
     );
 
-
     const formattedDate = `${dateObject.getDate()}-${(dateObject.getMonth() + 1)
       .toString()
       .padStart(2, "0")}-${dateObject.getFullYear()}`;
-
     return formattedDate;
   }
   const [appointment, setAppointment] = useState(null);
@@ -36,8 +37,9 @@ export default function AppointmentList({ navigation }) {
     const fetchData = async () => {
       try {
         const user = await AsyncStorage.getItem("user");
+        console.log(JSON.parse(user).id);
         const response = await Apis.get(
-          endpoints["appointment"] + "/" + JSON.parse(user).id
+          endpoints.appointment + "/detail/" + JSON.parse(user).id
         );
         setAppointment(response.data);
       } catch (error) {
@@ -46,114 +48,98 @@ export default function AppointmentList({ navigation }) {
     };
     fetchData();
   }, []);
-
   const data = [
     {
       reason: 'Ho khó thở',
       date: '10/01/2023',
       hour: '08:00',
       department: 'Đa khoa',
-      doctor: 'BS.CKI Nguyen An Binh'
+      doctor: 'BS.CKI Nguyen An Binh',
+      hospitalAddress: "37 Hoàng Hoa Thám, Phường 13, Tân Bình, Thành phố Hồ Chí Minh",
+      hospital: "Phòng khám Đa khoa Quốc tế Golden Healthcare"
     },
     {
       reason: 'Ho khó thở',
       date: '10/01/2023',
       hour: '08:00',
       department: 'Đa khoa',
-      doctor: 'BS.CKI Nguyen An Binh'
+      doctor: 'BS.CKI Nguyen An Binh',
+      hospitalAddress: "37 Hoàng Hoa Thám, Phường 13, Tân Bình, Thành phố Hồ Chí Minh",
+      hospital: "Phòng khám Đa khoa Quốc tế Golden Healthcare"
+
     },
     {
       reason: 'Ho khó thở',
       date: '10/01/2023',
       hour: '08:00',
       department: 'Đa khoa',
-      doctor: 'BS.CKI Nguyen An Binh'
+      doctor: 'BS.CKI Nguyen An Binh',
+      hospitalAddress: "37 Hoàng Hoa Thám, Phường 13, Tân Bình, Thành phố Hồ Chí Minh",
+      hospital: "Phòng khám Đa khoa Quốc tế Golden Healthcare"
     },
-    {
-      reason: 'Ho khó thở',
-      date: '10/01/2023',
-      hour: '08:00',
-      department: 'Đa khoa',
-      doctor: 'BS.CKI Nguyen An Binh'
-    },
-    {
-      reason: 'Ho khó thở',
-      date: '10/01/2023',
-      hour: '08:00',
-      department: 'Đa khoa',
-      doctor: 'BS.CKI Nguyen An Binh'
-    },
-    {
-      reason: 'Ho khó thở',
-      date: '10/01/2023',
-      hour: '08:00',
-      department: 'Đa khoa',
-      doctor: 'BS.CKI Nguyen An Binh'
-    },
-    {
-      reason: 'Ho khó thở',
-      date: '10/01/2023',
-      hour: '08:00',
-      department: 'Đa khoa',
-      doctor: 'BS.CKI Nguyen An Binh'
-    },
-    {
-      reason: 'Ho khó thở',
-      date: '10/01/2023',
-      hour: '08:00',
-      department: 'Đa khoa',
-      doctor: 'BS.CKI Nguyen An Binh'
-    },
-    {
-      reason: 'Ho khó thở',
-      date: '10/01/2023',
-      hour: '08:00',
-      department: 'Đa khoa',
-      doctor: 'BS.CKI Nguyen An Binh'
-    },
-    {
-      reason: 'Ho khó thở',
-      date: '10/01/2023',
-      hour: '08:00',
-      department: 'Đa khoa',
-      doctor: 'BS.CKI Nguyen An Binh'
-    }
+
   ]
 
   return (
     <SafeAreaView style={{ backgroundColor: "#fff", flex: 1 }}>
       <HeaderWithBackButton title={'Lịch sử đặt hẹn'} customIcons={[
-        <Feather name="plus" size={24} style={{ marginTop: 4 }} />
+        <TouchableOpacity onPress={() => navigation.navigate("Doctors")}>
+          <Feather name="plus" size={24} style={{ marginTop: 4 }} />
+        </TouchableOpacity>
       ]} navigation={navigation} />
       <ScrollView contentContainerStyle={styles.container}>
-        {data.map((item, index) => {
+        {appointment === null && <ActivityIndicator size={40} color={COLORS.primary} style={{ marginTop: 300 }} />}
+        {appointment?.map((item, index) => {
           return (
             <View key={index}>
               <View style={styles.radio}>
-                <View style={{ height: 50 }}>
-                  <Image alt="image" style={styles.profileAvatar} source={{ uri: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2.5&w=256&h=256&q=80" }} />
-                </View>
                 <View style={styles.radioTop}>
                   <View style={{ flexDirection: 'row' }}>
-                    <Text style={styles.radioLabel}>{item.doctor}</Text>
-                  </View>
-                  <View style={{ position: 'absolute', right: 60 }}>
-                    <View style={{ flexDirection: 'row' }}>
-                      <Image source={require('../assets/images/chronometer.png')} style={{ width: 16, height: 16, marginRight: 1 }} />
-                      <Text style={styles.cardFooterItemText}>{item.hour}</Text>
+                    <View style={{ height: 50, marginTop: 4, marginLeft: 4 }}>
+                      <Image alt="image" style={styles.profileAvatar} source={{ uri: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2.5&w=256&h=256&q=80" }} />
+                    </View>
+                    <View style={{ flexDirection: 'column' }}>
+                      <Text style={styles.radioLabel}>{item.doctor.user.lastName + ' ' + item.doctor.user.firstName}</Text>
+                      <View style={{ width: '97%' }}>
+                        <Text style={{ fontSize: 13, fontWeight: '400', color: '#848a96' }}>{item.doctor.department.name}</Text>
+                      </View>
                     </View>
                   </View>
-                  <View style={{ flexDirection: 'row', position: 'absolute', right: 60, top: 20 }}>
-                    <Image source={require('../assets/images/calendar.png')} style={{ width: 20, height: 20, marginRight: 1 }} />
-                    <Text style={styles.cardSalary}>{item.date}</Text>
+                  {/* <View style={{ position: 'absolute', right: 60 }}>
+                    <View style={{ flexDirection: 'row' }}>
+                    </View>
+                  </View> */}
+
+
+                  <View style={{ paddingVertical: 3, borderWidth: 0.5, width: 82, borderRadius: 20, borderColor: '#368866', color: '#218e60', backgroundColor: '#e1f8ee', marginLeft: 56, marginTop: -8 }}>
+                    <Text style={{ fontSize: 12, color: '#218e60', marginLeft: 6, fontWeight: '500' }}>Tư vấn từ xa</Text>
                   </View>
-                  <View >
-                    <Text style={{ fontSize: 14, fontWeight: '400', color: '#848a96', marginBottom: 4 }}>{item.department}</Text>
+                  <View style={{ flexDirection: 'row', marginTop: 14 }} >
+                    <Image source={require('../assets/images/calendar.png')} style={{ width: 24, height: 24, marginLeft: 8, marginRight: 26 }} />
+                    <View style={{ flexDirection: 'column' }}>
+                      <Text style={styles.dateText}>{moment(item.date, 'YYYY/MM/DD').format('DD/MM/YYYY')}</Text>
+                      <Text style={styles.cardFooterItemText}>{item.hour.hour}</Text>
+                    </View>
                   </View>
-                  <View style={{ borderWidth: 1, width: 94, borderRadius: 20, borderColor: '#368866', color: '#218e60', backgroundColor: '#e1f8ee', marginTop: 2 }}>
-                    <Text style={{ fontSize: 14, color: '#218e60', marginLeft: 7 }}>Tư vấn từ xa</Text>
+                  <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                    <View style={{ height: 50, marginTop: 4, marginLeft: 4 }}>
+                      <Image alt="image" style={styles.profileAvatar} source={{ uri: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2.5&w=256&h=256&q=80" }} />
+                    </View>
+                    <View style={{ flexDirection: 'column', width: '86%' }}>
+                      <Text style={styles.radioLabel}>{item.doctor.hospital}</Text>
+                      <View style={{ width: '97%' }}>
+                        <Text style={{ color: '#848a96' }}>{item.doctor.hospitalAddress}</Text>
+                      </View>
+                    </View>
                   </View>
                 </View>
+              </View>
+              <View style={{ backgroundColor: '#f4f9ff', marginTop: -5, marginBottom: 14, paddingVertical: 10, paddingLeft: 16, borderBottomEndRadius: 12, borderBottomStartRadius: 12, borderLeftWidth: 1, borderRightWidth: 1, borderBottomWidth: 1, borderColor: '#dfe6e9' }}>
+                <TouchableOpacity style={{ flexDirection: 'row' }}
+                  onPress={() => navigation.navigate("Doctors")}>
+                  <Entypo name="ccw" size={16} style={{ marginTop: 1, color: '#0984e3' }} />
+                  <Text style={{ marginLeft: 5, fontWeight: 500, fontSize: 13, color: '#0984e3' }}>Đặt lịch hẹn mới</Text>
+                </TouchableOpacity>
               </View>
             </View>
           )
@@ -202,8 +188,7 @@ const styles = StyleSheet.create({
     borderRadius: 20
   },
   cardFooterItemText: {
-    fontSize: 12,
-    fontWeight: "500",
+    fontSize: 11,
     color: "#464646",
   },
   cardLogo: {
@@ -235,7 +220,8 @@ const styles = StyleSheet.create({
     color: "#818181",
   },
   cardSalary: {
-    fontSize: 13,
+    fontSize: 12,
+    fontWeight: "500",
   },
   cardPrice: {
     marginLeft: "auto",
@@ -276,14 +262,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   radio: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     position: 'relative',
     backgroundColor: '#fff',
     padding: 12,
     borderRadius: 6,
-    borderWidth: 0.3,
-    borderColor: '#ccc',
-    marginTop: 8
+    borderWidth: 1,
+    borderColor: '#dfe6e9',
+    marginTop: 8,
   },
   radioActive: {
     borderColor: '#0069fe',
@@ -295,10 +281,9 @@ const styles = StyleSheet.create({
     position: 'relative'
   },
   radioLabel: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '600',
     color: '#111827',
-    marginBottom: 5,
   },
   radioUsers: {
     fontSize: 14,
@@ -312,9 +297,9 @@ const styles = StyleSheet.create({
     marginLeft: 8
   },
   profileAvatar: {
-    width: 50,
-    height: 50,
+    width: 34,
+    height: 34,
     borderRadius: 9999,
-    marginRight: 10,
+    marginRight: 20,
   },
 });

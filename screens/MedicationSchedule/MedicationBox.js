@@ -66,8 +66,8 @@ const MedicationBox = ({ navigation, route }) => {
         navigation.navigate('MedicationSchedule', { id })
     }
 
-    const defaultColor = '#504f54';
-    const activeColor = '#2a87f1';
+    const defaultColor = '#a3a3a3';
+    const activeColor = COLORS.primary;
 
     const goBack = () => {
         navigation.goBack()
@@ -235,7 +235,7 @@ const MedicationBox = ({ navigation, route }) => {
                     <View style={styles.medTabContainer}>
                         {medTabs.map((t) => (
                             <TouchableOpacity
-                                key={t.key} style={[styles.medTab, { backgroundColor: medActiveTab === t.key ? '#2a87f1' : 'white' }]}
+                                key={t.key} style={[styles.medTab, { backgroundColor: medActiveTab === t.key ? COLORS.primary : 'white' }]}
                                 onPress={() => setMedActiveTab(t.key)}>
                                 <Text style={[styles.medTabTitle, { color: medActiveTab === t.key ? 'white' : '#504f54' }]}>{t.title}</Text>
                             </TouchableOpacity>
@@ -265,7 +265,8 @@ const MedicationBox = ({ navigation, route }) => {
                                 renderItem={({ item }) => (
                                     <View style={{
                                         ...styles.listItem,
-                                        borderColor: item.isUsed === null ? '#d3d3d3' : item.isUsed ? COLORS.toastInfo : COLORS.toastError
+                                        borderColor: item.isUsed === null ? '#ccc' : item.isUsed ? COLORS.toastInfo : COLORS.toastError,
+                                        borderWidth: 0.4
                                     }}>
                                         <View style={{ width: '60%' }}>
                                             <Text style={styles.medicineName}>{item.medicineName}</Text>
@@ -318,7 +319,7 @@ const MedicationBox = ({ navigation, route }) => {
                                         <TouchableOpacity
                                             style={{ marginLeft: 'auto' }}
                                             onPress={() => handleUseAllInSection(title)}>
-                                            <Text style={{ fontSize: 14, fontWeight: '500', color: COLORS.textLabel }}>DÙNG TẤT CẢ</Text>
+                                            <Text style={{ fontSize: 14, fontWeight: '500', color: '#898484' }}>DÙNG TẤT CẢ</Text>
                                         </TouchableOpacity>
                                     </View>
                                 )}
@@ -369,8 +370,8 @@ const MedicationBox = ({ navigation, route }) => {
 
             {/* bottom content */}
             <View style={styles.bottomContainer}>
-                <TouchableOpacity style={{ ...styles.floatingButton, opacity: isPopupVisible ? 0 : 1 }} onPress={() => setPopupVisible(true)}>
-                    <FontAwesome name="plus" size={24} color="white" />
+                <TouchableOpacity style={{ ...styles.floatingButton }} onPress={() => setPopupVisible(true)}>
+                    <FontAwesome name="plus" size={20} color="white" />
                 </TouchableOpacity>
                 {/* tabs view */}
                 <View style={styles.tabContainer}>
@@ -378,9 +379,9 @@ const MedicationBox = ({ navigation, route }) => {
                         <TouchableOpacity key={t.key} style={styles.tab} onPress={() => setBottomActiveTab(t.key)}>
                             <View style={{ flexDirection: 'column', alignItems: 'center' }}>
                                 {t.key === 1 ? (
-                                    <FontAwesome name="calendar-check-o" size={20} color={bottomActiveTab === t.key ? activeColor : defaultColor} />
+                                    <FontAwesome name="calendar-check-o" size={18} color={bottomActiveTab === t.key ? activeColor : defaultColor} />
                                 ) : (
-                                    <FontAwesome name="medkit" size={20} color={bottomActiveTab === t.key ? activeColor : defaultColor} />
+                                    <FontAwesome name="medkit" size={18} color={bottomActiveTab === t.key ? activeColor : defaultColor} />
                                 )}
                                 <Text style={[styles.tabTitle, { color: bottomActiveTab === t.key ? activeColor : defaultColor }]}>{t.title}</Text>
                             </View>
@@ -394,7 +395,7 @@ const MedicationBox = ({ navigation, route }) => {
                 <>
                     {/* Close button */}
                     <TouchableOpacity style={{ ...styles.floatingButton, opacity: isPopupVisible ? 1 : 0, backgroundColor: '#737373' }} onPress={() => setPopupVisible(false)}>
-                        <FontAwesome name="close" size={24} color="white" />
+                        <FontAwesome name="close" size={20} color="white" />
                     </TouchableOpacity>
                     {/* Overlay */}
                     <TouchableWithoutFeedback onPress={() => setPopupVisible(false)}>
@@ -425,7 +426,7 @@ const MedicationBox = ({ navigation, route }) => {
 const styles = StyleSheet.create({
     screen: {
         flex: 1,
-        backgroundColor: '#2d74e0',
+        backgroundColor: COLORS.primary,
         flexDirection: 'column',
         justifyContent: 'space-between'
     },
@@ -434,12 +435,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: 5,
     },
     backButton: {
-        backgroundColor: '#4b8ae4',
+        backgroundColor: COLORS.primary,
         padding: 5,
         borderRadius: 8,
     },
     headerTitle: {
-        color: 'white', fontWeight: 'bold', fontSize: 20
+        color: 'white', fontWeight: 'bold', fontSize: 18
     },
     bottomContainer: {
         backgroundColor: '#fafafa',
@@ -448,7 +449,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
-        paddingVertical: 10,
+        paddingVertical: 8,
         backgroundColor: 'white',
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
@@ -459,20 +460,20 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     tabTitle: {
-        fontSize: 14,
+        fontSize: 13,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginTop: 10,
+        marginTop: 4,
     },
     floatingButton: {
         position: 'absolute',
-        backgroundColor: '#2a87f1',
+        backgroundColor: COLORS.primary,
         borderRadius: 30,
-        width: 60,
-        height: 60,
+        width: 56,
+        height: 56,
         justifyContent: 'center',
         alignItems: 'center',
-        elevation: 5,
+        elevation: 3,
         alignSelf: 'center',
         zIndex: 102,
         bottom: 30,
@@ -579,7 +580,6 @@ const styles = StyleSheet.create({
     },
     medTabTitle: {
         fontSize: 14,
-        fontWeight: '500',
         textAlign: 'center',
     },
     arrow: {

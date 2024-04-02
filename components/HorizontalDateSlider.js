@@ -3,6 +3,7 @@ import moment from 'moment';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
+import COLORS from '../constants/colors';
 /**
  * 
  * @param  selectedMoment the moment() that initial calendar based on its week
@@ -63,7 +64,7 @@ const HorizontalDateSlider = ({ selectedMoment, onSelectDate }) => {
                     </TouchableOpacity>
 
                     <Text style={{ color: 'white', fontWeight: 'bold', textAlign: 'center' }}>
-                        {!isBefore && !isAfter && `Hôm nay, ${'\n'}`}
+                        {!isBefore && !isAfter && `Hôm nay, `}
                         {selectedDate.format('DD/MM/YYYY')}
                     </Text>
 
@@ -110,7 +111,7 @@ const HorizontalDateSlider = ({ selectedMoment, onSelectDate }) => {
 
 const styles = StyleSheet.create({
     content: {
-        backgroundColor: '#2d74e0',
+        backgroundColor: COLORS.primary,
     },
     calendar: {
         flexDirection: 'row',
@@ -126,15 +127,15 @@ const styles = StyleSheet.create({
     },
     listItem: {
         width: 40,
-        height: 60,
+        height: 66,
         alignItems: 'center',
-        paddingVertical: 8,
+        paddingVertical: 10,
+        paddingHorizontal: 6,
         borderRadius: 12,
-        marginHorizontal: 2,
+        marginHorizontal: 5,
     },
     dayText: {
-        color: '#89bbf2',
-        fontWeight: 'bold',
+        color: '#fff',
         fontSize: 13,
     },
     day: {
@@ -158,7 +159,7 @@ const styles = StyleSheet.create({
         padding: 5,
         paddingHorizontal: 15,
         alignItems: 'center',
-        height: 60,
+        height: 48,
     },
     flexRowCenter: {
         flexDirection: 'row',

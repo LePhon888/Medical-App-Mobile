@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   StyleSheet,
   View,
@@ -7,7 +7,7 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  Slider
+  Slider,
 } from "react-native";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -18,94 +18,122 @@ import "url-search-params-polyfill";
 import HeaderWithBackButton from "../common/HeaderWithBackButton";
 import RenderHtml from 'react-native-render-html';
 import { useWindowDimensions } from 'react-native';
-import axios from "axios";
 import Sound from 'react-native-sound';
-import Button from "../components/Button";
+import axios from "axios";
+import Apis, { endpoints } from "../config/Apis";
+const customIcons = [
+  <MaterialCommunityIcons
+    name="format-letter-case"
+    size={23}
+    onPress={() => {
+      setClickCount(prevCount => prevCount + 1);
+
+      if (clickCount >= 2) {
+        setFontSize(initialFontSize);
+        setClickCount(0);
+      } else {
+        setFontSize(prevSize => prevSize + 5);
+      }
+    }}
+  />,
+  <FontAwesome name="bookmark-o" size={19} />,
+  <FeatherIcon color="#242329" name="share" size={19} />
+];
 
 export default function NewsDetail({ navigation, route }) {
   const news = route.params;
   const { width } = useWindowDimensions();
-  const source = {
-    html: `${news?.content}`
-  };
+  const source = { html: `${news?.content}` };
   const initialFontSize = 16;
   const [fontSize, setFontSize] = useState(initialFontSize);
   const [clickCount, setClickCount] = useState(0);
   const [header, setHeader] = useState(null);
   const [audio, setAudio] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [sound, setSound] = useState(null);
+  const [newsByCategory, setNewsByCategory] = useState([]);
+  const scrollViewRef = useRef(null);
+
   var htmlRegexG = /<(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+>/g;
   var modifiedContent = news.content.replace(htmlRegexG, '').replace(/undefined/g, '').replace(/&nbsp;/g, '').replace(/\s+/g, ' ');
-  const customIcons = [
-    <MaterialCommunityIcons
-      name="format-letter-case"
-      size={23}
-      onPress={() => {
-        setClickCount(prevCount => prevCount + 1);
-
-        if (clickCount >= 2) {
-          setFontSize(initialFontSize);
-          setClickCount(0);
-        } else {
-          setFontSize(prevSize => prevSize + 5);
-        }
-      }}
-    />,
-    <FontAwesome name="bookmark-o" size={19} />,
-    <FeatherIcon color="#242329" name="share" size={19} />
-  ];
-  const playSound = async (url) => {
-    const sound = new Sound(url, Sound.MAIN_BUNDLE, (error) => {
-      if (error) {
-        console.log('Failed to load the sound', error);
-        return;
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await Apis.get(`${endpoints["postBycategory"]}${news.category.id}?size=${3}`)
+        setNewsByCategory(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
+    };
+    fetchData();
+  }, [news.category.id, news.id])
+
+  useEffect(() => {
+    const soundObject = new Sound(news.audio ?? '', '', (error) => {
+      setSound(soundObject);
+    });
+
+    return () => {
+      soundObject.release();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isPlaying && sound) {
       sound.play((success) => {
-        if (success) {
-          console.log('Successfully finished playing');
+        if (!success) {
+          console.log('Sound did not play successfully');
         } else {
-          console.log('Playback failed due to audio decoding errors');
+          console.log('Sound play successfully');
         }
       });
-    });
-  };
-  useEffect(() => {
-    const fetchAudio = async () => {
-      const url = 'https://api.fpt.ai/hmi/tts/v5';
-      const headers = {
-        'api-key': 'XBzh8Evbm8BmnSLTyiEKbpAIZfI0RYcu',
-        'speed': '',
-        'voice': 'linhsan'
-      };
-      const data = modifiedContent.slice(0, 5000);
-      try {
-        const response = await axios.post(url, data, { headers });
-        setAudio(response.data.async);
-      } catch (error) {
-        console.error('Error:', error);
-      }
-    };
-    fetchAudio();
-  }, []);
-  useEffect(() => {
-    const findAudio = async () => {
-      try {
-        const res = await axios.get(audio);
-        res.status === 200 ? console.log('URL found') : console.log('URL not found');
-      } catch (error) {
-        error.response && error.response.status === 404 ? console.log('URL not found') : console.error('Error:', error);
-      }
-    };
-    findAudio();
-  }, [audio]);
+    } else if (!isPlaying && sound) {
+      sound.pause();
+    }
+  }, [isPlaying, sound]);
+
+  // useEffect(() => {
+  //   const fetchAudio = async () => {
+  //     const url = 'https://api.fpt.ai/hmi/tts/v5';
+  //     const headers = {
+  //       'api-key': '7MLI6gmBdIcwO9ASonzUQ8X4Ecb3XrKa',
+  //       'speed': '',
+  //       'voice': 'linhsan'
+  //     };
+  //     const data = modifiedContent.slice(0, 5000);
+  //     try {
+  //       const response = await axios.post(url, data, { headers });
+  //       console.log('responseresponseresponse', response.data.async);
+  //       await axios.put(endpoints.news + '/' + news.id + '?audio=' + response.data.async);
+  //       setAudio(response.data.async);
+  //     } catch (error) {
+  //       console.error('Error:', error);
+  //     }
+  //   };
+  //   fetchAudio();
+  // }, []);
+  // useEffect(() => {
+  //   const findAudio = async () => {
+  //     try {
+  //       const res = await axios.get(audio);
+  //       res.status === 200 ? console.log('URL found') : console.log('URL not found');
+  //     } catch (error) {
+  //       error.response && error.response.status === 404 ? console.log('URL not found') : console.error('Error:', error);
+  //     }
+  //   };
+  //   findAudio();
+  // }, [audio]);
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <View >
         <SafeAreaView>
-          <HeaderWithBackButton title={'Tin tức'} customIcons={customIcons} navigation={navigation} />
+          <HeaderWithBackButton customIcons={customIcons} navigation={navigation} />
         </SafeAreaView>
       </View>
 
-      <ScrollView contentContainerStyle={{ paddingBottom: 80 }}>
+      <ScrollView ref={scrollViewRef} // Reference to the ScrollView
+        contentContainerStyle={{ flexGrow: 1 }} // Necessary for scrolling to work
+      >
         <View style={styles.photos}>
           <View style={styles.photos}>
             <View style={{ flex: 1 }}>
@@ -130,9 +158,9 @@ export default function NewsDetail({ navigation, route }) {
               <Text style={styles.headerLocationText}>
                 Tác giả: {news.author}
               </Text>
-              <TouchableOpacity onPress={() => playSound(audio)}>
-                <Ionicons name="play-circle-outline" size={36} color={COLORS.primary} />
-              </TouchableOpacity>
+              {news.audio && <TouchableOpacity onPress={() => setIsPlaying(pre => !pre)}>
+                <Ionicons name={isPlaying ? "pause-circle-outline" : "play-circle-outline"} size={30} color={COLORS.primary} />
+              </TouchableOpacity>}
             </View>
 
             {/* <Text style={styles.headerPrice}>$650.00</Text> */}
@@ -155,18 +183,57 @@ export default function NewsDetail({ navigation, route }) {
           <View style={styles.statsItem}></View>
         </View>
         <View style={styles.about}>
-          {/* <Text style={styles.aboutDescription}>
-            {content ? content : news.content}
-          </Text> */}
           <RenderHtml
             contentWidth={width}
             source={source}
             tagsStyles={{ div: { fontSize }, span: { fontSize } }}
           />
         </View>
-        <View>
-        </View>
 
+        <View style={{ backgroundColor: '#f5f9fe', paddingLeft: 20, paddingRight: 10, paddingTop: 26 }}>
+          <Text style={{ fontSize: 21, fontWeight: 'bold', color: '#2f3640', marginBottom: 6 }}>Bài viết liên quan</Text>
+          {newsByCategory?.map((item, index) => {
+            return (
+              <TouchableOpacity
+                key={index}
+                onPress={() => {
+                  navigation.navigate("NewsDetail", item);
+                  if (scrollViewRef.current) {
+                    scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: false });
+                  }
+                }}
+                style={{
+                  borderBottomColor: '#f3f4f6',
+                  borderBottomWidth: 0.7,
+                  marginTop: 15
+                }}
+              >
+                <View style={styles.cardNews}>
+                  <Image
+                    alt=""
+                    resizeMode="cover"
+                    source={{ uri: item.image }}
+                    style={styles.cardImgNews}
+                  />
+
+                  <View style={styles.cardBodyNews}>
+                    <Text style={styles.cardTagNews}>{String(item.category.name)}</Text>
+
+                    <Text style={styles.cardTitleNews}>{String(item.header)}</Text>
+
+                    <View style={styles.cardRowNews}>
+                      <View style={styles.cardRowItemNews}>
+                        <Text style={styles.cardRowItemTextNews}>{new Date(parseInt(item.createdDate)).toLocaleDateString('vi')}</Text>
+                        {item.audio && <Ionicons name="volume-high" size={20} style={{ color: '#7f8c8d', marginLeft: 6 }} />}
+                      </View>
+                    </View>
+                    <FontAwesome name="bookmark-o" size={19} style={{ position: 'absolute', right: 20, bottom: 4 }} />
+                  </View>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
       </ScrollView>
     </View>
   );
@@ -452,4 +519,70 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     color: "#7b7c7e",
   },
+  cardNews: {
+    flexDirection: 'row',
+    alignItems: 'stretch',
+    borderRadius: 12,
+    marginBottom: 16,
+    position: 'relative'
+  },
+  cardImgNews: {
+    width: 96,
+    height: 96,
+    borderRadius: 12,
+  },
+  cardBodyNews: {
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: 0,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    paddingHorizontal: 16,
+  },
+  cardTagNews: {
+    fontWeight: '500',
+    fontSize: 14,
+    color: '#2e87ef',
+    marginBottom: 7,
+    textTransform: 'capitalize',
+  },
+  cardTitleNews: {
+    fontWeight: '600',
+    fontSize: 17,
+    lineHeight: 19,
+    color: '#000',
+    marginBottom: 8,
+  },
+  cardRowNews: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: -8,
+    marginBottom: 'auto',
+  },
+  cardRowDividerNews: {
+    fontSize: 17,
+    fontWeight: 'bold',
+    color: '#939393',
+  },
+  cardRowItemNews: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 6,
+    borderRightWidth: 1,
+    borderColor: 'transparent',
+  },
+  cardRowItemTextNews: {
+    fontWeight: '400',
+    fontSize: 13,
+    color: '#939393',
+  },
+  cardRowItemImgNews: {
+    width: 22,
+    height: 22,
+    borderRadius: 9999,
+    marginRight: 6,
+  },
+
 });

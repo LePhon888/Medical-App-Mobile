@@ -1,22 +1,48 @@
 import { useNavigation } from "@react-navigation/native";
-import { Button, TouchableOpacity, View, ScrollView, Text, Image, TextInput } from "react-native";
+import { Button, TouchableOpacity, View, ScrollView, Text, Image, TextInput, FlatList } from "react-native";
 import HeaderWithBackButton from "../common/HeaderWithBackButton";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { noti } from "../config/data";
 import COLORS from "../constants/colors";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { medicines } from '../config/data';
+import Apis, { endpoints } from "../config/Apis";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Cache } from "react-native-cache";
+import optionCache from "../utils/optionCache";
 
 export default function MedicineList({ navigation }) {
     const [searchQuery, setSearchQuery] = useState('');
+    const [med, setMed] = useState([]);
+    const cache = new Cache(optionCache);
 
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const value = await cache.get("medicineList");
+                setMed(value);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+        fetchData();
+    }, [])
     const handleSearch = (text) => {
         setSearchQuery(text);
     };
 
-    const filteredMedicines = medicines.filter((item) =>
+    const filteredMedicines = med?.filter((item) =>
         item.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+    const renderItem = ({ item }) => (
+        <TouchableOpacity style={{ borderBottomWidth: 0.3, borderColor: '#ccc', paddingVertical: 18, marginHorizontal: 16 }}>
+            <Text style={{ fontWeight: 600, fontSize: 15 }}>
+                {item.name}
+            </Text>
+        </TouchableOpacity>
+    );
+
     return (
         <View style={{ flex: 1, backgroundColor: '#fff' }}>
             <HeaderWithBackButton title={'Thuốc'} customIcons={
@@ -48,7 +74,7 @@ export default function MedicineList({ navigation }) {
                     </View>
                 }
                 <View>
-                    {filteredMedicines.map((item, index) => {
+                    {/* {med?.map((item, index) => {
                         return (
                             <TouchableOpacity key={index} style={{ borderBottomWidth: 0.3, borderColor: '#ccc', paddingVertical: 18, marginHorizontal: 16 }}>
                                 <Text style={{ fontWeight: 600, fontSize: 15 }}>
@@ -56,7 +82,12 @@ export default function MedicineList({ navigation }) {
                                 </Text>
                             </TouchableOpacity>
                         )
-                    })}
+                    })} */}
+                    <FlatList
+                        data={med}
+                        renderItem={renderItem}
+                        keyExtractor={item => item.id} // Provide a unique key for each item
+                    />
                 </View>
             </ScrollView>
         </View>

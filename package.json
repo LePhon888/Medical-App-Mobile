@@ -43,6 +43,7 @@
     "react-native": "0.72.5",
     "react-native-anchor-carousel": "^4.0.1",
     "react-native-app-auth": "^7.0.0",
+    "react-native-cache": "^2.0.3",
     "react-native-calendar-picker": "^7.1.4",
     "react-native-date-picker": "^4.3.5",
     "react-native-dialog": "^9.3.0",

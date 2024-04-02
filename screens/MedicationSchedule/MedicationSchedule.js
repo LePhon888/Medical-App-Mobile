@@ -14,7 +14,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { formatDate, formatDateMoment, formatDateTimetoTime, formatDuration } from "../../config/date";
 import { Switch } from "react-native-paper";
 import { ScrollView } from "react-native";
-
+import Button from "../../components/Button";
 
 const InputItem = ({ titleLeft, titleRight, includeBottomLine, onPress }) => {
     return (
@@ -237,7 +237,7 @@ const MedicationSchedule = ({ navigation, route }) => {
         setSubmitted(true);
 
         if (schedule.scheduleTimes.length === 0) {
-            Toast.show({ type: 'error', text1: 'Cần nhập thời gian uống thuốc.' });
+            Toast.show({ type: 'error', text1: 'Bạn chưa nhập thời gian uống thuốc.' });
         } else {
             try {
                 console.log(schedule)
@@ -249,7 +249,7 @@ const MedicationSchedule = ({ navigation, route }) => {
                     console.log(schedule.scheduleTimes)
                     Toast.show({
                         type: 'success',
-                        text1: `${schedule.id > 0 ? 'Đổi thông tin thuốc thành công.' : 'Lưu thuốc và lịch trình thành công.'}`
+                        text1: `${schedule.id > 0 ? 'Đổi thông tin thuốc thành công.' : 'Lưu thuốc và lịch uống thành công.'}`
                     })
                     navigation.navigate('MedicationBox', { saveScheduleSuccess: true });
                 }
@@ -276,7 +276,8 @@ const MedicationSchedule = ({ navigation, route }) => {
                         <View >
                             <Text style={styles.label}>Trạng thái thuốc</Text>
                         </View>
-                        <View style={{ ...styles.flexRowCenter, marginTop: 7 }}>
+                        <View style={{ ...styles.flexRowCenter }}>
+
                             <Text style={{
                                 ...styles.text, color: schedule.isActive ? COLORS.toastInfo : COLORS.textLabel
                             }}>{schedule.isActive ? 'Thuốc đang uống' : 'Thuốc cũ'}</Text>
@@ -353,9 +354,10 @@ const MedicationSchedule = ({ navigation, route }) => {
             </ScrollView>
 
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={{ ...styles.buttonNext, marginTop: 15 }} onPress={() => saveSchedule()}>
+                {/* <TouchableOpacity style={{ ...styles.buttonNext, marginTop: 15 }} onPress={() => saveSchedule()}>
                     <Text style={styles.buttonText}>Lưu</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
+                <Button title="Lưu" onPress={() => saveSchedule()} filled />
             </View>
 
             {/* BottomPopUp for Medicine Unit */}
@@ -474,7 +476,7 @@ const MedicationSchedule = ({ navigation, route }) => {
 }
 const styles = StyleSheet.create({
     content: {
-        backgroundColor: '#f8f9fd',
+        backgroundColor: '#fff',
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'space-between'
@@ -502,8 +504,8 @@ const styles = StyleSheet.create({
         fontWeight: "bold"
     },
     input: {
-        borderWidth: 1,
-        borderColor: "#d0d6dd",
+        borderWidth: 0.3,
+        borderColor: "#ccc",
         borderRadius: 5,
         paddingHorizontal: 16,
         marginTop: 10,
@@ -514,15 +516,15 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 16,
         color: COLORS.textLabel,
-        fontWeight: '500'
+        fontWeight: '500',
     },
     icon: {
         marginLeft: "auto",
     },
     line: {
         width: '100%',
-        borderBottomColor: 'gray',
-        borderWidth: 0.3,
+        borderBottomColor: '#ccc',
+        borderWidth: 0.2,
         opacity: 0.2,
         marginVertical: 16,
     },
@@ -547,8 +549,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     weekDays: {
-        borderColor: "#d0d6dd",
-        borderWidth: 1,
+        borderColor: "#ccc",
+        borderWidth: 0.3,
         borderRadius: 15,
         marginHorizontal: 7,
     },
@@ -560,8 +562,9 @@ const styles = StyleSheet.create({
         color: '#3b88e7'
     },
     buttonContainer: {
-        paddingHorizontal: 16,
-        backgroundColor: 'white'
+        paddingHorizontal: 20,
+        backgroundColor: 'white',
+        marginBottom: 10
     },
     listTime: {
         marginTop: 20,

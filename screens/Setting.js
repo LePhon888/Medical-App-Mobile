@@ -18,14 +18,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { useUser } from "../context/UserContext";
+import COLORS from "../constants/colors";
 const SECTIONS = [
   {
     header: "Cài đặt",
     items: [
       { id: "pass", icon: "user", label: "Đổi mật khẩu", type: "link" },
-      { id: "delete", icon: "user-minus", label: "Xóa tài khoản", type: "link" },
+      // { id: "delete", icon: "user-minus", label: "Xóa tài khoản", type: "link" },
       { id: "notify", icon: "volume-2", label: "Thông báo", type: "link" },
-      { id: "language", icon: "globe", label: "Ngôn ngữ", type: "select" },
+      // { id: "language", icon: "globe", label: "Ngôn ngữ", type: "select" },
       { id: "darkMode", icon: "moon", label: "Giao diện", type: "toggle" },
     ],
   },
@@ -33,10 +34,10 @@ const SECTIONS = [
     header: "Giúp đỡ",
     items: [
       { id: "bug", icon: "tablet", label: "Góp ý ứng dụng", type: "link" },
-      { id: "bug1", icon: "flag", label: "Báo lỗi ứng dụng", type: "link" },
-      { id: "contact", icon: "mail", label: "Liên hệ chúng tôi", type: "link" },
+      // { id: "bug1", icon: "flag", label: "Báo lỗi ứng dụng", type: "link" },
+      // { id: "contact", icon: "mail", label: "Liên hệ chúng tôi", type: "link" },
       { id: "right", icon: "alert-circle", label: "Chính sách quyền riêng tư", type: "link" },
-      { id: "question", icon: "file-text", label: "Câu hỏi thường gặp", type: "link" },
+      // { id: "question", icon: "file-text", label: "Câu hỏi thường gặp", type: "link" },
     ],
   },
   {
@@ -112,7 +113,7 @@ export default function Setting({ navigation, route }) {
 
 
   return (
-    <SafeAreaView style={{ backgroundColor: '#f8f9fd', paddingBottom: 48 }}>
+    <SafeAreaView style={{ backgroundColor: '#fff', paddingBottom: '66%' }}>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.profile}>
           <TouchableOpacity>
@@ -287,7 +288,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#007bff",
+    backgroundColor: COLORS.primary,
     borderRadius: 12,
   },
   profileActionText: {

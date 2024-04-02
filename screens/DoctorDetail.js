@@ -43,7 +43,6 @@ const DoctorDetail = ({ navigation, route }) => {
         { key: 2, title: `Đánh giá ${rating.length > 0 ? `(${rating.length})` : ''}` },
     ];
 
-
     const onBack = () => {
         navigation.goBack()
     }
@@ -125,12 +124,12 @@ const DoctorDetail = ({ navigation, route }) => {
                             {/* rating */}
                             {doctor.rating && doctor.rating > 0 ? (
                                 <View style={styles.rating}>
-                                    <Text style={{ fontSize: 10 }}>⭐</Text>
+                                    <Text style={{ fontSize: 10, marginRight: 5 }}>⭐</Text>
                                     <Text style={{ fontWeight: '500' }}>{`${doctor.rating}/5`}</Text>
                                 </View>
                             ) : ""}
                             {/* favourite */}
-                            <View style={styles.favourite}><MaterialCommunityIcons size={20} name="heart-plus-outline" /></View>
+                            {/* <View style={styles.favourite}><MaterialCommunityIcons size={20} name="heart-plus-outline" /></View> */}
                         </View>
                     </View>
                 </ScrollView>
@@ -238,7 +237,7 @@ const DoctorDetail = ({ navigation, route }) => {
                             <View style={styles.infoIcon}><MaterialCommunityIcons name='map-marker-outline' color={'#f19534'} size={15} /></View>
                             <Text style={styles.infoTitle}>Địa Chỉ Bệnh Viện</Text>
                         </View>
-                        <ViewMap height={170} />
+                        {/* <ViewMap height={170} /> */}
                         <View style={styles.mapText}>
                             <Text style={styles.bulletTitle}>{doctor.hospital}</Text>
                             <Text style={styles.bulletSubTitle}>{doctor.hospitalAddress}</Text>
@@ -298,7 +297,7 @@ const styles = StyleSheet.create({
         paddingBottom: '20%',
     },
     backIcon: {
-        padding: 10,
+        padding: 6,
         backgroundColor: '#faf9fe',
         borderRadius: 25,
     },

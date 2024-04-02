@@ -1,5 +1,5 @@
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createNativeStackNavigator, CardStyleInterpolators } from "@react-navigation/native-stack";
 import React, { createContext, useReducer } from "react";
 import UserReducer from "./reducers/UserReducer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -27,11 +27,15 @@ import { NotificationProvider } from "./context/NotificationContext";
 import { navigationRef } from "./utils/GlobalNavigation";
 import HistoryMedication from "./screens/MedicationSchedule/HistoryMedication";
 import VideoChat from "./screens/VideoChat";
+import Apis, { endpoints } from "./config/Apis";
+import { Cache } from "react-native-cache";
+import optionCache from "./utils/optionCache";
 
 const Stack = createNativeStackNavigator();
 export const UserContext = createContext();
 
 export default function App() {
+  const cache = new Cache(optionCache);
   const [user, dispatch] = useReducer(UserReducer, null);
   useEffect(() => {
     const fetchUser = async () => {
@@ -44,6 +48,20 @@ export default function App() {
     };
     fetchUser();
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await Apis.get(endpoints.medicineList)
+        await cache.set("medicineList", res.data);
+        const resNews = await Apis.get(endpoints.news)
+        await cache.set("news", resNews.data);
+      } catch (error) {
+        console.error("Error fetching medicine list:", error);
+      }
+    };
+    fetchData();
+  }, [])
   const initScreen = 'MainScreen'
 
   return (
