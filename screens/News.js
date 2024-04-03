@@ -9,6 +9,7 @@ import Apis, { endpoints } from "../config/Apis";
 import { ActivityIndicator } from "react-native";
 import optionCache from '../utils/optionCache';
 import { Cache } from 'react-native-cache';
+import moment from 'moment';
 
 const CARD_WIDTH = Math.min(Dimensions.get('screen').width * 0.84, 400);
 
@@ -123,11 +124,13 @@ export default function News({ navigation }) {
                       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                         {/* <Text style={styles.cardRowItemTextNews}>{String(item.author)}</Text> */}
                         {/* <Text style={{ ...styles.cardRowDividerNews, marginHorizontal: 6 }}>·</Text> */}
-                        <FontAwesome name="bookmark-o" size={18} style={{ marginLeft: '94%' }} />
+                        {/* <FontAwesome name="bookmark-o" size={18} style={{ marginLeft: '94%' }} /> */}
                       </View>
                       <View style={{ flexDirection: 'row' }}>
-                        <Text style={{ ...styles.cardSubtitle, fontSize: 12 }}>{new Date(parseInt(item.createdDate)).toLocaleDateString('vi')}</Text>
-                        {item.audio && <Ionicons name="volume-high" size={19} style={{ color: '#7f8c8d', marginLeft: -85 }} />}
+                        <Text style={{ ...styles.cardSubtitle, fontSize: 12 }}>
+                          {moment(new Date(parseInt(item.createdDate)).toLocaleDateString('vi'), "DDMMYYYY").fromNow()}
+                        </Text>
+                        {item.audio && <Ionicons name="volume-high" size={19} style={{ color: '#7f8c8d', marginLeft: -70 }} />}
                       </View>
                     </View>
                     <Image alt="img" source={{ uri: item.image }} style={styles.cardCover} />
@@ -250,12 +253,14 @@ export default function News({ navigation }) {
                             {/* <Text style={styles.cardRowDividerNews}>·</Text> */}
 
                             <View style={styles.cardRowItemNews}>
-                              <Text style={styles.cardRowItemTextNews}>{new Date(parseInt(item.createdDate)).toLocaleDateString('vi')}</Text>
+                              <Text style={styles.cardRowItemTextNews}>
+                                {moment(new Date(parseInt(item.createdDate)).toLocaleDateString('vi'), "DDMMYYYY").fromNow()}
+                              </Text>
                               {item.audio && <Ionicons name="volume-high" size={19} style={{ color: '#7f8c8d', marginLeft: 8 }} />}
-                              <Text>{item.content.replace(htmlRegexG, '').replace(/undefined/g, '').replace(/&nbsp;/g, '').replace(/\s+/g, ' ').length}</Text>
+                              {/* <Text>{item.content.replace(htmlRegexG, '').replace(/undefined/g, '').replace(/&nbsp;/g, '').replace(/\s+/g, ' ').length}</Text> */}
                             </View>
                           </View>
-                          <FontAwesome name="bookmark-o" size={19} style={{ position: 'absolute', right: 20, bottom: -20 }} />
+                          {/* <FontAwesome name="bookmark-o" size={19} style={{ position: 'absolute', right: 20, bottom: -20 }} /> */}
                         </View>
                       </View>
                     </TouchableOpacity> :
@@ -295,12 +300,14 @@ export default function News({ navigation }) {
                             {/* <Text style={styles.cardRowDividerNews}>·</Text> */}
 
                             <View style={styles.cardRowItemNews}>
-                              <Text style={styles.cardRowItemTextNews}>{new Date(parseInt(item.createdDate)).toLocaleDateString('vi')}</Text>
+                              <Text style={styles.cardRowItemTextNews}>
+                                {moment(new Date(parseInt(item.createdDate)).toLocaleDateString('vi'), "DDMMYYYY").fromNow()}
+                              </Text>
                               {item.audio && <Ionicons name="volume-high" size={20} style={{ color: '#7f8c8d', marginLeft: 8 }} />}
                             </View>
-                            <Text>{item.content.replace(htmlRegexG, '').replace(/undefined/g, '').replace(/&nbsp;/g, '').replace(/\s+/g, ' ').length}</Text>
+                            {/* <Text>{item.content.replace(htmlRegexG, '').replace(/undefined/g, '').replace(/&nbsp;/g, '').replace(/\s+/g, ' ').length}</Text> */}
                           </View>
-                          <FontAwesome name="bookmark-o" size={19} style={{ position: 'absolute', right: 20, bottom: 4 }} />
+                          {/* <FontAwesome name="bookmark-o" size={19} style={{ position: 'absolute', right: 20, bottom: 4 }} /> */}
                         </View>
                       </View>
                     </TouchableOpacity>
@@ -319,6 +326,7 @@ export default function News({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 0,
+    marginTop: 3
   },
   title: {
     paddingHorizontal: 24,
@@ -517,6 +525,7 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     fontSize: 13,
     color: '#939393',
+    marginLeft: 3,
   },
   cardRowItemImgNews: {
     width: 22,

@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     notificationItem: {
-        borderBottomWidth: 0.5,
+        borderBottomWidth: 0.3,
         borderColor: '#ccc',
         flexDirection: 'row',
         paddingVertical: 16,

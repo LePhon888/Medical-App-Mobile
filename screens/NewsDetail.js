@@ -36,8 +36,8 @@ const customIcons = [
       }
     }}
   />,
-  <FontAwesome name="bookmark-o" size={19} />,
-  <FeatherIcon color="#242329" name="share" size={19} />
+  // <FontAwesome name="bookmark-o" size={19} />,
+  // <FeatherIcon color="#242329" name="share" size={19} />
 ];
 
 export default function NewsDetail({ navigation, route }) {
@@ -227,7 +227,7 @@ export default function NewsDetail({ navigation, route }) {
                         {item.audio && <Ionicons name="volume-high" size={20} style={{ color: '#7f8c8d', marginLeft: 6 }} />}
                       </View>
                     </View>
-                    <FontAwesome name="bookmark-o" size={19} style={{ position: 'absolute', right: 20, bottom: 4 }} />
+                    {/* <FontAwesome name="bookmark-o" size={19} style={{ position: 'absolute', right: 20, bottom: 4 }} /> */}
                   </View>
                 </View>
               </TouchableOpacity>

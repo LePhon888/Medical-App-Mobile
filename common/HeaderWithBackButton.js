@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     },
     titleText: {
         color: COLORS.black,
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: "bold",
         marginLeft: 18,
     },

@@ -140,52 +140,41 @@ const DoctorDetail = ({ navigation, route }) => {
                         <Image source={{ uri: doctor.image }} style={styles.avatar} />
                         {/* Center content */}
                         <View style={{ alignItems: 'center' }}>
-                            {/* Name */}
-                            <Text style={styles.name}>BS.CKI {doctor.fullName}</Text>
-                            {/* Department */}
+                            <Text style={styles.name}>{doctor.title} {doctor.fullName}</Text>
                             <Text numberOfLines={1} ellipsizeMode="tail" style={styles.department}>{doctor.departmentName}</Text>
-                            {/* consultation */}
-                            <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap' }}><Text style={styles.consultation}>{doctor.consultation}</Text></View>
+                            {/* <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap' }}><Text style={styles.consultation}>{doctor.consultation}</Text></View> */}
                         </View>
                     </View>
                     <View style={{ paddingHorizontal: 15 }}>
-                        {/* Target: adult or children */}
-                        <View style={{ flexDirection: 'row', marginBottom: 10, }}>
+                        {/* <View style={{ flexDirection: 'row', marginBottom: 10, }}>
                             {doctor.target.split(',').map((label, index) => {
                                 return (<Text style={styles.target} key={index}>{label}</Text>)
                             })}
-                        </View>
+                        </View> */}
                     </View>
-                    {/* Fee & Andress*/}
                     <View style={{ paddingHorizontal: 15 }}>
                         <View style={styles.flexRowCenter}>
                             <View style={styles.dollar}><Feather name='dollar-sign' color={'#f19534'} size={12} /></View>
                             <Text style={styles.fee}>Phí thăm khám cố định<Text style={{ fontSize: 13, color: '#0e8558', fontWeight: '500' }}>{` ${Number(doctor.fee).toLocaleString('vi-VN')} đ`}</Text></Text>
                         </View>
-                        {/* Address */}
                         <View style={styles.flexRowCenter}>
                             <View style={styles.dollar}><MaterialCommunityIcons name='map-marker-outline' color={'#f19534'} size={12} /></View>
                             <Text style={[styles.fee, { color: '#676767', fontWeight: '400' }]}>{doctor.hospitalAddress}</Text>
                         </View>
                     </View>
                 </View>
-                {/* Tab View for switching info and rating */}
                 <View style={{ backgroundColor: 'white' }}>
-                    {/* Sticky header */}
                     <Animated.View style={{ ...styles.flexRowCenter, ...styles.content, height: height }}>
-                        {/* Back icon */}
                         <TouchableOpacity onPress={onBack}>
                             <Ionicons size={20} name="chevron-back-outline" />
                         </TouchableOpacity>
                         <View>
                             <Text style={{ ...styles.name, marginLeft: 5 }}>BS.CKI {doctor.fullName}</Text>
                         </View>
-                        {/* Favourite */}
                         <View style={{ ...styles.flexRowCenter, marginLeft: 'auto' }}>
                             <MaterialCommunityIcons size={20} name="heart-plus-outline" />
                         </View>
                     </Animated.View>
-                    {/* Sticky tab */}
                     <View style={styles.tabContainer}>
                         {tabs.map((t) => (
                             <TouchableOpacity key={t.key}
@@ -200,17 +189,14 @@ const DoctorDetail = ({ navigation, route }) => {
                     </View>
                 </View>
                 <View style={{ ...styles.content, display: activeTab === 1 ? 'flex' : 'none' }}>
-                    {/* Infomation */}
                     <View style={styles.info}>
                         <View style={{ ...styles.flexRowCenter, marginBottom: 10 }}>
                             <View style={styles.infoIcon}><Ionicons name='information' color={'#f49d41'} size={15} /></View>
                             <Text style={styles.infoTitle}>Thông Tin Bác Sĩ</Text>
                         </View>
                         <Text numberOfLines={showFullInfo ? undefined : 2} ellipsizeMode="tail" style={styles.infoText}>BS.CKI {doctor.fullName} {doctor.information}</Text>
-                        {/* Read more button */}
                         <TouchableOpacity onPress={toggleReadMore}><Text style={styles.buttonReadMore}>{showFullInfo ? 'Thu gọn' : 'Xem thêm'}</Text></TouchableOpacity>
                     </View>
-                    {/* Experience  */}
                     <View>
                         {detail.length > 0 && detail.some(item => item.category === "Kinh Nghiệm") && (
                             <BulletContent
@@ -220,7 +206,6 @@ const DoctorDetail = ({ navigation, route }) => {
                             />
                         )}
                     </View>
-                    {/* Education  */}
                     <View>
                         {detail.length > 0 && detail.some(item => item.category === "Quá trình đào tạo") && (
                             <BulletContent

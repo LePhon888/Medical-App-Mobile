@@ -54,8 +54,6 @@ export default function AppointmentRegister({ navigation, route }) {
         };
         fetchHour();
     }, []);
-    console.log(selectedStartDate);
-    console.log(minDate);
     const onSubmit = async () => {
         const userInfor = {
             userId: user.id,
@@ -66,14 +64,14 @@ export default function AppointmentRegister({ navigation, route }) {
         };
         const token = await AsyncStorage.getItem("accessToken");
         try {
-            const res = await Apis.post(endpoints["appointment"], userInfor, {
+            const res = await Apis.post(endpoints.appointment, userInfor, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
             setAppointment(res.data);
             const resPayment = await Apis.get(
-                `${endpoints["payment"]}?orderInfo=${res.data.id}&amount=${res.data.fee.fee}`
+                `${endpoints["payment"]}?orderInfo=${res.data.id}&amount=${res.doctor.fee.fee}`
             );
             setPayment(resPayment);
         } catch (error) {
@@ -81,6 +79,7 @@ export default function AppointmentRegister({ navigation, route }) {
         }
     }
     const onNavigationStateChange = (navState) => {
+        //192.168.1.7
         navState.url?.includes('payment-response') && navState.url?.includes('vnp_PayDate') && navigation.navigate('Status', { status: 1 });
     }
 
@@ -123,7 +122,7 @@ export default function AppointmentRegister({ navigation, route }) {
                         <Text style={styles.title}>Bác sĩ</Text>
                         <View style={styles.radio}>
                             <View>
-                                <Image alt="image" style={styles.profileAvatar} source={{ uri: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2.5&w=256&h=256&q=80" }} />
+                                <Image alt="image" style={styles.profileAvatar} source={{ uri: doctor.image }} />
                             </View>
                             <View style={styles.radioTop}>
                                 <Text style={styles.radioLabel}>BS.CKI {doctor?.fullName}</Text>
@@ -212,7 +211,9 @@ export default function AppointmentRegister({ navigation, route }) {
                                 <View style={{ marginVertical: 10, flexDirection: 'row', flexWrap: 'wrap' }}>
                                     {hour.map((item, index) => {
                                         const currentHour = moment().format('HH');
-                                        const isPast = item.hour < currentHour;
+                                        const currentDate = moment().startOf('day');
+                                        const compareDate = moment(selectedStartDate).startOf('day');
+                                        const isPast = compareDate.isSame(currentDate) && item.hour < currentHour;
                                         return (
                                             <TouchableOpacity
                                                 style={{
@@ -220,7 +221,7 @@ export default function AppointmentRegister({ navigation, route }) {
                                                     paddingVertical: 6, margin: 5, borderWidth: 0.3, borderColor: '#ccc', borderRadius: 50
                                                 }} onPress={() => !isPast && setSelectHour(item)} key={index}>
                                                 <Text style={{
-                                                    color: isPast ? '#ccc' : (index + 1 == selectHour.id ? COLORS.white : '#222f3e'), fontWeight: 500
+                                                    color: isPast ? '#ccc' : (index + 1 == selectHour.id ? COLORS.white : '#353b48'), fontWeight: 500
                                                 }}>
                                                     {item.hour}
                                                 </Text>
