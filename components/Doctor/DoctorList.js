@@ -35,13 +35,14 @@ const DoctorList = ({ onItemclickEvent }) => {
         return <DoctorItemLoading />
     }
 
+
     const renderItem = (item, index) => (
         <TouchableOpacity key={index} style={styles.itemContainer} onPress={() => onItemClick(item.userId)}>
             <View style={{ flexDirection: 'row' }}>
                 <Image source={{ uri: item.image }} style={styles.avatar} />
                 <View style={styles.textContainer}>
                     <View style={styles.flexRow}>
-                        <Text style={styles.name}>BS.CKI {item.fullName}</Text>
+                        <Text style={styles.name}>{item.title} {item.fullName}</Text>
                         {item.rating && item.rating > 0 ? (
                             <View style={styles.rating}>
                                 <Text style={{ fontSize: 10 }}>⭐</Text>
@@ -52,17 +53,17 @@ const DoctorList = ({ onItemclickEvent }) => {
                     <Text numberOfLines={1} ellipsizeMode="tail" style={styles.department}><Icon name='git-branch-outline' /> {item.departmentName}</Text>
                     <Text numberOfLines={1} ellipsizeMode="tail" style={styles.hospital}><Icon name='location-outline' /> {item.hospital}</Text>
                     <View style={{ flex: 1, flexDirection: 'row' }}>
-                        <Text style={styles.consultation}>{item.consultation}</Text>
+                        <Text style={styles.consultation}>Tư vấn từ xa</Text>
                     </View>
 
                 </View>
             </View>
             <View style={styles.dashedLine}></View>
-            <View style={{ flexDirection: 'row' }}>
+            {/* <View style={{ flexDirection: 'row' }}>
                 {item.target.split(',').map((label, index) => {
                     return (<Text style={styles.target} key={index}>{label}</Text>)
                 })}
-            </View>
+            </View> */}
             {/* Fee */}
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <View style={styles.dollar}>

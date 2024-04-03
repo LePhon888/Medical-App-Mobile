@@ -70,7 +70,7 @@ const Doctors = ({ navigation }) => {
                 </View> */}
                 {/* Filter and Result */}
                 <View style={styles.filterContainer}>
-                    <Text style={{ fontWeight: '500' }}>2 Kết quả</Text>
+                    {/* <Text style={{ fontWeight: '500' }}>2 Kết quả</Text> */}
                     <TouchableOpacity style={styles.filter} onPress={() => setShowFilterPopup(true)}>
                         <Text><FontAwesome size={17} name="sliders" color={'#6199d1'}></FontAwesome>  Lọc</Text>
                     </TouchableOpacity>
