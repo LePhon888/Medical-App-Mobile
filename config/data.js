@@ -36,7 +36,8 @@ export const categoryIcons = [
     },
     {
         path: require('../assets/images/video-call.png'),
-        text: 'Gọi video'
+        text: 'Gọi video',
+        nav: 'VideoHome',
     },
     {
         path: require('../assets/images/medicine.png'),

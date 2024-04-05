@@ -8,14 +8,13 @@ import Button from '../components/Button';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 import COLORS from '../constants/colors';
 import Loading from '../components/Loading';
+import { useUser } from '../context/UserContext';
+import Apis, { endpoints } from '../config/Apis';
 export default function VideoHome(props) {
     const navigation = useNavigation();
     const [roomId, setRoomId] = useState('')
     const [loading, setLoading] = useState(false)
     const [localDevice, setLocalDevice] = useState({
-        userId: Math.floor(Math.random() * 100000),
-        userName: Math.floor(Math.random() * 100000),
-        userImage: 'https://d38b044pevnwc9.cloudfront.net/cutout-nuxt/enhancer/2.jpg',
         camera: true,
         audio: true,
         grantedAudio: true,
@@ -24,6 +23,8 @@ export default function VideoHome(props) {
     const requestPermissionDone = useRef(false)
     const makingLocalStream = useRef(false)
     const [localStream, setLocalStream] = useState(null)
+    const { userId } = useUser()
+    const userDetail = useRef(null)
 
     const requestCameraPermission = async () => {
         try {
@@ -106,6 +107,17 @@ export default function VideoHome(props) {
 
     }, []);
 
+
+    useEffect(() => {
+        const getUserInfo = async () => {
+            const res = await Apis.get(`${endpoints["user"]}/${userId}`)
+            userDetail.current = res.data
+        }
+        if (userId) {
+            getUserInfo()
+        }
+    }, [userId])
+
     useEffect(() => {
         if (requestPermissionDone.current && !makingLocalStream.current) {
 
@@ -127,7 +139,11 @@ export default function VideoHome(props) {
 
     const onJoinConferencePress = () => {
         navigation.navigate('VideoChat', {
-            roomId: 1,
+            roomId: roomId,
+            userId: userId,
+            userName: userDetail.current?.lastName + ' ' + userDetail.current?.firstName,
+            userImage: userDetail.current?.image,
+            device: localDevice
         });
     };
 
@@ -199,7 +215,7 @@ export default function VideoHome(props) {
                     <View style={styles.imageHolderContainer}>
                         <Image
                             style={styles.imageHolder}
-                            source={{ uri: localDevice.userImage }}
+                            source={{ uri: userDetail.current?.image }}
                         />
                     </View>
                 }
@@ -278,7 +294,8 @@ const styles = StyleSheet.create({
         borderColor: COLORS.grey,
         marginVertical: 16,
         padding: 10,
-        marginHorizontal: '15%'
+        marginHorizontal: '15%',
+        textAlign: 'center',
     },
     userID: {
         fontSize: 14,
@@ -308,7 +325,7 @@ const styles = StyleSheet.create({
     videoContainer: {
         marginTop: 16,
         height: '50%',
-        backgroundColor: '#454746',
+        backgroundColor: '#202020',
         overflow: 'hidden',
         borderRadius: 25,
         marginHorizontal: '25%'

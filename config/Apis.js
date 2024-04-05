@@ -5,9 +5,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 //const SERVER = "http://localhost:8080";
 
-const SERVER = "http://192.168.1.7:8080";
-const CHATBOT = "http://192.168.1.7:8000";
-const FIREBASEMODULE = "http://192.168.1.14:8085"
+const SERVER = "http://192.168.1.15:8080";
+const CHATBOT = "http://192.168.1.15:8000";
 //const SERVER = "http://medicalapp.com";
 
 export const endpoints = {
@@ -25,7 +24,8 @@ export const endpoints = {
   websocket: `${SERVER}/ws`,
   news: `${SERVER}/api/post`,
   googleLogin: `${SERVER}/login-google/auth-google`,
-  chatbot: `${CHATBOT}/api/chat/`,
+  chatbot: `${CHATBOT}/api/chat`,
+  sentiment: `${CHATBOT}/api/sentiment`,
   medicine: `${SERVER}/api/medicine`,
   medicineUnit: `${SERVER}/api/medicine-unit`,
   medicineList: `${SERVER}/api/medicine/all`,

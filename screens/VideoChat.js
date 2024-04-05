@@ -23,8 +23,8 @@ const VideoChat = (props) => {
     const [isFrontCamera, setFrontCamera] = useState(true)
     const [localStream, setLocalStream] = useState(null)
     const [remoteStream, setRemoteStream] = useState(null)
-    const [stompClient, setStompClient] = useState(null)
 
+    const [stompClient, setStompClient] = useState(null)
     const makingOffer = useRef(false)
     const ignoreOffer = useRef(false)
     const polite = useRef(true)
@@ -35,25 +35,25 @@ const VideoChat = (props) => {
     const broadCaster = useRef(true)
     const doneOffer = useRef(false)
 
-
     const { route } = props;
     const { params } = route;
-    const { roomId, userId, userName, userImage } = params;
+    const { roomId, userId, userName, userImage, device } = params
 
     const [localDevice, setLocalDevice] = useState({
         userId: userId,
         userName: userName,
         userImage: userImage,
-        video: true,
-        audio: true,
+        ...device
     })
 
     const [remoteDevice, setRemoteDevice] = useState({
         userId: '',
         userName: '',
         userImage: '',
-        video: true,
+        camera: true,
         audio: true,
+        grantedAudio: true,
+        grantedCamera: true
     })
 
     const configuration = {
@@ -77,11 +77,11 @@ const VideoChat = (props) => {
     const initializeWebRTC = async () => {
         try {
             peerConnection.current = createPeerConnection();
-            const stream = await mediaDevices.getUserMedia({ audio: true, video: true });
+            const stream = await mediaDevices.getUserMedia({ audio: localDevice.grantedAudio, video: localDevice.grantedCamera });
             stream.getTracks().forEach((track) => peerConnection.current.addTrack(track, stream));
             setLocalStream(stream);
         } catch (error) {
-
+            console.error('initializeWebRTC', error)
         }
     };
 
@@ -110,7 +110,7 @@ const VideoChat = (props) => {
     useEffect(() => {
         if (stompClient && localStream && !doneOffer.current) {
             sendMessage({ destination: `/app/ready-offer/${roomId}`, data: localDevice });
-            doneOffer.current = false
+            doneOffer.current = true
         }
     }, [localStream, stompClient]);
 
@@ -325,10 +325,15 @@ const VideoChat = (props) => {
 
     const toggleCamera = async () => {
         try {
+
+            if (!localDevice.grantedCamera) {
+                return;
+            }
+
             localStream.getVideoTracks().forEach(track => {
                 track.enabled = !track.enabled;
             });
-            setLocalDevice(prev => ({ ...prev, video: !localDevice.video }));
+            setLocalDevice(prev => ({ ...prev, camera: !localDevice.camera }));
         } catch (err) {
 
         }
@@ -336,6 +341,11 @@ const VideoChat = (props) => {
 
     const toggleAudio = async () => {
         try {
+
+            if (!localDevice.grantedAudio) {
+                return;
+            }
+
             const audioTrack = localStream.getAudioTracks()[0];
             if (audioTrack) {
                 audioTrack.enabled = !audioTrack.enabled;
@@ -399,18 +409,20 @@ const VideoChat = (props) => {
 
                     {remoteStream &&
                         <View style={styles.remoteVideo}>
-                            {remoteDevice.video ?
+                            {remoteDevice.camera && remoteDevice.grantedCamera ?
                                 <RTCView
                                     streamURL={remoteStream.toURL()}
                                     style={{ flex: 1 }}
                                     objectFit='cover'
                                     zOrder={0}
                                 /> :
-                                <Image
-                                    style={{ flex: 1 }}
-                                    source={{ uri: remoteDevice.userImage }}
-                                />}
-
+                                <View style={styles.imageHolderContainer}>
+                                    <Image
+                                        style={styles.imageHolder}
+                                        source={{ uri: remoteDevice.userImage }}
+                                    />
+                                </View>
+                            }
                             <Text style={styles.userName}>{remoteDevice.userName}</Text>
                             {!remoteDevice.audio && <MaterialCommunityIcons name={'microphone-off'} style={styles.microphoneOffIcon} />}
                         </View>
@@ -418,18 +430,20 @@ const VideoChat = (props) => {
 
                     {localStream &&
                         <View style={remoteStream ? styles.localVideo : { flex: 1 }}>
-                            {localDevice.video ?
+                            {localDevice.camera && localDevice.grantedCamera ?
                                 <RTCView
                                     streamURL={localStream.toURL()}
-                                    style={{ flex: 1, backgroundColor: 'black' }}
+                                    style={{ flex: 1, backgroundColor: 'red' }}
                                     objectFit='cover'
                                     zOrder={1}
                                 />
                                 :
-                                <Image
-                                    style={{ flex: 1 }}
-                                    source={{ uri: localDevice.userImage }}
-                                />
+                                <View style={[styles.imageHolderContainer, remoteStream && { backgroundColor: '#2A2A2A' }]}>
+                                    <Image
+                                        style={[styles.imageHolder, remoteStream && { width: 75, height: 75 }]}
+                                        source={{ uri: localDevice.userImage }}
+                                    />
+                                </View>
 
                             }
                             {!localDevice.audio && <MaterialCommunityIcons name={'microphone-off'} style={styles.microphoneOffIcon} />}
@@ -448,13 +462,19 @@ const VideoChat = (props) => {
                                 <MaterialCommunityIcons name={'phone-hangup'} style={{ ...styles.icon, backgroundColor: COLORS.toastError }} />
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.iconContainer} onPress={toggleCamera}>
-                                <MaterialCommunityIcons name={localDevice.video ? 'video' : 'video-off'} style={styles.icon} />
+                                <MaterialCommunityIcons name={localDevice.grantedCamera && localDevice.camera ? 'video' : 'video-off'} style={styles.icon} />
+                                {!localDevice.grantedCamera &&
+                                    <Text style={styles.notGranted}>{'!'}</Text>
+                                }
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.iconContainer} onPress={toggleFlipCamera}>
                                 <MaterialCommunityIcons name={'camera-flip'} style={styles.icon} />
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.iconContainer} onPress={toggleAudio}>
-                                <MaterialCommunityIcons name={localDevice.audio ? 'microphone' : 'microphone-off'} style={styles.icon} />
+                                <MaterialCommunityIcons name={localDevice.grantedAudio && localDevice.audio ? 'microphone' : 'microphone-off'} style={styles.icon} />
+                                {!localDevice.grantedAudio &&
+                                    <Text style={styles.notGranted}>{'!'}</Text>
+                                }
                             </TouchableOpacity>
                         </View>
                     </TouchableOpacity>
@@ -557,6 +577,36 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 12,
     },
+    imageHolderContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#202020'
+    },
+    imageHolder: {
+        width: 120,
+        height: 120,
+        borderRadius: 999,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+    },
+    notGranted: {
+        right: 0,
+        top: -2,
+        position: 'absolute',
+        paddingVertical: 1,
+        paddingHorizontal: 8,
+        backgroundColor: '#8B0000',
+        color: COLORS.white,
+        borderRadius: 999,
+        fontWeight: 'bold',
+        fontSize: 11
+    }
 })
 
 

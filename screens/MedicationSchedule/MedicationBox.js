@@ -617,7 +617,6 @@ const styles = StyleSheet.create({
         fontSize: 24,
         padding: 1,
         borderRadius: 25,
-
     },
     iconContainer: {
         marginLeft: 15,

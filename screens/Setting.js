@@ -103,11 +103,11 @@ export default function Setting({ navigation, route }) {
         type: "logout",
       });
 
-      navigation.navigate("Login");
-
     } catch (error) {
       // Handle errors if needed
       console.error("Error during logout:", error);
+    } finally {
+      navigation.navigate("Login");
     }
   };
 

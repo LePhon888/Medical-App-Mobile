@@ -15,6 +15,7 @@ import SkeletonLoading from '../components/Doctor/DoctorDetailLoading';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RatingContent from '../components/Doctor/RatingContent';
 import ToastConfig from '../components/ToastConfig';
+import { useDoctorRating } from '../context/DoctorRatingContext';
 /**
  * The doctor detail screen
  * 
@@ -33,7 +34,7 @@ const DoctorDetail = ({ navigation, route }) => {
     const [showFullInfo, setShowFullInfo] = useState(false); // this one use as a flag for read more button
     const [userId, setUserId] = useState(null)
     const height = useRef(new Animated.Value(0)).current
-
+    const { doctorRating, storeDoctorRating } = useDoctorRating();
     const toggleReadMore = () => {
         setShowFullInfo(!showFullInfo);
     };
@@ -59,6 +60,21 @@ const DoctorDetail = ({ navigation, route }) => {
         setActiveTab(key);
     };
 
+    const calculateAverage = (data) => {
+        let totalSum = 0;
+        let totalFrequency = 0;
+        // Iterate over each inner array
+        for (let i = 0; i < data.length; i++) {
+            let number = data[i][0]; // Extract the number
+            let frequency = data[i][1]; // Extract the frequency
+            totalSum += number * frequency; // Add to the total sum
+            totalFrequency += frequency; // Add to the total frequency
+        }
+        // Calculate the average
+        let average = totalSum / totalFrequency;
+        return average;
+    }
+
     const getRating = async () => {
         /* Get rating for current doctor */
         const rating = await Apis.get(`${endpoints["rating"]}/${doctorId}`)
@@ -66,6 +82,12 @@ const DoctorDetail = ({ navigation, route }) => {
         /* Get rating stats for current doctor */
         const ratingStats = await Apis.get(`${endpoints["rating"]}/stats/${doctorId}`)
         setRatingStats(ratingStats.data)
+        const newRating = calculateAverage(ratingStats.data)
+        setDoctor((prevDoctor) => ({
+            ...prevDoctor,
+            rating: newRating
+        }));
+        storeDoctorRating({ doctorId: doctorId, rating: newRating })
     }
 
     useEffect(() => {
@@ -124,8 +146,8 @@ const DoctorDetail = ({ navigation, route }) => {
                             {/* rating */}
                             {doctor.rating && doctor.rating > 0 ? (
                                 <View style={styles.rating}>
-                                    <Text style={{ fontSize: 10, marginRight: 5 }}>⭐</Text>
-                                    <Text style={{ fontWeight: '500' }}>{`${doctor.rating}/5`}</Text>
+                                    <Text style={{ fontSize: 10 }}>⭐</Text>
+                                    <Text style={{ fontWeight: '500' }}>{`${doctor.rating.toFixed(1)}/5`}</Text>
                                 </View>
                             ) : ""}
                             {/* favourite */}

@@ -6,6 +6,7 @@ import Feather from "react-native-vector-icons/Feather";
 import Apis, { endpoints } from '../../config/Apis';
 import DoctorItemLoading from './DoctorItemLoading';
 import { Category } from '../../screens';
+import { useDoctorRating } from '../../context/DoctorRatingContext';
 /** 
  * This one use to display list of doctors, include information about each doctor
  * @param onItemclickEvent (optional) Function to hanlde when click the item of the list, can navigate to the detail
@@ -13,7 +14,7 @@ import { Category } from '../../screens';
 const DoctorList = ({ onItemclickEvent }) => {
     const [doctors, setDoctors] = useState([])
     const [isDataFetched, setDataFetched] = useState(false)
-
+    const { doctorRating, storeDoctorRating } = useDoctorRating();
     useEffect(() => {
         const getDoctorList = async () => {
             try {
@@ -27,6 +28,27 @@ const DoctorList = ({ onItemclickEvent }) => {
         getDoctorList();
     }, []);
 
+    useEffect(() => {
+        // Check if doctorRating is not null
+        if (doctorRating !== null) {
+            // Find the index of the doctor in the doctors list
+            const index = doctors.findIndex((doctor) => doctor.userId === doctorRating.doctorId);
+            // If the doctor is found in the list
+            if (index !== -1) {
+                // Create a new array to hold the updated doctors
+                const updatedDoctors = [...doctors];
+                // Update the rating of the found doctor
+                updatedDoctors[index].rating = doctorRating.rating;
+                // Update the state with the updated doctors list
+                setDoctors(updatedDoctors);
+            }
+        }
+    }, [doctorRating]);
+
+
+
+
+    // On click item
     const onItemClick = (item) => {
         onItemclickEvent(item)
     }
@@ -46,7 +68,7 @@ const DoctorList = ({ onItemclickEvent }) => {
                         {item.rating && item.rating > 0 ? (
                             <View style={styles.rating}>
                                 <Text style={{ fontSize: 10 }}>⭐</Text>
-                                <Text style={{ fontWeight: '500', fontSize: 13, color: '#353b48' }}>{` ${item.rating}/5`}</Text>
+                                <Text style={{ fontWeight: '500' }}>{` ${item.rating.toFixed(1)}/5`}</Text>
                             </View>
                         ) : ""}
                     </View>
@@ -118,7 +140,6 @@ const styles = StyleSheet.create({
     },
     flexRow: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
     },
     avatar: {
@@ -134,6 +155,7 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: '700',
         color: '#425463',
+        width: '70%'
     },
     department: {
         fontSize: 13,
@@ -159,6 +181,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
     },
     rating: {
+        marginLeft: 'auto',
         flexDirection: 'row',
         alignItems: 'center',
         paddingVertical: 4,

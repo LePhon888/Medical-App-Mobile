@@ -26,10 +26,11 @@ import Header from "../common/Header";
 import MessageUI from "../components/Chat/MessageUI";
 
 const Chat = () => {
+  const [title, setTitle] = useState('Trò chuyện')
   return (
     <View style={styles.container}>
-      <Header title={"Trò chuyện"} />
-      <MessageUI />
+      <Header title={`Trò chuyện ${title}`} />
+      <MessageUI isBotMode={false} setTitle={(title) => setTitle(title)} />
     </View>
   )
 };
