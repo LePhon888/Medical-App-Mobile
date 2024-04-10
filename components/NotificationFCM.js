@@ -5,13 +5,11 @@ import Apis, { endpoints } from '../config/Apis';
 import { useUser } from '../context/UserContext';
 import { useNotification } from '../context/NotificationContext';
 import * as GlobalNavigation from '../utils/GlobalNavigation';
-import { UserContext } from '../App';
 
 const NotificationFCM = () => {
     const { userId } = useUser()
     const [isFetched, setFetched] = useState(false)
     const { state, dispatch } = useNotification()
-    const [user, dispatchUser] = useState(UserContext)
     const [userDevice, setUserDevice] = useState({
         id: 0,
         userId: 0,

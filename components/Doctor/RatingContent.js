@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, TouchableWithoutFeedback, Modal, TextInput, Button } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import 'moment/locale/vi';
@@ -46,7 +46,23 @@ const RatingContent = ({ doctorId, userId, ratingStats, listRating, doctorRating
         doctorId: doctorId,
         comment: "",
         star: 5,
+        sentiment: "",
     });
+
+    const sentimentStyle = {
+        'Tích cực': {
+            background: styles.tagPositive,
+            text: styles.textPositive
+        },
+        'Trung tính': {
+            background: styles.TagNeutral,
+            text: styles.textNeutral
+        },
+        'Tiêu cực': {
+            background: styles.tagNegative,
+            text: styles.textNegative
+        }
+    }
 
     const renderStars = () => {
         const starRows = [];
@@ -94,7 +110,17 @@ const RatingContent = ({ doctorId, userId, ratingStats, listRating, doctorRating
     const submit = async () => {
         try {
             setSubmitted(true);
-            const res = await Apis.post(endpoints["rating"], ratingSubmitted);
+            const sentimentResponse = await Apis.get(`${endpoints["sentiment"]}/?msg=${ratingSubmitted.comment}`);
+            const sentimentData = sentimentResponse.data;
+
+            // Extract the sentiment label
+            const sentimentLabel = Object.keys(sentimentData)[0]; // Assuming there's only one key in the object
+
+            // Include the sentiment label in the POST request payload
+            const res = await Apis.post(endpoints["rating"], {
+                ...ratingSubmitted,
+                sentiment: sentimentLabel
+            });
 
 
             if (res.status === 200) {
@@ -105,14 +131,43 @@ const RatingContent = ({ doctorId, userId, ratingStats, listRating, doctorRating
             } else {
                 // Handle other status codes, e.g., res.status === 400 for validation errors
                 setSubmitted(false);
-                Alert.alert("Thông báo", `Lỗi hệ thống: ${res.status} - ${res.data}`);
+                Toast.show({ type: 'error', text1: `Lỗi hệ thống: ${res.status} - ${res.data}` })
             }
         } catch (error) {
             // Handle network errors or other exceptions
+            console.error(error)
             setSubmitted(false);
-            Alert.alert("Thông báo", `Lỗi hệ thống: ${error.message}`);
+            Toast.show({ type: 'error', text1: `Lỗi hệ thống: ${error.message}` })
         }
     };
+
+    const renderTag = (sentiment) => {
+        let background, text;
+
+        if (sentiment === 'Tích cực') {
+            background = sentimentStyle['Tích cực'].background;
+            text = sentimentStyle['Tích cực'].text;
+        } else if (sentiment === 'Trung tính') {
+            background = sentimentStyle['Trung tính'].background;
+            text = sentimentStyle['Trung tính'].text;
+        } else if (sentiment === 'Tiêu cực') {
+            background = sentimentStyle['Tiêu cực'].background;
+            text = sentimentStyle['Tiêu cực'].text;
+        } else {
+            // Handle the case when sentiment is not one of the predefined values
+            background = {}; // Default background style
+            text = {}; // Default text style
+        }
+
+        return (
+            <View>
+                <View style={[styles.tagContainer, background]}>
+                    <Text style={[styles.tagText, text]}>{sentiment}</Text>
+                </View>
+            </View>
+        );
+    };
+
 
 
     return (
@@ -164,12 +219,15 @@ const RatingContent = ({ doctorId, userId, ratingStats, listRating, doctorRating
                     </View>
                     {/* User Comment */}
                     {r.comment && r.comment !== '' && (
-                        <View style={styles.commentContainer}>
+                        <View style={[styles.commentContainer]}>
                             <Text style={styles.commentText}>{r.comment}</Text>
+                            {r.sentiment && r.sentiment !== "" && r.comment !== "" && (
+                                renderTag(r.sentiment)
+                            )}
                         </View>
                     )}
                     {/*  Horizontal Line */}
-                    <View style={{ width: '100%', borderWidth: 0.3, borderColor: 'gray', marginBottom: 3, marginTop: 13, opacity: 0.1 }}></View>
+                    <View style={{ width: '100%', borderWidth: 0.8, borderColor: '#dee2e6', marginBottom: 3, marginTop: 13, opacity: 0.7 }}></View>
                 </View>
             ))}
 
@@ -210,6 +268,7 @@ const RatingContent = ({ doctorId, userId, ratingStats, listRating, doctorRating
                             placeholder="Nhận xét..."
                             value={ratingSubmitted.comment}
                             underlineColorAndroid='transparent'
+                            autoCorrect={false}
                             onChangeText={(text) => setRatingSubmitted({ ...ratingSubmitted, comment: text })}
                             maxLength={250}
                         />
@@ -252,8 +311,8 @@ const styles = StyleSheet.create({
     },
     userRatingContainer: {
         flexDirection: 'column',
-        marginBottom: 15,
-        paddingHorizontal: 15,
+        marginBottom: 16,
+        paddingHorizontal: 16,
         marginVertical: 10,
     },
     userImage: {
@@ -276,11 +335,11 @@ const styles = StyleSheet.create({
     },
     starIcon: {
         marginTop: 2,
-        marginRight: 2,
+        marginRight: 3,
     },
     commentContainer: {
         marginTop: 10,
-        height: 'auto'
+        height: 'auto',
     },
     commentText: {
         fontSize: 13,
@@ -290,6 +349,35 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: '#888',
         marginTop: 5,
+    },
+    tagContainer: {
+        marginLeft: 'auto',
+        borderRadius: 99,
+        paddingHorizontal: 8,
+        paddingVertical: 3,
+        marginBottom: 5,
+    },
+    tagText: {
+        fontSize: 12,
+        fontWeight: '500',
+    },
+    tagPositive: {
+        backgroundColor: '#EDF8EE',
+    },
+    textPositive: {
+        color: '#3D9645'
+    },
+    TagNeutral: {
+        backgroundColor: '#E6E6E6',
+    },
+    textNeutral: {
+        color: '#818181'
+    },
+    tagNegative: {
+        backgroundColor: '#FDEDEC'
+    },
+    textNegative: {
+        color: '#E74C3C'
     },
     initialContainer: {
         width: 30,
@@ -398,4 +486,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default RatingContent;
+export default memo(RatingContent);

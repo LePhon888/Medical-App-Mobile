@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { StyleSheet, TextInput, TouchableOpacity, View, Text } from "react-native";
 import COLORS from "../../constants/colors";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -92,4 +92,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default RatingInput;
+export default memo(RatingInput);

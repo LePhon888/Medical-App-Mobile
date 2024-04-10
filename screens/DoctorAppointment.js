@@ -41,7 +41,7 @@ const DoctorAppointment = () => {
         const getUserAndToken = async () => {
             try {
                 setFetched(false)
-                const tokenInfo = await AsyncStorage.getItem("token");
+                const tokenInfo = await AsyncStorage.getItem("accessToken");
                 if (userId && tokenInfo) {
                     const e = `${endpoints["appointment"]}/doctor/${userId}?startDate=${formatDateMoment(moment(startDate))}&endDate=${formatDateMoment(moment(endDate))}`;
                     const res = await Apis.get(e, {

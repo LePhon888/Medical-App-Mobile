@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, ScrollView, Image } from 'react-native';
 import InitSocket from './InitSocket';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -7,20 +7,38 @@ import Apis, { endpoints } from '../../config/Apis';
 import Icon from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import EmojiPicker from './EmojiPicker';
+import { useUser } from '../../context/UserContext';
+import { data } from '../../config/data';
+import TypingAnimation from '../TypingAnimation';
+import Toast from 'react-native-toast-message';
+import Header from '../../common/Header';
+import Loading from '../Loading';
+import COLORS from '../../constants/colors';
 /**
  * The message ui component include the display list of message and input, button to send the message.
  * @param  isBotMode The flag use for indicating if the chat using response from bot.
  * @returns 
  */
 
-const MessageUI = ({ isBotMode }) => {
+const MessageUI = ({ isBotMode, setTitle }) => {
 
-    const [inputText, setInputText] = useState('');
-    const [listMessage, setListMessage] = useState([]);
+    const [inputText, setInputText] = useState('')
+    const [listMessage, setListMessage] = useState([])
     const [message, setMessage] = useState(null)
-    const [user, setUser] = useState(null)
-    const [roomId, setRoomId] = useState('public')
-    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    const { userId } = useUser()
+    const [roomId, setRoomId] = useState('PUBLIC')
+    const [socketConnected, setSocketConnected] = useState(false)
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const userDetail = useRef(null)
+    const prevSender = useRef(null)
+
+    const [remoteUser, setRemoteUser] = useState({
+        userName: 'Trợ lý AI',
+        fromUser: 'AI',
+        avatar: `https://static.vecteezy.com/system/resources/previews/034/874/115/large_2x/ai-generated-doctor-medic-avatar-icon-clip-art-sticker-decoration-simple-background-free-photo.jpg`,
+        typing: false,
+    })
 
     // const toggleEmojiPicker = () => {
     //     setShowEmojiPicker(!showEmojiPicker);
@@ -43,114 +61,227 @@ const MessageUI = ({ isBotMode }) => {
         );
     };
 
-    const onMessageReceived = (message) => {
-        setListMessage((previous) => [message, ...previous]);
+    const onMessageReceived = (payload) => {
+        switch (payload.type) {
+            case 'message':
+                setListMessage((previous) => [{ ...payload, isBreak: (!prevSender.current || prevSender.current !== payload.fromUser) }, ...previous]);
+                prevSender.current = payload.fromUser
+                // Show the bot typing if current mode is bot mode
+                if (isBotMode && payload.fromUser === userId) {
+                    onBotMessageRecieved(payload.text)
+                }
+                break
+            case 'typing':
+                if (payload.fromUser !== userId) {
+                    setRemoteUser(prev => ({
+                        ...prev,
+                        fromUser: payload.fromUser,
+                        avatar: payload.avatar,
+                        typing: payload.typing,
+                        userName: payload.userName
+                    }));
+                }
+                break
+            case 'leaveRoom':
+                if (payload.data.userId !== userId) {
+                    Toast.show({ type: 'info', text1: `${payload.data.userName} vừa thoát khỏi phòng` })
+                }
+                break
+            case 'joinRoom':
+                if (payload.data.userId !== userId) {
+                    Toast.show({ type: 'info', text1: `${payload.data.userName} vừa tham gia phòng` });
+                }
+                break
+            default:
+                break
+        }
     };
 
     const sendPayload = (payload) => {
         setMessage(payload)
     }
 
-    const onBotMessageRecieved = async (message) => {
-        const res = await Apis.get(`${endpoints["chatbot"]}?msg=${message}`)
-        console.log(res.data)
+    const sendMessage = (userId, avatar, text, isShowTimestamp) => {
         sendPayload({
+            type: 'message',
             id: moment().valueOf(),
-            text: res.data.message,
-            fromUser: 123123,
-            avatar: 'https://static.vecteezy.com/system/resources/previews/034/874/115/large_2x/ai-generated-doctor-medic-avatar-icon-clip-art-sticker-decoration-simple-background-free-photo.jpg',
-            timestamp: moment(),
-            isShowTimestamp: false,
+            text: text,
+            isShowTimestamp: isShowTimestamp,
+            fromUser: userId,
+            avatar: avatar,
+            timestamp: moment()
         })
+    }
+
+    const onBotMessageRecieved = async (message) => {
+        try {
+            setRemoteUser((prev) => ({ ...prev, typing: true }));
+            const res = await Apis.get(`${endpoints["chatbot"]}/?msg=${message}`)
+            sendMessage(
+                remoteUser.fromUser,
+                remoteUser.avatar,
+                res.data.message,
+                false)
+        } catch (error) {
+            console.error("onBotMessageRecieved", error)
+        } finally {
+            setRemoteUser((prev) => ({ ...prev, typing: false }));
+        }
+
+    }
+
+    const onChangeInputText = (text) => {
+        setInputText(text)
     }
 
     const sendOnClick = () => {
         if (!isInputTextEmpty()) {
-            sendPayload({
-                id: moment().valueOf(),
-                text: inputText,
-                fromUser: user.id,
-                avatar: '',
-                timestamp: moment(),
-                isShowTimestamp: isShowTimestamp(moment())
-            })
-            if (isBotMode) {
-                onBotMessageRecieved(inputText)
-            }
-            setInputText('');
+            sendMessage(
+                userId,
+                userDetail.current.image,
+                inputText,
+                isShowTimestamp(moment())
+            )
+            setInputText('')
         }
     };
 
     useEffect(() => {
-        const getUserInfo = async () => {
-            const res = await AsyncStorage.getItem("user")
-            setUser(JSON.parse(res))
+        sendPayload({
+            type: 'typing',
+            fromUser: userId,
+            avatar: userDetail.current?.image,
+            userName: `${userDetail.current?.name}`,
+            typing: inputText.length > 0
+        })
+    }, [inputText])
 
-            if (isBotMode) {
-                setRoomId(`AI${res.id}`)
-                // send welcome message if this is bot mode
-                sendPayload({
-                    id: moment().valueOf(),
-                    text: 'Chào mừng bạn đến với hệ thống trò chuyện y tế của chúng tôi. Hãy đặt câu hỏi hoặc chia sẻ thông tin y tế của bạn để chúng tôi có thể hỗ trợ bạn tốt nhất.',
-                    fromUser: 123123,
-                    avatar: 'https://static.vecteezy.com/system/resources/previews/034/874/115/large_2x/ai-generated-doctor-medic-avatar-icon-clip-art-sticker-decoration-simple-background-free-photo.jpg',
-                    timestamp: moment(),
-                    isShowTimestamp: false,
-                })
+    useEffect(() => {
+        const getUserInfo = async () => {
+            try {
+                setLoading(true)
+                const res = await Apis.get(`${endpoints["user"]}/${userId}`)
+                userDetail.current = { ...res.data, name: `${res.data.lastName} ${res.data.firstName}` }
+            } catch (error) {
+
+            } finally {
+                setLoading(false)
             }
         }
-        getUserInfo()
-    }, [])
+        if (userId) {
+            getUserInfo()
+        }
+    }, [userId])
+
+    useEffect(() => {
+        if (setTitle) {
+            setTitle(roomId)
+        }
+    }, [roomId])
+
+    useEffect(() => {
+
+        if (!socketConnected && isBotMode) {
+            setRoomId(`AI${userId}`)
+        }
+
+        if (isBotMode && socketConnected) {
+            // send welcome message if this is bot mode
+            sendMessage(
+                remoteUser.fromUser,
+                remoteUser.avatar,
+                'Chào mừng bạn đến với hệ thống trò chuyện y tế của chúng tôi. Hãy đặt câu hỏi hoặc chia sẻ thông tin y tế của bạn để chúng tôi có thể hỗ trợ bạn tốt nhất.',
+                false)
+        }
+    }, [socketConnected])
 
     const renderMessageItem = ({ item }) => {
         return (
             <View>
                 { /* Show timestamp of message */}
-                {item.timestamp && item.isShowTimestamp && (
+                {/*item.timestamp && item.isShowTimestamp &&
                     <View style={styles.timestampContainer}>
                         <Text style={styles.timestampText}>{formatTimestamp(item.timestamp)}</Text>
                     </View>
-                )}
+                */}
                 { /* If the message is from current user */
-                    item.fromUser === user.id ? (
-                        <View style={[styles.messageContentContainer, styles.fromUser]}>
-                            <Text style={styles.messageText}>{item.text}</Text>
-                        </View>
-                    ) : ( /* ELse if the message is from other user */
-                        <View style={styles.fromOtherContainer}>
-                            <View style={[styles.messageContentContainer, styles.fromOther]}>
+                    item.fromUser === userId ?
+                        <View>
+                            {item.isBreak &&
+                                <Text style={[styles.timestamp, { alignSelf: 'flex-end' }]}>{formatTimestamp(item.timestamp)}</Text>
+                            }
+                            <View style={[styles.messageContentContainer, styles.fromUser]}>
                                 <Text style={styles.messageText}>{item.text}</Text>
                             </View>
-                            <View style={styles.imageContainer}>
-                                <Image
-                                    style={styles.avatarImage}
-                                    source={{ uri: item.avatar || `https://cdn-icons-png.flaticon.com/512/9131/9131529.png` }}
-                                />
+                        </View>
+
+                        :  /* ELse if the message is from other user */
+                        <View>
+                            {item.isBreak &&
+                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                    <Text style={styles.remoteUserName}>{remoteUser.userName}</Text>
+                                    <Text style={styles.timestamp}>{formatTimestamp(item.timestamp)}</Text>
+                                </View>
+                            }
+
+                            <View style={styles.fromOtherContainer}>
+                                <View style={[styles.imageContainer, { opacity: item.isBreak ? 1 : 0 }]}>
+                                    <Image
+                                        style={styles.avatarImage}
+                                        source={{ uri: item.avatar || `https://cdn-icons-png.flaticon.com/512/9131/9131529.png` }}
+                                    />
+                                </View>
+                                <View style={[styles.messageContentContainer, styles.fromOther]}>
+                                    <Text style={styles.messageText}>{item.text}</Text>
+                                </View>
                             </View>
                         </View>
-                    )}
+                }
             </View>
         );
     };
-    console.log('listMessage', listMessage);
 
     const onWebSocketConnected = (stompClient) => {
         if (!stompClient) {
             console.error('Connect to websocket failed')
+            setSocketConnected(false)
+        } else {
+            setSocketConnected(true)
         }
     }
 
     return (
         <View style={styles.container}>
             {/* Init the websocket connection */}
-            <InitSocket roomId={roomId} sendMessage={message} onMessageReceived={onMessageReceived} onWebSocketConnected={(stompClient) => onWebSocketConnected(stompClient)} />
-
+            {!loading && userDetail.current &&
+                <InitSocket
+                    userId={userDetail.current.id}
+                    userName={userDetail.current.name}
+                    roomId={roomId}
+                    sendMessage={message}
+                    onMessageReceived={onMessageReceived}
+                    onWebSocketConnected={(stompClient) => onWebSocketConnected(stompClient)} />
+            }
             {/* View of messages list */}
             <FlatList
                 style={styles.listMessage}
                 data={listMessage}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={renderMessageItem}
+                ListHeaderComponent={
+                    remoteUser.typing &&
+                    <View style={styles.fromOtherContainer}>
+                        <View style={styles.imageContainer}>
+                            <Image
+                                style={styles.avatarImage}
+                                source={{ uri: remoteUser.avatar || `https://cdn-icons-png.flaticon.com/512/9131/9131529.png` }}
+                            />
+                        </View>
+                        <View style={[styles.messageContentContainer, styles.fromOther]}>
+                            <TypingAnimation />
+                        </View>
+                    </View>
+                }
                 inverted
             />
             {/* View of input text and button send */}
@@ -159,20 +290,22 @@ const MessageUI = ({ isBotMode }) => {
                     style={styles.input}
                     placeholder="Nhập tin nhắn"
                     value={inputText}
-                    onChangeText={(text) => setInputText(text)}
+                    autoCorrect={false}
+                    autoCapitalize="none"
+                    onChangeText={(text) => onChangeInputText(text)}
                 />
                 {/* Emoji button */}
                 {/* <TouchableOpacity style={styles.emojiButton} onPress={toggleEmojiPicker}>
                     <MaterialCommunityIcons name="emoticon-happy-outline" size={20} color="#a5abb3" />
                 </TouchableOpacity> */}
                 {/* Send button */}
-                <TouchableOpacity style={styles.sendButton} onPress={sendOnClick} disabled={!user || isInputTextEmpty()}>
+                <TouchableOpacity style={styles.sendButton} onPress={sendOnClick} disabled={!userId || isInputTextEmpty()}>
                     <Icon name="send-outline" size={24} color={isInputTextEmpty() ? '#a5abb3' : '#52D3D8'} />
                 </TouchableOpacity>
             </View>
             {showEmojiPicker && <EmojiPicker onEmojiSelected={onEmojiSelected} />}
+            {loading && <Loading />}
         </View>
-
     );
 };
 
@@ -181,16 +314,20 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#ffffff',
     },
+    typingContainer: {
+
+    },
     fromOtherContainer: {
-        flexDirection: 'column',
+        flexDirection: 'row',
         alignItems: 'flex-start',
     },
     listMessage: {
-        paddingHorizontal: 20,
+        paddingHorizontal: 14,
     },
     imageContainer: {
-        width: 27,
-        height: 27,
+        marginTop: 10,
+        width: 32,
+        height: 32,
     },
     avatarImage: {
         flex: 1,
@@ -202,23 +339,18 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 8,
         backgroundColor: '#ECE5DD',
-        marginVertical: 7,
-    },
-    messageText: {
-        color: '#5c5c5c',
-        fontSize: 20
+        marginTop: 3,
+        marginBottom: 2,
     },
     fromUser: {
         alignSelf: 'flex-end',
         backgroundColor: '#e2f2ff',
-        borderBottomRightRadius: 0,
+
     },
     fromOther: {
         alignSelf: 'flex-start',
         backgroundColor: '#f8f9fd',
-        marginLeft: 30,
-        marginBottom: 5,
-        borderBottomLeftRadius: 0,
+        marginLeft: 8,
     },
     messageText: {
         color: '#39393b',
@@ -258,6 +390,16 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 13,
     },
+    timestamp: {
+        color: '#5e5e5e',
+        fontSize: 12
+    },
+    remoteUserName: {
+        marginLeft: '12%',
+        marginRight: 8,
+        fontSize: 13,
+        color: COLORS.textLabel
+    }
 });
 
 export default MessageUI;

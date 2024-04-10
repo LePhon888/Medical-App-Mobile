@@ -20,12 +20,35 @@ const departmentImages = {
     Orthopedics: require('../assets/images/departments/Orthopedics.png'),
     Respiratory: require('../assets/images/departments/Respiratory.png'),
     Urological: require('../assets/images/departments/Urological.png'),
-
 };
-export default function Category({ departments }) {
+
+export default function Category({ departments, filterName, onClickItem, style }) {
+    const [departmentList, setDepartmentList] = useState([])
+
+    const onClickDepartment = (item) => {
+        if (onClickItem) {
+            return onClickItem(item)
+        }
+    }
+
+    useEffect(() => {
+        // Filter departments based on the filterName
+        if (departments) {
+            console.log(departments)
+            let filteredDepartments = departments
+
+            if (filterName !== '') {
+                filteredDepartments = filteredDepartments.filter(item =>
+                    item.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(filterName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""))
+                );
+            }
+
+            setDepartmentList(filteredDepartments);
+        }
+    }, [departments, filterName]);
 
     return (
-        <SafeAreaView style={{ backgroundColor: '#fff', position: 'absolute', zIndex: 10, top: 160, bottom: 0 }}>
+        <SafeAreaView style={style}>
             {/* <HeaderWithBackButton title={'Khám theo chuyên khoa'} /> */}
             {/* <View style={{ flexDirection: 'row', borderWidth: 1, borderColor: '#ccc', marginHorizontal: 10, paddingVertical: 10, borderRadius: 10, marginBottom: 20, marginTop: 10 }}>
                 <AntDesign name="search1" size={21} color={COLORS.black} style={{ marginLeft: 15, marginTop: 3 }} />
@@ -40,11 +63,11 @@ export default function Category({ departments }) {
                 >
                 </TextInput>
             </View> */}
-            <ScrollView >
+            <ScrollView keyboardShouldPersistTaps={'always'} showsVerticalScrollIndicator={false}>
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginLeft: 3 }}>
-                    {departments?.map((item, index) => {
+                    {departmentList?.map((item, index) => {
                         return (
-                            <TouchableOpacity style={{ width: '30%', marginHorizontal: 6, marginBottom: 30 }} key={index}>
+                            <TouchableOpacity style={{ width: '30%', marginHorizontal: 6, marginBottom: 30 }} key={index} onPress={() => onClickDepartment({ ...item, imageUri: departmentImages[item.image] })}>
                                 <View key={index} style={{ borderWidth: 0.4, borderColor: '#ccc', borderRadius: 10, padding: 20 }}>
                                     <Image source={departmentImages[item.image]} style={{ width: '90%', height: 84 }} />
                                 </View>
@@ -54,8 +77,10 @@ export default function Category({ departments }) {
                             </TouchableOpacity>
                         )
                     })}
+                    {departmentList.length === 0 && filterName !== '' &&
+                        <Text style={{ paddingHorizontal: 16, }}>Không tìm thấy kết quả...</Text>
+                    }
                 </View>
-
             </ScrollView>
         </SafeAreaView>
     );

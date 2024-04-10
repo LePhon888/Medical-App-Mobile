@@ -44,18 +44,24 @@ const Login = ({ navigation }) => {
                 setError(null);
 
                 let res = await Apis.post(endpoints["login"], { email, password });
-
-                if (res && res.data) {
-                    await AsyncStorage.setItem("accessToken", res.data.accessToken);
-                    await AsyncStorage.setItem("refreshToken", res.data.refreshToken);
+                if (res && res.data && res.data.accessToken && res.data.refreshToken) {
+                    await AsyncStorage.setItem("accessToken", res.data);
+                    await AsyncStorage.setItem("refreshToken", res.data);
+                } else {
+                    console.error("Access token or refresh token is missing or undefined");
+                    // Handle the error or display a message to the user
                 }
-                const token = res.data.accessToken;
+
+                const token = res.data;
+
                 console.log(res.data)
                 let { data } = await axios.get(endpoints["currentUser"], {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
+
+                storeUserId(data.id)
 
                 await AsyncStorage.setItem("user", JSON.stringify(data));
                 dispatch({ type: "login", payload: data, });
@@ -91,6 +97,8 @@ const Login = ({ navigation }) => {
                 },
             });
             await AsyncStorage.setItem("user", JSON.stringify(data));
+
+            storeUserId(data.id)
 
             dispatch({
                 type: "login",

@@ -1,5 +1,6 @@
 import { Modal, StyleSheet, TouchableWithoutFeedback, View } from "react-native"
 import ToastConfig from "./ToastConfig";
+import { memo } from "react";
 
 /**
  * 
@@ -52,4 +53,4 @@ const styles = StyleSheet.create({
         zIndex: 100,
     },
 })
-export default BottomSheet
+export default memo(BottomSheet)

@@ -193,8 +193,8 @@ const Home = ({ navigation, route }) => {
             <TouchableOpacity style={{ padding: 6, backgroundColor: COLORS.white, width: 40, height: 40, borderRadius: 50, position: 'relative' }}
               onPress={() => navigation.navigate('Notification')}>
               <AntDesign name="bells" size={21} color={COLORS.black} style={{ marginLeft: 3, marginTop: 2 }} />
-              <View style={{ backgroundColor: '#f44236', width: 18, height: 18, borderRadius: 50, alignItems: 'center', position: 'absolute', top: 3, right: 4 }}>
-                <Text style={{ color: COLORS.white, fontWeight: 600, fontSize: 12 }}>{countUnread < 100 ? countUnread : '99+'}</Text>
+              <View style={{ backgroundColor: '#f44236', width: 18, height: 18, borderRadius: 50, alignItems: 'center', position: 'absolute', top: 0, right: 4, bottom: 0 }}>
+                <Text style={{ color: COLORS.white, fontWeight: 500, fontSize: 10 }}>{countUnread < 10 ? countUnread : '9+'}</Text>
               </View>
             </TouchableOpacity>
           </View>

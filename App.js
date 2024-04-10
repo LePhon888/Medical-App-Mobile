@@ -30,6 +30,7 @@ import VideoChat from "./screens/VideoChat";
 import Apis, { endpoints } from "./config/Apis";
 import { Cache } from "react-native-cache";
 import optionCache from "./utils/optionCache";
+import { DoctorRatingProvider } from "./context/DoctorRatingContext";
 
 const Stack = createNativeStackNavigator();
 export const UserContext = createContext();
@@ -62,52 +63,55 @@ export default function App() {
     };
     fetchData();
   }, [])
-  const initScreen = 'MainScreen'
+  const initScreen = 'Login'
 
   return (
-    <NotificationProvider>
-      <UserProvider>
-        <UserContext.Provider value={[user, dispatch]}>
-          <NavigationContainer ref={navigationRef}>
-            <Stack.Navigator initialRouteName={initScreen}>
-              <Stack.Screen name="Welcome" component={Welcome} options={{ headerShown: false }} />
-              <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-              <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
-              <Stack.Screen name="MainScreen" component={MainScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="Chatbot" component={ChatBot} options={{ headerShown: false }} />
-              <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
-              <Stack.Screen name="Setting" component={Setting} options={{ headerShown: false }} />
-              <Stack.Screen name="MedicalRegister" component={MedicalRegister} options={{ headerShown: false }} />
-              <Stack.Screen name="DoctorAppointment" component={DoctorAppointment} options={{ headerShown: false }} />
-              <Stack.Screen name="AppointmentList" component={AppointmentList} options={{ headerShown: false }} />
-              <Stack.Screen name="AppointmentRegister" component={AppointmentRegister} options={{ headerShown: false }} />
-              <Stack.Screen name="News" component={News} options={{ headerShown: false }} />
-              <Stack.Screen name="NewsDetail" component={NewsDetail} options={{ headerShown: false }} />
-              <Stack.Screen name="EditProfile" component={EditProfile} options={{ headerShown: false }} />
-              <Stack.Screen name="Doctors" component={Doctors} options={{ headerShown: false }} />
-              <Stack.Screen name="DoctorDetail" component={DoctorDetail} options={{ headerShown: false }} />
-              <Stack.Screen name="VideoChat" component={VideoChat} options={{ headerShown: false }} />
-              <Stack.Screen name="VideoHome" component={VideoHome} options={{ headerShown: false }} />
-              <Stack.Screen name="Call" component={Call} options={{ headerShown: false }} />
-              <Stack.Screen name="Category" component={Category} options={{ headerShown: false }} />
-              <Stack.Screen name="Notification" component={Notification} options={{ headerShown: false }} />
-              <Stack.Screen name="MedicineList" component={MedicineList} options={{ headerShown: false }} />
-              <Stack.Screen name="MedicationBox" component={MedicationBox} options={{ headerShown: false }} />
-              <Stack.Screen name="AddMedicine" component={AddMedicine} options={{ headerShown: false }} />
-              <Stack.Screen name="HistoryMedication" component={HistoryMedication} options={{ headerShown: false }} />
-              <Stack.Screen name="MedicationSchedule" component={MedicationSchedule} options={{ headerShown: false }} />
-              <Stack.Screen name="ScheduleTime" component={ScheduleTime} options={{ headerShown: false }} />
-              <Stack.Screen name="Status" component={Status} options={{ headerShown: false }} />
-              <Stack.Screen name="JoinScreen" component={JoinScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="IncomingCallScreen" component={IncomingCallScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="OutgoingCallScreen" component={OutgoingCallScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="VideoConferencePage" component={VideoConferencePage} options={{ headerShown: false }} />
-            </Stack.Navigator>
-          </NavigationContainer>
-          <ToastConfig />
-          <NotificationFCM />
-        </UserContext.Provider>
-      </UserProvider>
-    </NotificationProvider>
+    <DoctorRatingProvider>
+      <NotificationProvider>
+        <UserProvider>
+          <UserContext.Provider value={[user, dispatch]}>
+            <NavigationContainer ref={navigationRef}>
+              <Stack.Navigator initialRouteName={initScreen}>
+                <Stack.Screen name="Welcome" component={Welcome} options={{ headerShown: false }} />
+                <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+                <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
+                <Stack.Screen name="MainScreen" component={MainScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="Chatbot" component={ChatBot} options={{ headerShown: false }} />
+                <Stack.Screen name="Chat" component={Chat} options={{ headerShown: false }} />
+                <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
+                <Stack.Screen name="Setting" component={Setting} options={{ headerShown: false }} />
+                <Stack.Screen name="MedicalRegister" component={MedicalRegister} options={{ headerShown: false }} />
+                <Stack.Screen name="DoctorAppointment" component={DoctorAppointment} options={{ headerShown: false }} />
+                <Stack.Screen name="AppointmentList" component={AppointmentList} options={{ headerShown: false }} />
+                <Stack.Screen name="AppointmentRegister" component={AppointmentRegister} options={{ headerShown: false }} />
+                <Stack.Screen name="News" component={News} options={{ headerShown: false }} />
+                <Stack.Screen name="NewsDetail" component={NewsDetail} options={{ headerShown: false }} />
+                <Stack.Screen name="EditProfile" component={EditProfile} options={{ headerShown: false }} />
+                <Stack.Screen name="Doctors" component={Doctors} options={{ headerShown: false }} />
+                <Stack.Screen name="DoctorDetail" component={DoctorDetail} options={{ headerShown: false }} />
+                <Stack.Screen name="VideoChat" component={VideoChat} options={{ headerShown: false }} />
+                <Stack.Screen name="VideoHome" component={VideoHome} options={{ headerShown: false }} />
+                <Stack.Screen name="Call" component={Call} options={{ headerShown: false }} />
+                <Stack.Screen name="Category" component={Category} options={{ headerShown: false }} />
+                <Stack.Screen name="Notification" component={Notification} options={{ headerShown: false }} />
+                <Stack.Screen name="MedicineList" component={MedicineList} options={{ headerShown: false }} />
+                <Stack.Screen name="MedicationBox" component={MedicationBox} options={{ headerShown: false }} />
+                <Stack.Screen name="AddMedicine" component={AddMedicine} options={{ headerShown: false }} />
+                <Stack.Screen name="HistoryMedication" component={HistoryMedication} options={{ headerShown: false }} />
+                <Stack.Screen name="MedicationSchedule" component={MedicationSchedule} options={{ headerShown: false }} />
+                <Stack.Screen name="ScheduleTime" component={ScheduleTime} options={{ headerShown: false }} />
+                <Stack.Screen name="Status" component={Status} options={{ headerShown: false }} />
+                <Stack.Screen name="JoinScreen" component={JoinScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="IncomingCallScreen" component={IncomingCallScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="OutgoingCallScreen" component={OutgoingCallScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="VideoConferencePage" component={VideoConferencePage} options={{ headerShown: false }} />
+              </Stack.Navigator>
+            </NavigationContainer>
+            <ToastConfig />
+            <NotificationFCM />
+          </UserContext.Provider>
+        </UserProvider>
+      </NotificationProvider>
+    </DoctorRatingProvider>
   );
 }

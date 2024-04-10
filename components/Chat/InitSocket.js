@@ -34,7 +34,7 @@ const InitSocket = ({ userId, userName, roomId, sendMessage, onMessageReceived, 
             client.connect(headers, () => {
                 stompClientRef.current = client;
                 subscribeToRoom(client);
-                onWebSocketConnected(client)
+                onWebSocketConnected(stompClientRef.current)
             }, () => {
                 onWebSocketConnected()
             });
@@ -47,6 +47,7 @@ const InitSocket = ({ userId, userName, roomId, sendMessage, onMessageReceived, 
         return () => {
             if (stompClientRef.current && stompClientRef.current.connected) {
                 stompClientRef.current.disconnect();
+                stompClientRef.current = null
             }
         };
     }, [roomId]);
@@ -88,6 +89,7 @@ const InitSocket = ({ userId, userName, roomId, sendMessage, onMessageReceived, 
         if (stompClientRef.current && stompClientRef.current.connected) {
             stompClientRef.current.disconnect();
             stompClientRef.current.unsubscribe(subscriptionRef.current)
+            stompClientRef.current = null
         }
     }, [disconnected])
 
