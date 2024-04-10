@@ -20,7 +20,6 @@ const departmentImages = {
     Orthopedics: require('../assets/images/departments/Orthopedics.png'),
     Respiratory: require('../assets/images/departments/Respiratory.png'),
     Urological: require('../assets/images/departments/Urological.png'),
-
 };
 
 export default function Category({ departments, filterName, onClickItem, style }) {
