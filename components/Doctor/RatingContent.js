@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, TouchableWithoutFeedback, Modal, TextInput, Button } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import 'moment/locale/vi';
@@ -220,14 +220,14 @@ const RatingContent = ({ doctorId, userId, ratingStats, listRating, doctorRating
                     {/* User Comment */}
                     {r.comment && r.comment !== '' && (
                         <View style={[styles.commentContainer]}>
+                            <Text style={styles.commentText}>{r.comment}</Text>
                             {r.sentiment && r.sentiment !== "" && r.comment !== "" && (
                                 renderTag(r.sentiment)
                             )}
-                            <Text style={styles.commentText}>{r.comment} </Text>
                         </View>
                     )}
                     {/*  Horizontal Line */}
-                    <View style={{ width: '100%', borderWidth: 0.3, borderColor: 'gray', marginBottom: 3, marginTop: 13, opacity: 0.1 }}></View>
+                    <View style={{ width: '100%', borderWidth: 0.8, borderColor: '#dee2e6', marginBottom: 3, marginTop: 13, opacity: 0.7 }}></View>
                 </View>
             ))}
 
@@ -311,8 +311,8 @@ const styles = StyleSheet.create({
     },
     userRatingContainer: {
         flexDirection: 'column',
-        marginBottom: 15,
-        paddingHorizontal: 15,
+        marginBottom: 16,
+        paddingHorizontal: 16,
         marginVertical: 10,
     },
     userImage: {
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
     },
     starIcon: {
         marginTop: 2,
-        marginRight: 2,
+        marginRight: 3,
     },
     commentContainer: {
         marginTop: 10,
@@ -351,10 +351,10 @@ const styles = StyleSheet.create({
         marginTop: 5,
     },
     tagContainer: {
+        marginLeft: 'auto',
         borderRadius: 99,
         paddingHorizontal: 8,
         paddingVertical: 3,
-        marginRight: 'auto',
         marginBottom: 5,
     },
     tagText: {
@@ -486,4 +486,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default RatingContent;
+export default memo(RatingContent);

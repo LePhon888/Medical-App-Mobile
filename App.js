@@ -63,7 +63,7 @@ export default function App() {
     };
     fetchData();
   }, [])
-  const initScreen = 'MainScreen'
+  const initScreen = 'Login'
 
   return (
     <DoctorRatingProvider>

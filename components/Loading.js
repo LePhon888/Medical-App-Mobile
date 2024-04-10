@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { Modal, StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import COLORS from "../constants/colors";
@@ -63,4 +63,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Loading;
+export default memo(Loading);

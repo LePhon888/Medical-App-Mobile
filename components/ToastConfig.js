@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, memo, useContext, useState } from "react";
 import { Image, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Toast, { ErrorToast, SuccessToast } from "react-native-toast-message";
 import FeatherIcon from "react-native-vector-icons/Feather";
@@ -44,11 +44,6 @@ const config = {
 
     notification: ({ props }) => (
         <TouchableOpacity style={styles.notificationContainer} onPress={props.clickAction}>
-            <View style={styles.notifcationHeader}>
-                <Image source={require('../assets/images/notification-icon.jpg')} style={styles.notificationIcon} />
-                <Text style={styles.appName}>Medical App</Text>
-                <Text style={styles.notificationSentOn}>{moment(props.sentOn).fromNow()}</Text>
-            </View>
             <Text style={styles.notificationTitle}>{props.title}</Text>
             <Text style={styles.notificationBody}>{props.body}</Text>
             <TouchableOpacity style={styles.closeButton} onPress={props.hide}>
@@ -85,7 +80,7 @@ const styles = StyleSheet.create({
     notificationContainer: {
         width: '95%',
         paddingHorizontal: 16,
-        backgroundColor: '#FFFFF0',
+        backgroundColor: 'white',
         paddingVertical: 10,
         borderRadius: 15,
         elevation: 5,
@@ -140,7 +135,7 @@ const ToastConfig = () => {
     )
 }
 
-export default ToastConfig
+export default memo(ToastConfig)
 
 
 

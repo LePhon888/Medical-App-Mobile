@@ -35,7 +35,8 @@ export const endpoints = {
   category: `${SERVER}/api/category`,
   postBycategory: `${SERVER}/api/post/`,
   userDevice: `${SERVER}/api/user-device`,
-  notification: `${SERVER}/api/notification`
+  notification: `${SERVER}/api/notification`,
+  fee: `${SERVER}/api/fee`,
 };
 
 // export const authApi = async () => {

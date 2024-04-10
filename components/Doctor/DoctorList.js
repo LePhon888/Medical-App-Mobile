@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useMemo, useState } from 'react';
 import { View, Text, FlatList, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import Icon from "react-native-vector-icons/Ionicons";
 import Feather from "react-native-vector-icons/Feather";
@@ -11,125 +11,78 @@ import { useDoctorRating } from '../../context/DoctorRatingContext';
  * This one use to display list of doctors, include information about each doctor
  * @param onItemclickEvent (optional) Function to hanlde when click the item of the list, can navigate to the detail
  */
-const DoctorList = ({ onItemclickEvent }) => {
-    const [doctors, setDoctors] = useState([])
-    const [isDataFetched, setDataFetched] = useState(false)
-    const { doctorRating, storeDoctorRating } = useDoctorRating();
-    useEffect(() => {
-        const getDoctorList = async () => {
-            try {
-                const res = await Apis.get(`${endpoints["doctors"]}/`);
-                setDoctors(res.data)
-                setDataFetched(true)
-            } catch (error) {
-                console.error("Error fetching doctor list:", error);
-            }
-        };
-        getDoctorList();
-    }, []);
-
-    useEffect(() => {
-        // Check if doctorRating is not null
-        if (doctorRating !== null) {
-            // Find the index of the doctor in the doctors list
-            const index = doctors.findIndex((doctor) => doctor.userId === doctorRating.doctorId);
-            // If the doctor is found in the list
-            if (index !== -1) {
-                // Create a new array to hold the updated doctors
-                const updatedDoctors = [...doctors];
-                // Update the rating of the found doctor
-                updatedDoctors[index].rating = doctorRating.rating;
-                // Update the state with the updated doctors list
-                setDoctors(updatedDoctors);
-            }
-        }
-    }, [doctorRating]);
-
-
-
-
+const DoctorList = ({ loading, doctors, onItemclickEvent }) => {
     // On click item
     const onItemClick = (item) => {
-        onItemclickEvent(item)
-    }
+        if (onItemclickEvent) {
+            onItemclickEvent(item)
+        }
 
-    if (doctors.length === 0) {
+    }
+    if (loading) {
         return <DoctorItemLoading />
     }
 
+    if (!loading && doctors.length === 0) {
+        return <Text style={{ paddingHorizontal: 16, }}>Không tìm thấy kết quả...</Text>
+    }
 
-    const renderItem = (item, index) => (
-        <TouchableOpacity key={index} style={styles.itemContainer} onPress={() => onItemClick(item.userId)}>
-            <View style={{ flexDirection: 'row' }}>
-                <Image source={{ uri: item.image }} style={styles.avatar} />
-                <View style={styles.textContainer}>
-                    <View style={styles.flexRow}>
-                        <Text style={styles.name}>{item.title} {item.fullName}</Text>
-                        {item.rating && item.rating > 0 ? (
-                            <View style={styles.rating}>
-                                <Text style={{ fontSize: 10 }}>⭐</Text>
-                                <Text style={{ fontWeight: '500' }}>{` ${item.rating.toFixed(1)}/5`}</Text>
-                            </View>
-                        ) : ""}
+    const renderedList = useMemo(() => {
+        return doctors.map((item, index) => (
+            <TouchableOpacity key={index} style={styles.itemContainer} onPress={() => onItemClick(item.userId)}>
+                <View style={{ flexDirection: 'row' }}>
+                    <Image source={{ uri: item.image }} style={styles.avatar} />
+                    <View style={styles.textContainer}>
+                        <View style={styles.flexRow}>
+                            <Text style={styles.name}>{item.title} {item.fullName}</Text>
+                            {item.rating && item.rating > 0 ? (
+                                <View style={styles.rating}>
+                                    <Text style={{ fontSize: 10 }}>⭐</Text>
+                                    <Text style={{ fontWeight: '500' }}>{` ${item.rating.toFixed(1)}/5`}</Text>
+                                </View>
+                            ) : ''}
+                        </View>
+                        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.department}><Icon name='git-branch-outline' /> {item.departmentName}</Text>
+                        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.hospital}><Icon name='location-outline' /> {item.hospital}</Text>
+                        <View style={{ flex: 1, flexDirection: 'row' }}>
+                            <Text style={styles.consultation}>Tư vấn từ xa</Text>
+                        </View>
                     </View>
-                    <Text numberOfLines={1} ellipsizeMode="tail" style={styles.department}><Icon name='git-branch-outline' /> {item.departmentName}</Text>
-                    <Text numberOfLines={1} ellipsizeMode="tail" style={styles.hospital}><Icon name='location-outline' /> {item.hospital}</Text>
-                    <View style={{ flex: 1, flexDirection: 'row' }}>
-                        <Text style={styles.consultation}>Tư vấn từ xa</Text>
-                    </View>
-
                 </View>
-            </View>
-            <View style={styles.dashedLine}></View>
-            {/* <View style={{ flexDirection: 'row' }}>
+                <View style={styles.dashedLine}></View>
+                {/* <View style={{ flexDirection: 'row' }}>
                 {item.target.split(',').map((label, index) => {
                     return (<Text style={styles.target} key={index}>{label}</Text>)
                 })}
             </View> */}
-            {/* Fee */}
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <View style={styles.dollar}>
-                    <Feather name='dollar-sign' color={'#f0983f'} size={12} />
+                {/* Fee */}
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <View style={styles.dollar}>
+                        <Feather name='dollar-sign' color={'#f0983f'} size={12} />
+                    </View>
+                    <Text style={styles.fee}>
+                        Phí tư vấn từ xa: <Text style={{ fontSize: 13, color: '#0e8558', fontWeight: '500' }}>{` ${Number(item.fee).toLocaleString('vi-VN')} đ`}</Text>
+                    </Text>
                 </View>
-                <Text style={styles.fee}>
-                    Phí tư vấn từ xa: <Text style={{ fontSize: 13, color: '#0e8558', fontWeight: '500' }}>{` ${Number(item.fee).toLocaleString('vi-VN')} đ`}</Text></Text>
-            </View>
-        </TouchableOpacity >
-    );
-    //     <FlatList
-    //     data={doctors}
-    //     renderItem={renderItem}
-    //     keyExtractor={(item) => item.name}
-    //     style={styles.container}
-    //     showsVerticalScrollIndicator={false}
-    //     scrollEventThrottle={16}
-    //     onScroll={onScroll}
-    //{/* Next appointment and schedule */}
-    // <View style={styles.nextAppointmentContainer}>
-    //     <Text style={styles.nextAppointment}>Giờ đặt tiếp theo</Text>
-    //     <Text style={styles.appointmentTime}> {item.nextAppointment.date} - {item.nextAppointment.time}</Text>
-    //     <View style={styles.verticalLine}></View>
-    //     <TouchableOpacity style={styles.flexRow} onPress={() => console.log('clickled the child')}>
-    //         <Text style={styles.appoint}>Đặt hẹn </Text>
-    //         <Feather size={20} style={{ color: '#4581cc' }} name='chevron-right'></Feather>
-    //     </TouchableOpacity>
-    // </View>
-    // />
+            </TouchableOpacity>
+        ));
+    }, [doctors]);
 
     return (
-        <ScrollView key='Doctors' style={styles.container} showsVerticalScrollIndicator={false} nestedScrollEnabled={true}>
-            {isDataFetched ? (
-                doctors.length > 0 && doctors.map((item, index) => {
-                    return renderItem(item, index)
-                })
-            ) : <DoctorItemLoading />}
-        </ScrollView>
+        <FlatList
+            style={styles.container}
+            data={doctors}
+            keyExtractor={(item) => item.userId}
+            renderItem={({ item, index }) => renderedList[index]}
+            nestedScrollEnabled={true}
+            showsVerticalScrollIndicator={false}
+        />
     );
-};
-
+}
 const styles = StyleSheet.create({
     container: {
         paddingHorizontal: 20,
+        marginBottom: 70
     },
     itemContainer: {
         marginVertical: 5,
@@ -249,4 +202,4 @@ const styles = StyleSheet.create({
     },
 
 });
-export default DoctorList
+export default memo(DoctorList)

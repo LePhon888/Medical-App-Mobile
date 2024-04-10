@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import COLORS from '../../constants/colors';
 
@@ -84,4 +84,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default DoctorItemLoading;
+export default memo(DoctorItemLoading);

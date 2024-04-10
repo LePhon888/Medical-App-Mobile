@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'; // Make sure to import FontAwesome from the correct package
 import COLORS from '../../constants/colors';
@@ -247,4 +247,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default BulletContent;
+export default memo(BulletContent);

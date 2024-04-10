@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -169,4 +169,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default DoctorDetailLoading;
+export default memo(DoctorDetailLoading);
