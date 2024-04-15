@@ -6,7 +6,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Login, Welcome, Signup, Home, ChatBot, Chat, MedicalRegister, MainScreen, Setting,
   AppointmentList, News, NewsDetail, Call, VideoHome, AppointmentRegister, Category,
-  Notification, MedicineList, Status, JoinScreen, IncomingCallScreen, OutgoingCallScreen, VideoConferencePage
+  Notification, MedicineList, Status, JoinScreen, IncomingCallScreen, OutgoingCallScreen, VideoConferencePage,
+  Weight, WeightHistory
 } from "./screens";
 
 import DoctorAppointment from "./screens/DoctorAppointment";
@@ -105,6 +106,8 @@ export default function App() {
                 <Stack.Screen name="IncomingCallScreen" component={IncomingCallScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="OutgoingCallScreen" component={OutgoingCallScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="VideoConferencePage" component={VideoConferencePage} options={{ headerShown: false }} />
+                <Stack.Screen name="Weight" component={Weight} options={{ headerShown: false }} />
+                <Stack.Screen name="WeightHistory" component={WeightHistory} options={{ headerShown: false }} />
               </Stack.Navigator>
             </NavigationContainer>
             <ToastConfig />

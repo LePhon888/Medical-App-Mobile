@@ -10,9 +10,9 @@ const CHATBOT = "http://192.168.1.15:8000";
 //const SERVER = "http://medicalapp.com";
 
 export const endpoints = {
-  login: `${SERVER}/auth/login`,
-  signup: `${SERVER}/auth/register`,
-  currentUser: `${SERVER}/auth/current-user`,
+  login: `${SERVER}/api/auth/login`,
+  signup: `${SERVER}/api/auth/register`,
+  currentUser: `${SERVER}/api/auth/current-user`,
   hours: `${SERVER}/api/hours`,
   doctors: `${SERVER}/api/doctors`,
   doctorDetail: `${SERVER}/api/doctor-detail`,
@@ -37,6 +37,7 @@ export const endpoints = {
   userDevice: `${SERVER}/api/user-device`,
   notification: `${SERVER}/api/notification`,
   fee: `${SERVER}/api/fee`,
+  weight: `${SERVER}/api/weight`,
 };
 
 // export const authApi = async () => {

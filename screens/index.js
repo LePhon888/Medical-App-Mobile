@@ -21,6 +21,9 @@ import JoinScreen from "./JoinScreen";
 import IncomingCallScreen from "./IncomingCallScreen";
 import OutgoingCallScreen from "./OutgoingCallScreen";
 import VideoConferencePage from "./VideoConferencePage";
+import Weight from "./Weight";
+import WeightHistory from "./WeightHistory";
+
 
 export {
   Login,
@@ -41,5 +44,5 @@ export {
   Category,
   Notification,
   MedicineList,
-  Status, JoinScreen, IncomingCallScreen, OutgoingCallScreen, VideoConferencePage
+  Status, JoinScreen, IncomingCallScreen, OutgoingCallScreen, VideoConferencePage, Weight, WeightHistory
 };

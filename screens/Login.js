@@ -86,27 +86,26 @@ const Login = ({ navigation }) => {
         try {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
-            let res = await Apis.post(endpoints["googleLogin"], userInfo);
-            const token = res.data;
-            if (res && res.data) {
-                await AsyncStorage.setItem("token", res.data);
-            }
-            let { data } = await axios.get(endpoints["currentUser"], {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            await AsyncStorage.setItem("user", JSON.stringify(data));
+            // let res = await Apis.post(endpoints["googleLogin"], userInfo);
+            // const token = res.data;
+            // if (res && res.data) {
+            //     await AsyncStorage.setItem("token", res.data);
+            // }
+            // let { data } = await axios.get(endpoints["currentUser"], {
+            //     headers: {
+            //         Authorization: `Bearer ${token}`,
+            //     },
+            // });
+            // await AsyncStorage.setItem("user", JSON.stringify(data));
+            // storeUserId(data.id)
 
-            storeUserId(data.id)
+            // dispatch({
+            //     type: "login",
+            //     payload: userInfo,
+            // });
 
-            dispatch({
-                type: "login",
-                payload: userInfo,
-            });
-
-            const userData = await AsyncStorage.getItem("user");
-            if (userData) navigation.navigate('MainScreen');
+            // const userData = await AsyncStorage.getItem("user");
+            // if (userData) navigation.navigate('MainScreen');
         } catch (error) {
             if (error.code === statusCodes.SIGN_IN_CANCELLED) {
                 console.log("Google Sign-In Cancelled");

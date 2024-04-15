@@ -339,7 +339,7 @@ const MedicationBox = ({ navigation, route }) => {
 
                         ) : (
                             <>
-                                <View style={{ ...styles.sectionHeaderContainer, marginTop: 50 }}>
+                                <View style={{ ...styles.sectionHeaderContainer, marginTop: 40 }}>
                                     <Text style={styles.sectionHeader}>{medActiveTab === 1 ? 'Thuốc đang uống ' : 'Thuốc cũ '}
                                         {`(${medicationSchedule.length})`}
                                     </Text>
@@ -348,7 +348,7 @@ const MedicationBox = ({ navigation, route }) => {
                                     style={{ ...styles.list, marginTop: 10 }}
                                     data={medicationSchedule}
                                     renderItem={({ item }) => (
-                                        <View style={{ ...styles.listItem, borderColor: '#d3d3d3' }}>
+                                        <TouchableOpacity onPress={() => navigateEditSchedule(item.id)} style={{ ...styles.listItem, borderColor: '#d3d3d3' }}>
                                             <View style={{ width: '80%' }}>
                                                 <Text style={styles.medicineName}>{item.medicineName}</Text>
                                                 <Text style={styles.usage}>
@@ -356,10 +356,10 @@ const MedicationBox = ({ navigation, route }) => {
                                                 </Text>
 
                                             </View>
-                                            <TouchableOpacity style={{ justifyContent: 'center', marginLeft: 'auto', alignItems: 'center' }} onPress={() => navigateEditSchedule(item.id)}>
-                                                <Feather name="chevron-right" size={26} style={styles.editScheduleIcon} />
+                                            <TouchableOpacity style={{ justifyContent: 'center', marginLeft: 'auto', alignItems: 'center' }} >
+                                                <Feather name="chevron-right" size={24} style={{ textAlign: 'center', }} />
                                             </TouchableOpacity>
-                                        </View>
+                                        </TouchableOpacity>
                                     )}
                                 />
                             </>
@@ -440,7 +440,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
     headerTitle: {
-        color: 'white', fontWeight: 'bold', fontSize: 18
+        color: 'white', fontWeight: '500', fontSize: 18
     },
     bottomContainer: {
         backgroundColor: '#fafafa',
@@ -559,29 +559,6 @@ const styles = StyleSheet.create({
     arrowIcon: {
         marginLeft: 'auto',
     },
-    medTabContainer: {
-        top: 25,
-        marginBottom: 5,
-        backgroundColor: 'white',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 20,
-        paddingVertical: 3,
-        marginHorizontal: 40,
-        elevation: 5,
-        zIndex: 10,
-    },
-    medTab: {
-        flex: 1,
-        paddingVertical: 11,
-        borderRadius: 20,
-        marginHorizontal: 3,
-    },
-    medTabTitle: {
-        fontSize: 14,
-        textAlign: 'center',
-    },
     arrow: {
         marginRight: 55
     },
@@ -645,9 +622,29 @@ const styles = StyleSheet.create({
         width: 25,
         resizeMode: 'contain'
     },
-    editScheduleIcon: {
-        textAlign: 'center'
-    }
+    medTabContainer: {
+        top: 25,
+        marginBottom: 5,
+        backgroundColor: 'white',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 26,
+        paddingVertical: 3,
+        marginHorizontal: 40,
+        elevation: 5,
+        zIndex: 10,
+    },
+    medTab: {
+        flex: 1,
+        paddingVertical: 11,
+        borderRadius: 26,
+        marginHorizontal: 3,
+    },
+    medTabTitle: {
+        fontSize: 14,
+        textAlign: 'center',
+    },
 });
 
 export default MedicationBox;

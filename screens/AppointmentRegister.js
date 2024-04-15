@@ -75,12 +75,13 @@ export default function AppointmentRegister({ navigation, route }) {
             );
             setPayment(resPayment);
         } catch (error) {
-            console.error("Error fetching data:", error);
+            console.error("Error fetching appointment data:", error);
         }
     }
     const onNavigationStateChange = (navState) => {
         //192.168.1.7
-        navState.url?.includes('payment-response') && navState.url?.includes('vnp_PayDate') && navigation.navigate('Status', { status: 1 });
+        navState.url?.includes('payment-response') && navState.url?.includes('vnp_PayDate') ?
+            navigation.navigate('Status', { status: 1 }) : navigation.navigate('Status', { status: 0 });
     }
 
     onDateChange = date => {
