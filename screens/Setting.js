@@ -94,6 +94,7 @@ export default function Setting({ navigation, route }) {
         await GoogleSignin.signOut();
       }
 
+      navigation.navigate("Login");
       await Apis.delete(`${endpoints["userDevice"]}/delete/user/${userId}`)
 
       await AsyncStorage.removeItem("token");
