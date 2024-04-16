@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     input: {
-        borderWidth: 0.3,
+        borderWidth: 1,
         borderColor: "#ccc",
         borderRadius: 10,
         paddingHorizontal: 16,

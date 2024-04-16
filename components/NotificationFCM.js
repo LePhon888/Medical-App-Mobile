@@ -125,13 +125,15 @@ const NotificationFCM = () => {
         if (isFetched && userDevice.userId && userDevice.userId > 0) {
             fetchInitialNotification()
             registerDevice()
+            messaging().setBackgroundMessageHandler(async (message) => {
+                console.log(message)
+            })
             const onMessageUnsubscribe = messaging().onMessage(onMessageRecieved)
             const onTokenRefreshUnsubscribe = messaging().onTokenRefresh(onTokenRefresh)
             const onNotificationOpenedAppUnsubscribe = messaging().onNotificationOpenedApp(remoteMessage => {
                 navigateToScreen(remoteMessage.data)
                 console.log('Notification opened in foreground:', remoteMessage);
             });
-
             return () => {
                 onMessageUnsubscribe()
                 onTokenRefreshUnsubscribe()

@@ -3,7 +3,7 @@ import HeaderWithBackButton from "../../common/HeaderWithBackButton"
 import Feather from "react-native-vector-icons/Feather";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import COLORS from "../../constants/colors"
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import Apis, { endpoints } from "../../config/Apis";
 import moment from "moment";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
@@ -15,8 +15,9 @@ import { formatDate, formatDateMoment, formatDateTimetoTime, formatDuration } fr
 import { Switch } from "react-native-paper";
 import { ScrollView } from "react-native";
 import Button from "../../components/Button";
+import { useUser } from "../../context/UserContext";
 
-const InputItem = ({ titleLeft, titleRight, includeBottomLine, onPress }) => {
+const InputItem = memo(({ titleLeft, titleRight, includeBottomLine, onPress }) => {
     return (
         <>
             <TouchableOpacity style={styles.flexRowCenter} onPress={onPress}>
@@ -29,16 +30,18 @@ const InputItem = ({ titleLeft, titleRight, includeBottomLine, onPress }) => {
             {includeBottomLine && <View style={styles.line}></View>}
         </>
     );
-}
+})
 
 const MedicationSchedule = ({ navigation, route }) => {
-
+    const { userId } = useUser()
     const [unitList, setUnitList] = useState([])
     const [showDatePicker, setShowDatePicker] = useState(false)
     const [showUnitPopup, setShowUnitPopup] = useState(false)
     const [showFrequencyPopup, setShowFrequencyPopup] = useState(false)
     const [isSubmitted, setSubmitted] = useState(false)
     const [isFetched, setFetched] = useState(false)
+    const groupInfo = route?.params.groupInfo
+    const addMore = route?.params.addMore ?? false
 
     const [schedule, setSchedule] = useState({
         id: 0,
@@ -50,7 +53,8 @@ const MedicationSchedule = ({ navigation, route }) => {
         selectedDays: null,
         scheduleTimes: [],
         isActive: true,
-
+        groupName: groupInfo?.groupName ?? 'Thuốc lẻ',
+        groupId: null,
     });
 
     const [tempSchedule, setTempSchedule] = useState({
@@ -84,29 +88,31 @@ const MedicationSchedule = ({ navigation, route }) => {
                 setUnitList(units.data);
 
                 if (route.params) {
-                    const { id, medicine } = route.params;
+                    const { id, medicine, selectedSchedule } = route.params;
 
                     if (id) {
-                        const [schedule, scheduleTimes] = await Promise.all([
-                            Apis.get(`${endpoints["medicationSchedule"]}/${id}`),
-                            Apis.get(`${endpoints["scheduleTime"]}/medication-schedule/${id}`),
-                        ]);
-
-                        console.log(schedule.data)
+                        const schedule = await Apis.get(`${endpoints["medicationSchedule"]}/${id}`)
 
                         setSchedule({
                             ...schedule.data,
                             startDate: moment(schedule.data.startDate).toDate(),
                             selectedDays: schedule.data.selectedDays && schedule.data.selectedDays.split(',').map(Number),
-                            scheduleTimes: scheduleTimes.data,
                             id: id
                         });
-                    } else {
+                    }
+                    else if (selectedSchedule) {
+                        setSchedule({
+                            ...selectedSchedule,
+                            startDate: moment(selectedSchedule.startDate).toDate(),
+                            selectedDays: selectedSchedule.selectedDays && selectedSchedule.selectedDays.split(',').map(Number)
+                        })
+                    }
+                    else {
                         setSchedule((prevSchedule) => ({
                             ...prevSchedule,
                             medicineUnit: units.data[0],
                             medicine: medicine,
-                            userId: JSON.parse(user)?.id || 2,
+                            userId: userId
                         }));
                     }
                 }
@@ -118,7 +124,6 @@ const MedicationSchedule = ({ navigation, route }) => {
         };
 
         if (route.params?.updatedSchedule) {
-            console.log(route.params)
             setFetched(false);
             setSchedule(route.params.updatedSchedule);
             setUnitList(route.params.unitList)
@@ -127,8 +132,6 @@ const MedicationSchedule = ({ navigation, route }) => {
             getData();
         }
     }, [route.params]);
-
-
 
 
     const getFrequencyText = (frequency, selectedDays) => {
@@ -146,7 +149,7 @@ const MedicationSchedule = ({ navigation, route }) => {
     }
 
     const navigateToAddMedicine = () => {
-        navigation.navigate('AddMedicine', { schedule: schedule, unitList: unitList })
+        navigation.navigate('AddMedicine', { schedule: schedule, unitList: unitList, groupInfo: route?.params.groupInfo })
     }
 
     const navigateScheduleTime = () => {
@@ -235,23 +238,40 @@ const MedicationSchedule = ({ navigation, route }) => {
 
     const saveSchedule = async () => {
         setSubmitted(true);
-
         if (schedule.scheduleTimes.length === 0) {
             Toast.show({ type: 'error', text1: 'Bạn chưa nhập thời gian uống thuốc.' });
         } else {
             try {
-                console.log(schedule)
-                const res = await Apis.post(`${endpoints["medicationSchedule"]}/create`, {
+
+                const submittedSchedule = {
                     ...schedule,
+                    selectedDays: schedule.selectedDays ? schedule.selectedDays.join(',') : null,
                     startDate: formatDateMoment(moment(schedule.startDate))
-                });
-                if (res.status === 201) {
-                    console.log(schedule.scheduleTimes)
-                    Toast.show({
-                        type: 'success',
-                        text1: `${schedule.id > 0 ? 'Đổi thông tin thuốc thành công.' : 'Lưu thuốc và lịch uống thành công.'}`
-                    })
-                    navigation.navigate('MedicationBox', { saveScheduleSuccess: true });
+                }
+
+                if (groupInfo) {
+                    // Updated existing item, or add new item if addMore = true
+                    const updatedMedicineList =
+                        groupInfo.medicineList.some(item => item.medicine.name === submittedSchedule.medicine.name) && !addMore ?
+                            groupInfo.medicineList.map(item => item.medicine.name === submittedSchedule.medicine.name ? submittedSchedule : item) :
+                            [...groupInfo.medicineList, submittedSchedule];
+
+                    navigation.navigate('AddGroupMedicine', {
+                        groupInfo: {
+                            ...groupInfo,
+                            medicineList: updatedMedicineList,
+                        }
+                    });
+                }
+                else {
+                    const res = await Apis.post(`${endpoints["medicationSchedule"]}/createOrUpdate`, submittedSchedule);
+                    if (res.status === 201) {
+                        Toast.show({
+                            type: 'success',
+                            text1: `${submittedSchedule.id > 0 ? 'Đổi thông tin thuốc thành công.' : 'Lưu thuốc và lịch uống thành công.'}`
+                        })
+                        navigation.navigate('MedicationBox', { saveScheduleSuccess: true });
+                    }
                 }
             } catch (error) {
                 console.error('API Error:', error);
@@ -276,17 +296,18 @@ const MedicationSchedule = ({ navigation, route }) => {
                         <View >
                             <Text style={styles.label}>Trạng thái thuốc</Text>
                         </View>
-                        <View style={{ ...styles.flexRowCenter }}>
-
+                        <View style={styles.flexRowCenter}>
                             <Text style={{
                                 ...styles.text, color: schedule.isActive ? COLORS.toastInfo : COLORS.textLabel
                             }}>{schedule.isActive ? 'Thuốc đang uống' : 'Thuốc cũ'}</Text>
-                            <Switch
-                                value={schedule.isActive}
-                                style={{ marginLeft: 'auto', height: 15 }}
-                                onValueChange={handleSwitchChange}
-                                color={COLORS.toastInfo}
-                            />
+                            {!schedule.groupId &&
+                                <Switch
+                                    value={schedule.isActive}
+                                    style={{ marginLeft: 'auto', height: 15 }}
+                                    onValueChange={handleSwitchChange}
+                                    color={COLORS.toastInfo}
+                                />
+                            }
                         </View>
                     </View>
                 )}
@@ -302,6 +323,12 @@ const MedicationSchedule = ({ navigation, route }) => {
                             )}
                         </View>
                     </TouchableOpacity>
+                </View>
+                <View style={styles.container}>
+                    <Text style={styles.label}>Toa thuốc</Text>
+                    <View style={styles.input}>
+                        <Text style={styles.text}>{schedule.groupName}</Text>
+                    </View>
                 </View>
                 <View style={styles.container}>
                     <Text style={styles.label}>Lịch trình</Text>
@@ -491,9 +518,9 @@ const styles = StyleSheet.create({
     },
     form: {
         padding: 16,
-        paddingBottom: 10,
         flex: 1,
         paddingBottom: 100,
+        backgroundColor: '#fafafa'
     },
     container: {
         marginVertical: 10,
@@ -504,7 +531,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold"
     },
     input: {
-        borderWidth: 0.3,
+        borderWidth: 1,
         borderColor: "#ccc",
         borderRadius: 5,
         paddingHorizontal: 16,
@@ -524,8 +551,8 @@ const styles = StyleSheet.create({
     line: {
         width: '100%',
         borderBottomColor: '#ccc',
-        borderWidth: 0.2,
-        opacity: 0.2,
+        borderWidth: 1,
+        opacity: 0.1,
         marginVertical: 16,
     },
     popupTitle: {

@@ -31,6 +31,7 @@ export const endpoints = {
   medicineUnit: `${SERVER}/api/medicine-unit`,
   medicineList: `${SERVER}/api/medicine/all`,
   medicationSchedule: `${SERVER}/api/medication-schedule`,
+  medicationScheduleGroup: `${SERVER}/api/medication-schedule-group`,
   scheduleTime: `${SERVER}/api/schedule-time`,
   scheduleTimeDetail: `${SERVER}/api/schedule-time-detail`,
   category: `${SERVER}/api/category`,

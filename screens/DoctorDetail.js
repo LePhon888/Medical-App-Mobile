@@ -16,8 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import RatingContent from '../components/Doctor/RatingContent';
 import ToastConfig from '../components/ToastConfig';
 import { useDoctorRating } from '../context/DoctorRatingContext';
-import { getUserFromStorage } from '../utils/GetUserFromStorage';
-import getNewAccessToken from '../utils/getNewAccessToken';
+import { useUser } from '../context/UserContext';
 /**
  * The doctor detail screen
  * 
@@ -34,7 +33,7 @@ const DoctorDetail = ({ navigation, route }) => {
     const [isDataFetched, setDataFetched] = useState(false)
     const [activeTab, setActiveTab] = useState(1); // set the active tab with key 1
     const [showFullInfo, setShowFullInfo] = useState(false); // this one use as a flag for read more button
-    const [userId, setUserId] = useState(null)
+    const { userId } = useUser()
     const height = useRef(new Animated.Value(0)).current
     const { doctorRating, storeDoctorRating } = useDoctorRating();
     const toggleReadMore = () => {

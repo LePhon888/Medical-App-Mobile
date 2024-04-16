@@ -8,6 +8,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment";
 import COLORS from "../../constants/colors";
 import Octicons from "react-native-vector-icons/Octicons";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import { formatDateMoment, formatDateTimeFromNow, formatDuration } from "../../config/date";
 import Loading from "../../components/Loading";
 import Toast from "react-native-toast-message";
@@ -32,6 +33,7 @@ const MedicationBox = ({ navigation, route }) => {
     const [selectedMoment, setSelectedMoment] = useState(moment())
     const [scheduleTimes, setScheduleTimes] = useState([])
     const [medicationSchedule, setMedicationSchedule] = useState([])
+    const [visibleSections, setVisibleSections] = useState({});
     const [userId, setUserId] = useState(2)
 
     const [isFetched, setFetched] = useState(false)
@@ -53,13 +55,17 @@ const MedicationBox = ({ navigation, route }) => {
     ];
 
     const popupOptions = [
-        { key: 1, title: 'Thuốc theo toa', uri: require(`${assetsImageUri}prescription.png`) },
-        { key: 2, title: 'Thuốc', uri: require(`${assetsImageUri}drugs.png`) },
+        { key: 1, title: 'Thuốc theo toa', uri: require(`${assetsImageUri}prescription.png`), screen: 'AddGroupMedicine' },
+        { key: 2, title: 'Thuốc', uri: require(`${assetsImageUri}drugs.png`), screen: 'AddMedicine' },
     ];
 
-    const navigateAddMedicine = () => {
-        navigation.navigate('AddMedicine')
+    const navigateAddMedicine = (screen) => {
+        navigation.navigate(screen)
         setPopupVisible(false)
+    }
+
+    const navigateAddGroupMedicine = (id) => {
+        navigation.navigate('AddGroupMedicine', { id: id })
     }
 
     const navigateEditSchedule = (id) => {
@@ -76,6 +82,14 @@ const MedicationBox = ({ navigation, route }) => {
     const navigateHistoryMedication = () => {
         navigation.navigate('HistoryMedication')
     }
+
+    // Toggle visibility of a section
+    const toggleSectionVisibility = (title) => {
+        setVisibleSections(prevState => ({
+            ...prevState,
+            [title]: !prevState[title]  // Toggle the current state for the title
+        }));
+    };
 
     const getscheduleTimes = async () => {
         try {
@@ -96,10 +110,25 @@ const MedicationBox = ({ navigation, route }) => {
         }
     }
 
+    const formatDataIntoSections = (data) => {
+        const groups = data.reduce((acc, item) => {
+            const groupName = item.groupName ?? 'Thuốc lẻ'; // Default group if groupName is not provided
+            if (!acc[groupName]) {
+                acc[groupName] = [];
+            }
+            acc[groupName].push(item);
+            return acc;
+        }, {});
+
+        return Object.keys(groups).map(key => ({ title: key, data: groups[key] }));
+    };
+
     const getMedicationSchedule = async () => {
         try {
             const res = await Apis.get(`${endpoints["medicationSchedule"]}/user/${userId}?isActive=${medActiveTab === 1}`)
-            setMedicationSchedule(res.data)
+            const sectionedData = formatDataIntoSections(res.data);
+            console.log(sectionedData)
+            setMedicationSchedule(sectionedData)
         } catch (error) {
             Toast.show({
                 type: "error",
@@ -140,6 +169,15 @@ const MedicationBox = ({ navigation, route }) => {
     useEffect(() => {
         getscheduleTimes();
     }, [selectedMoment]);
+
+    useEffect(() => {
+        const initialVisibilityStates = medicationSchedule.reduce((acc, item) => {
+            acc[item.title] = true; // Set each title as a key with value `true`
+            return acc;
+        }, {});
+        setVisibleSections(initialVisibilityStates);
+    }, [medicationSchedule]);
+
 
 
     const getPeriod = (time) => {
@@ -214,6 +252,8 @@ const MedicationBox = ({ navigation, route }) => {
     ].filter(section => section.data.length > 0);
 
 
+
+
     return (
         <View style={styles.screen}>
             {/* Top content */}
@@ -268,9 +308,12 @@ const MedicationBox = ({ navigation, route }) => {
                                         borderColor: item.isUsed === null ? '#ccc' : item.isUsed ? COLORS.toastInfo : COLORS.toastError,
                                         borderWidth: 0.4
                                     }}>
-                                        <View style={{ width: '60%' }}>
+                                        <View>
                                             <Text style={styles.medicineName}>{item.medicineName}</Text>
                                             <Text style={styles.usage}>{`Uống ${item.quantity} ${item.unitName} lúc ${formatDuration(item.time)}`}</Text>
+                                            <View style={styles.groupTag}>
+                                                <Text style={styles.groupText}>{item.groupName ?? 'Thuốc lẻ'}</Text>
+                                            </View>
                                         </View>
 
                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -339,28 +382,48 @@ const MedicationBox = ({ navigation, route }) => {
 
                         ) : (
                             <>
-                                <View style={{ ...styles.sectionHeaderContainer, marginTop: 40 }}>
-                                    <Text style={styles.sectionHeader}>{medActiveTab === 1 ? 'Thuốc đang uống ' : 'Thuốc cũ '}
-                                        {`(${medicationSchedule.length})`}
-                                    </Text>
-                                </View>
-                                <FlatList
-                                    style={{ ...styles.list, marginTop: 10 }}
-                                    data={medicationSchedule}
-                                    renderItem={({ item }) => (
-                                        <TouchableOpacity onPress={() => navigateEditSchedule(item.id)} style={{ ...styles.listItem, borderColor: '#d3d3d3' }}>
-                                            <View style={{ width: '80%' }}>
-                                                <Text style={styles.medicineName}>{item.medicineName}</Text>
-                                                <Text style={styles.usage}>
-                                                    {!item.dateTime ? `Chưa có lịch uống thuốc` : `Liều tiếp theo: ${formatDateTimeFromNow(item.dateTime)}`}
-                                                </Text>
-
-                                            </View>
-                                            <TouchableOpacity style={{ justifyContent: 'center', marginLeft: 'auto', alignItems: 'center' }} >
-                                                <Feather name="chevron-right" size={24} style={{ textAlign: 'center', }} />
+                                <SectionList
+                                    style={{ ...styles.list, marginTop: 30 }}
+                                    sections={medicationSchedule}
+                                    keyExtractor={(item, index) => item.id + index}
+                                    renderSectionHeader={({ section: { title, data } }) => (
+                                        <View style={[styles.sectionHeaderContainer]}>
+                                            <TouchableOpacity style={styles.flexRowCenter} onPress={() => toggleSectionVisibility(title)}>
+                                                <Ionicons
+                                                    name={visibleSections[title] ? 'chevron-down-circle-sharp' : 'chevron-up-circle-sharp'}
+                                                    size={24}
+                                                    color={COLORS.primary}
+                                                />
+                                                <Text style={styles.sectionHeader}>{title} ({data.length})</Text>
                                             </TouchableOpacity>
-                                        </TouchableOpacity>
+                                            {data[0].groupId &&
+                                                <TouchableOpacity style={{ marginLeft: 'auto' }} onPress={() => navigateAddGroupMedicine(data[0].groupId)}>
+                                                    <Text style={{ fontWeight: 500, fontSize: 12, color: COLORS.textLabel }}>
+                                                        {'SỬA'}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            }
+                                        </View>
                                     )}
+                                    renderItem={({ item, section }) => {
+                                        if (visibleSections[section.title]) {
+                                            return (
+                                                <View style={{ ...styles.listItem, borderColor: '#d3d3d3' }}>
+                                                    <View>
+                                                        <Text style={styles.medicineName}>{item.medicineName}</Text>
+                                                        <Text style={styles.usage}>
+                                                            {!item.dateTime ? `Chưa có lịch uống thuốc` : `Liều tiếp theo: ${formatDateTimeFromNow(item.dateTime)}`}
+                                                        </Text>
+
+                                                    </View>
+                                                    <TouchableOpacity style={{ justifyContent: 'center', marginLeft: 'auto', alignItems: 'center' }} onPress={() => navigateEditSchedule(item.id)}>
+                                                        <Feather name="chevron-right" size={26} style={styles.editScheduleIcon} />
+                                                    </TouchableOpacity>
+                                                </View>
+                                            )
+                                        }
+                                        return null
+                                    }}
                                 />
                             </>
                         )}
@@ -405,7 +468,7 @@ const MedicationBox = ({ navigation, route }) => {
                     <View style={styles.popupContainer}>
                         <Text style={styles.popupTitle}>Bạn muốn thêm...</Text>
                         {popupOptions.map((option) => (
-                            <TouchableOpacity key={option.key} style={styles.popupOption} onPress={() => navigateAddMedicine()}>
+                            <TouchableOpacity key={option.key} style={styles.popupOption} onPress={() => navigateAddMedicine(option.screen)}>
                                 <Image source={option.uri} style={styles.popupOptionImage} />
                                 <Text style={styles.popupOptionTitle}>{option.title}</Text>
                                 <Feather name="chevron-right" size={15} color="#a1a2aa" style={styles.arrowIcon} />
@@ -622,29 +685,21 @@ const styles = StyleSheet.create({
         width: 25,
         resizeMode: 'contain'
     },
-    medTabContainer: {
-        top: 25,
-        marginBottom: 5,
-        backgroundColor: 'white',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 26,
+    editScheduleIcon: {
+        textAlign: 'center'
+    },
+    groupTag: {
+        marginTop: 12,
+        backgroundColor: '#f8f9fd',
+        marginRight: 'auto',
+        borderRadius: 99,
         paddingVertical: 3,
-        marginHorizontal: 40,
-        elevation: 5,
-        zIndex: 10,
+        paddingHorizontal: 8,
     },
-    medTab: {
-        flex: 1,
-        paddingVertical: 11,
-        borderRadius: 26,
-        marginHorizontal: 3,
-    },
-    medTabTitle: {
-        fontSize: 14,
-        textAlign: 'center',
-    },
+    groupText: {
+        color: COLORS.textLabel,
+        fontWeight: '300',
+    }
 });
 
 export default MedicationBox;

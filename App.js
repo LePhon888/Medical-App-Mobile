@@ -18,7 +18,6 @@ import MedicationBox from "./screens/MedicationSchedule/MedicationBox";
 import AddMedicine from "./screens/MedicationSchedule/AddMedicine";
 import ScheduleTime from "./screens/MedicationSchedule/ScheduleTime";
 import MedicationSchedule from "./screens/MedicationSchedule/MedicationSchedule";
-import messaging from '@react-native-firebase/messaging';
 import { useEffect } from "react";
 import NotificationFCM from "./components/NotificationFCM";
 import { getUserFromStorage } from "./utils/GetUserFromStorage";
@@ -32,7 +31,7 @@ import Apis, { endpoints } from "./config/Apis";
 import { Cache } from "react-native-cache";
 import optionCache from "./utils/optionCache";
 import { DoctorRatingProvider } from "./context/DoctorRatingContext";
-import moment from "moment";
+import AddGroupMedicine from "./screens/MedicationSchedule/AddGroupMedicine";
 
 const Stack = createNativeStackNavigator();
 export const UserContext = createContext();
@@ -101,6 +100,7 @@ export default function App({ navigation }) {
                 <Stack.Screen name="MedicineList" component={MedicineList} options={{ headerShown: false }} />
                 <Stack.Screen name="MedicationBox" component={MedicationBox} options={{ headerShown: false }} />
                 <Stack.Screen name="AddMedicine" component={AddMedicine} options={{ headerShown: false }} />
+                <Stack.Screen name="AddGroupMedicine" component={AddGroupMedicine} options={{ headerShown: false }} />
                 <Stack.Screen name="HistoryMedication" component={HistoryMedication} options={{ headerShown: false }} />
                 <Stack.Screen name="MedicationSchedule" component={MedicationSchedule} options={{ headerShown: false }} />
                 <Stack.Screen name="ScheduleTime" component={ScheduleTime} options={{ headerShown: false }} />
