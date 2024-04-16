@@ -99,7 +99,7 @@ const AddMedicine = ({ navigation, route }) => {
             };
             navigation.navigate('MedicationSchedule', { updatedSchedule: updatedSchedule, unitList: unitList, groupInfo: groupInfo });
         } else {
-            navigation.navigate('MedicationSchedule', { medicine: medicine, groupInfo: groupInfo });
+            navigation.navigate('MedicationSchedule', { medicine: medicine, groupInfo: groupInfo, addMore: true });
         }
     };
 
