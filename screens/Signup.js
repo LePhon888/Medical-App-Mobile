@@ -6,7 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import COLORS from "../constants/colors";
 import { Ionicons } from "@expo/vector-icons";
@@ -14,6 +14,7 @@ import Checkbox from "expo-checkbox";
 import Button from "../components/Button";
 import Apis, { endpoints } from "../config/Apis";
 import { ActivityIndicator } from "react-native";
+import Toast from "react-native-toast-message";
 
 const Signup = ({ navigation }) => {
   const [isPasswordShown, setIsPasswordShown] = useState(true);
@@ -27,7 +28,9 @@ const Signup = ({ navigation }) => {
   const [notification, setNotification] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [verify, setVerify] = useState(true);
+  const [verify, setVerify] = useState(false);
+  const [code, setCode] = useState(null);
+
   const handleSignUp = () => {
     const signUp = async () => {
       setError(null);
@@ -54,24 +57,73 @@ const Signup = ({ navigation }) => {
       }
       try {
         setLoading(true);
-        const res = await Apis.post(endpoints["signup"], {
-          firstName,
-          lastName,
-          email,
-          password,
-        });
-        setLoading(false);
-        if (res.status === 201) {
-          setNotification(true);
-          setVerify(true);
-          navigation.navigate("Login");
-        } else setError("Error");
+        const resCheckEmail = await Apis.get(endpoints.checkEmail + '?email=' + email);
+        console.log('resCheckEmailresCheckEmail', resCheckEmail.data);
+        if (resCheckEmail.data === false) {
+          Toast.show({ type: "error", text1: "Email đã được đăng ký tài khoản khác" });
+          setLoading(false);
+          return;
+        } else {
+          const res = await Apis.post(endpoints["signup"], {
+            firstName,
+            lastName,
+            email,
+            password,
+          });
+          setLoading(false);
+          if (res.status === 201) {
+            setNotification(true);
+            setVerify(true);
+          } else setError("Error");
+        }
       } catch (error) {
         console.log(error);
       }
     };
     signUp();
   };
+
+  const handleVerify = () => {
+    const verify = async () => {
+      try {
+        setLoading(true);
+
+        const res = await Apis.post(endpoints.verify, {
+          email,
+          code
+        });
+        setLoading(false);
+
+        if (res.status === 200) {
+          Toast.show({
+            type: "success",
+            text1: "Đăng ký thành công",
+            text2: "Chuyển hướng đến trang đăng nhập",
+          });
+          setCode(null);
+          setVerify(false);
+          navigation.navigate("Login");
+        }
+      } catch (error) {
+        Toast.show({ type: "error", text1: "Mã xác thực không hợp lệ" });
+        console.error(error);
+      }
+    };
+    verify();
+  }
+
+  const handleReSend = () => {
+    const resend = async () => {
+      try {
+        setLoading(true);
+        const res = await Apis.get(endpoints.resendCode + '?email=' + email);
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    resend();
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
@@ -81,7 +133,7 @@ const Signup = ({ navigation }) => {
             <Text
               style={{
                 fontSize: 22,
-                fontWeight: "bold",
+                fontWeight: 600,
                 color: COLORS.black,
               }}
             >
@@ -110,12 +162,12 @@ const Signup = ({ navigation }) => {
                 textAlign: 'center',
                 fontSize: 33,
                 color: COLORS.textLabel,
+                fontWeight: 600
               }}
-              onChangeText={(text) => {
-                setLastName(text);
-              }} />
+              onChangeText={(text) => setCode(text)}
+            />
           </View>
-          <View style={{ flexDirection: 'row', marginTop: 12 }}>
+          <View style={{ flexDirection: 'row', marginTop: 10 }}>
             <Text
               style={{
                 fontSize: 16,
@@ -123,12 +175,12 @@ const Signup = ({ navigation }) => {
                 textAlign: 'center',
               }}
             >
-              Chưa nhận được mã xác thực?
+              Mã xác thực được gửi qua email
             </Text>
-            <Pressable onPress={() => setVerify(false)}
+            <TouchableOpacity onPress={() => handleReSend()}
               style={{ marginTop: 1, marginLeft: 5 }}
             ><Text style={{ color: COLORS.primary, fontWeight: 500, fontSize: 15 }}>Gửi lại</Text>
-            </Pressable>
+            </TouchableOpacity>
           </View>
 
           <Button
@@ -138,7 +190,7 @@ const Signup = ({ navigation }) => {
               marginTop: 18,
               marginBottom: 20,
             }}
-            onPress={() => handleSignUp()}
+            onPress={() => handleVerify()}
           />
         </View>
       </> : <View style={{ flex: 1, marginHorizontal: 22 }}>
@@ -332,7 +384,20 @@ const Signup = ({ navigation }) => {
           }}
           onPress={() => handleSignUp()}
         />
-
+        <View
+          style={{ justifyContent: "center", alignItems: "center" }}
+        >
+          {error && (
+            <Text
+              style={{
+                color: COLORS.red,
+                textAlign: "center",
+              }}
+            >
+              {error}
+            </Text>
+          )}
+        </View>
         <View
           style={{
             flexDirection: "row",
@@ -374,21 +439,7 @@ const Signup = ({ navigation }) => {
           </Pressable>
         </View>
         {loading && <ActivityIndicator size="small" color={COLORS.primary} />}
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
-          {error && (
-            <Text
-              style={{
-                color: COLORS.red,
-                marginBottom: 200,
-                textAlign: "center",
-              }}
-            >
-              {error}
-            </Text>
-          )}
-        </View>
+
         {loading == false && (
           <View>
             {notification == true && (

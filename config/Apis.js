@@ -39,6 +39,9 @@ export const endpoints = {
   notification: `${SERVER}/api/notification`,
   fee: `${SERVER}/api/fee`,
   weight: `${SERVER}/api/weight`,
+  verify: `${SERVER}/api/auth/verify`,
+  resendCode: `${SERVER}/api/auth/re-send-verify`,
+  checkEmail: `${SERVER}/api/auth/check-email`,
 };
 
 // export const authApi = async () => {
