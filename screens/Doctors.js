@@ -71,7 +71,6 @@ const Doctors = ({ navigation }) => {
 
 
     const applyFilter = () => {
-        console.log(tempFilter)
         setFilterValue(({ ...tempFilter }))
         setShowFilterPopup(false)
     }
@@ -155,7 +154,6 @@ const Doctors = ({ navigation }) => {
     }
 
     const onClickDepartment = (item) => {
-        console.log(item)
         setIsSearch(false)
         setFilterValue(({
             departmentName: item.name,
@@ -195,7 +193,7 @@ const Doctors = ({ navigation }) => {
                                 />
                             </> :
                             <>
-                                <Image source={filter.departmentImage} style={styles.image} />
+                                <Image source={filter?.departmentImage} style={styles.image} />
                                 <Text style={styles.searchInput}>{filter.departmentName}</Text>
                                 <Feather name="search" size={20} color="#000" style={styles.icon} />
                             </>

@@ -18,6 +18,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import moment from "moment/moment";
 import { ActivityIndicator } from "react-native-paper";
 import WebView from "react-native-webview";
+import getNewAccessToken from "../utils/getNewAccessToken";
 
 export default function AppointmentList({ navigation }) {
   const [appointment, setAppointment] = useState(null);
@@ -29,11 +30,20 @@ export default function AppointmentList({ navigation }) {
     { key: 2, title: 'Lịch sử đặt hẹn' },
   ];
   useEffect(() => {
+    getNewAccessToken();
+  }, []);
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const user = await AsyncStorage.getItem("user");
+        const accessToken = await AsyncStorage.getItem("accessToken");
         const response = await Apis.get(
-          endpoints.appointment + "/detail/" + JSON.parse(user).id
+          endpoints.appointment + "/detail/" + JSON.parse(user).id,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`
+            }
+          }
         );
         setAppointment(response.data);
       } catch (error) {

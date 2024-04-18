@@ -15,6 +15,8 @@ import FeatherIcon from 'react-native-vector-icons/Feather';
 import { useUser } from "../context/UserContext";
 import Apis, { endpoints } from "../config/Apis";
 import { useNotification } from "../context/NotificationContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Toast from "react-native-toast-message";
 
 const { width: windowWidth } = Dimensions.get('window');
 
@@ -50,6 +52,33 @@ const Home = ({ navigation, route }) => {
     }
   }, []);
 
+  useEffect(() => {
+    const setupTimeout = async () => {
+      const expiredDateAccessToken = await AsyncStorage.getItem("expiredDateRefreshToken");
+      const currentTime = new Date();
+      const expiredTime = new Date(expiredDateAccessToken);
+      const timeoutDuration = expiredTime - currentTime;
+      if (timeoutDuration > 0) {
+        setTimeout(async () => {
+          await Apis.delete(`${endpoints["userDevice"]}/delete/user/${userId}`)
+          await AsyncStorage.removeItem("accessToken");
+          await AsyncStorage.removeItem("refreshToken");
+          Toast.show({
+            type: "error",
+            position: "top",
+            text1: "Phiên đăng nhập đã hết hạn",
+            text2: "Vui lòng đăng nhập lại",
+            visibilityTime: 4000,
+            autoHide: true,
+            delay: 3000
+          });
+          navigation.navigate("Login");
+        }, timeoutDuration);
+      }
+    };
+
+    setupTimeout();
+  }, []);
 
   useEffect(() => {
     if (state.refreshData && userId) {

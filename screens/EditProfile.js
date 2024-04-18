@@ -91,7 +91,7 @@ const EditProfile = ({ route, navigation }) => {
 
         try {
             const e = `${endpoints["user"]}/`;
-            const token = await AsyncStorage.getItem("token");
+            const token = await AsyncStorage.getItem("accessToken");
             let res = await Apis.post(e, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,

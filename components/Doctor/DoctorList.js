@@ -7,6 +7,7 @@ import Apis, { endpoints } from '../../config/Apis';
 import DoctorItemLoading from './DoctorItemLoading';
 import { Category } from '../../screens';
 import { useDoctorRating } from '../../context/DoctorRatingContext';
+import { ActivityIndicator } from 'react-native-paper';
 /** 
  * This one use to display list of doctors, include information about each doctor
  * @param onItemclickEvent (optional) Function to hanlde when click the item of the list, can navigate to the detail
@@ -24,7 +25,8 @@ const DoctorList = ({ loading, doctors, onItemclickEvent }) => {
     }
 
     if (!loading && doctors.length === 0) {
-        return <Text style={{ paddingHorizontal: 16, }}>Không tìm thấy kết quả...</Text>
+        // return <Text style={{ paddingHorizontal: 16, }}>Không tìm thấy kết quả...</Text>
+        return <ActivityIndicator size="small" color="#0000ff" style={{ marginTop: 30 }} />
     }
 
     const renderedList = useMemo(() => {
@@ -38,7 +40,7 @@ const DoctorList = ({ loading, doctors, onItemclickEvent }) => {
                             {item.rating && item.rating > 0 ? (
                                 <View style={styles.rating}>
                                     <Text style={{ fontSize: 10 }}>⭐</Text>
-                                    <Text style={{ fontWeight: '500' }}>{` ${item.rating.toFixed(1)}/5`}</Text>
+                                    <Text style={{ fontWeight: '400', fontSize: 13 }}>{` ${item.rating.toFixed(1)}/5`}</Text>
                                 </View>
                             ) : ''}
                         </View>

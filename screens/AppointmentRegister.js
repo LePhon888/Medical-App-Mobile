@@ -14,6 +14,7 @@ import Apis, { endpoints } from '../config/Apis';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import WebView from 'react-native-webview';
 import moment from 'moment';
+import getNewAccessToken from '../utils/getNewAccessToken';
 
 export default function AppointmentRegister({ navigation, route }) {
     const tabs = [{ name: 'Chọn giờ đặt hẹn' }];
@@ -34,14 +35,19 @@ export default function AppointmentRegister({ navigation, route }) {
             try {
                 const storedUser = await getUserFromStorage();
                 setUser(storedUser);
-                // const response = await Apis.get(endpoints["hours"]);
-                // setHour(response.data);
+                const response = await Apis.get(endpoints["hours"]);
+                setHour(response.data);
             } catch (error) {
                 console.error('Error retrieving user:', error);
             }
         };
         fetch();
     }, []);
+
+    useEffect(() => {
+        getNewAccessToken();
+    }, []);
+
 
     useEffect(() => {
         const fetchHour = async () => {
@@ -103,16 +109,16 @@ export default function AppointmentRegister({ navigation, route }) {
                         <Text style={styles.title}>Bệnh nhân</Text>
                         <View style={styles.radio}>
                             <View>
-                                <Image alt="image" style={styles.profileAvatar} source={{ uri: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2.5&w=256&h=256&q=80" }} />
+                                <Image alt="image" style={styles.profileAvatar} source={{ uri: user?.image || "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2.5&w=256&h=256&q=80" }} />
                             </View>
                             <View style={styles.radioTop}>
-                                <Text style={styles.radioLabel}>{user?.lastName + ' ' + user?.firstName}</Text>
+                                <Text style={styles.radioLabel}>{user?.lastName ?? '' + ' ' + user?.firstName}</Text>
                                 <View style={{ flexDirection: 'row', marginBottom: 2 }}>
                                     <Fontisto name="email" size={14} style={{ color: '#969ca3', marginTop: 4 }} />
                                     <Text style={styles.radioDescription}>{user?.email}</Text>
                                 </View>
                                 <View style={{ flexDirection: 'row' }}>
-                                    <Feather name="phone" size={14} style={{ color: '#969ca3', marginTop: 4 }} />
+                                    {user?.phoneNumber && <Feather name="phone" size={14} style={{ color: '#969ca3', marginTop: 4 }} />}
                                     <Text style={styles.radioDescription}>{user?.phoneNumber}</Text>
                                 </View>
                             </View>

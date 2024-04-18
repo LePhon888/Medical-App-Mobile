@@ -16,6 +16,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import RatingContent from '../components/Doctor/RatingContent';
 import ToastConfig from '../components/ToastConfig';
 import { useDoctorRating } from '../context/DoctorRatingContext';
+import { getUserFromStorage } from '../utils/GetUserFromStorage';
+import getNewAccessToken from '../utils/getNewAccessToken';
 /**
  * The doctor detail screen
  * 
@@ -28,7 +30,7 @@ const DoctorDetail = ({ navigation, route }) => {
     const [detail, setDetail] = useState([]);
     const [rating, setRating] = useState([])
     const [ratingStats, setRatingStats] = useState([])
-    const [isEnableRating, SetEnableRating] = useState(false)
+    const [isEnableRating, setEnableRating] = useState(false)
     const [isDataFetched, setDataFetched] = useState(false)
     const [activeTab, setActiveTab] = useState(1); // set the active tab with key 1
     const [showFullInfo, setShowFullInfo] = useState(false); // this one use as a flag for read more button
@@ -91,6 +93,10 @@ const DoctorDetail = ({ navigation, route }) => {
     }
 
     useEffect(() => {
+        getNewAccessToken();
+    }, []);
+
+    useEffect(() => {
         const getData = async () => {
             try {
                 /* Get the basic information for current doctor */
@@ -101,14 +107,20 @@ const DoctorDetail = ({ navigation, route }) => {
                 setDetail(detail.data);
                 /* Check if current login user have existed appointment, then we allow this user to rating */
                 const currentUser = await AsyncStorage.getItem("user");
+                const accessToken = await AsyncStorage.getItem("accessToken");
                 if (currentUser) {
-                    const countAppointment = await Apis.get(`${endpoints["appointment"]}/count?doctorId=${doctorId}&userId=${JSON.parse(currentUser).id}`);
-                    SetEnableRating(countAppointment.data > 0);
+                    const countAppointment = await Apis.get(`${endpoints["appointment"]}/count?doctorId=${doctorId}&userId=${JSON.parse(currentUser).id}`,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${accessToken}`,
+                            }
+                        });
+                    setEnableRating(countAppointment.data > 0);
                     setUserId(JSON.parse(currentUser).id)
                 }
                 setDataFetched(true)
             } catch (error) {
-                console.error('Error fetching data:', error);
+                console.error('Error fetching 123 data:', error);
             }
         };
 
@@ -159,7 +171,7 @@ const DoctorDetail = ({ navigation, route }) => {
                 <View>
                     <View style={styles.avatarContainer}>
                         {/* Avatar */}
-                        <Image source={{ uri: doctor.image }} style={styles.avatar} />
+                        <Image source={{ uri: doctor?.image }} style={styles.avatar} />
                         {/* Center content */}
                         <View style={{ alignItems: 'center' }}>
                             <Text style={styles.name}>{doctor.title} {doctor.fullName}</Text>
