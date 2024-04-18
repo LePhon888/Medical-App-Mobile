@@ -4,7 +4,7 @@ import React, { createContext, useReducer } from "react";
 import UserReducer from "./reducers/UserReducer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
-  Login, Welcome, Signup, Home, ChatBot, Chat, MedicalRegister, MainScreen, Setting,
+  Login, Welcome, Signup, Home, ChatBot, Chat, MainScreen, Setting,
   AppointmentList, News, NewsDetail, Call, VideoHome, AppointmentRegister, Category,
   Notification, MedicineList, Status, JoinScreen, IncomingCallScreen, OutgoingCallScreen, VideoConferencePage,
   Weight, WeightHistory
@@ -32,11 +32,12 @@ import Apis, { endpoints } from "./config/Apis";
 import { Cache } from "react-native-cache";
 import optionCache from "./utils/optionCache";
 import { DoctorRatingProvider } from "./context/DoctorRatingContext";
+import moment from "moment";
 
 const Stack = createNativeStackNavigator();
 export const UserContext = createContext();
 
-export default function App() {
+export default function App({ navigation }) {
   const cache = new Cache(optionCache);
   const [user, dispatch] = useReducer(UserReducer, null);
   useEffect(() => {
@@ -64,6 +65,9 @@ export default function App() {
     };
     fetchData();
   }, [])
+
+
+
   const initScreen = 'Login'
 
   return (
@@ -81,7 +85,6 @@ export default function App() {
                 <Stack.Screen name="Chat" component={Chat} options={{ headerShown: false }} />
                 <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
                 <Stack.Screen name="Setting" component={Setting} options={{ headerShown: false }} />
-                <Stack.Screen name="MedicalRegister" component={MedicalRegister} options={{ headerShown: false }} />
                 <Stack.Screen name="DoctorAppointment" component={DoctorAppointment} options={{ headerShown: false }} />
                 <Stack.Screen name="AppointmentList" component={AppointmentList} options={{ headerShown: false }} />
                 <Stack.Screen name="AppointmentRegister" component={AppointmentRegister} options={{ headerShown: false }} />

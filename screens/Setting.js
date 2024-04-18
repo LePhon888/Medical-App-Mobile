@@ -87,22 +87,22 @@ export default function Setting({ navigation, route }) {
     };
     getUserAndToken();
   }, [isFocused]);
+  console.log('userIduserIduserId', userId);
 
   const handleLogout = async () => {
     try {
       if (userInfo && userInfo.provider === "GOOGLE") {
         await GoogleSignin.signOut();
       }
-
-      navigation.navigate("Login");
       await Apis.delete(`${endpoints["userDevice"]}/delete/user/${userId}`)
-
       await AsyncStorage.removeItem("token");
       await AsyncStorage.removeItem("user");
+      navigation.navigate("Login");
 
       dispatch({
         type: "logout",
       });
+      console.log('logoouttt')
 
     } catch (error) {
       // Handle errors if needed

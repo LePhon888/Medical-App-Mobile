@@ -4,7 +4,6 @@ import Signup from "./Signup";
 import Home from "./Home";
 import ChatBot from "./Chatbot";
 import Chat from "./Chat";
-import MedicalRegister from "./MedicalRegister";
 import MainScreen from "./MainScreen";
 import Setting from "./Setting";
 import AppointmentList from "./AppointmentList";
@@ -32,7 +31,6 @@ export {
   Home,
   ChatBot,
   Chat,
-  MedicalRegister,
   MainScreen,
   Setting,
   AppointmentList,

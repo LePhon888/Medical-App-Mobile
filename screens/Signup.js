@@ -27,7 +27,7 @@ const Signup = ({ navigation }) => {
   const [notification, setNotification] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
+  const [verify, setVerify] = useState(true);
   const handleSignUp = () => {
     const signUp = async () => {
       setError(null);
@@ -63,6 +63,7 @@ const Signup = ({ navigation }) => {
         setLoading(false);
         if (res.status === 201) {
           setNotification(true);
+          setVerify(true);
           navigation.navigate("Login");
         } else setError("Error");
       } catch (error) {
@@ -74,7 +75,73 @@ const Signup = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
-      <View style={{ flex: 1, marginHorizontal: 22 }}>
+      {verify ? <>
+        <View style={{ flex: 1, marginHorizontal: 22 }}>
+          <View style={{ marginVertical: 22 }}>
+            <Text
+              style={{
+                fontSize: 22,
+                fontWeight: "bold",
+                color: COLORS.black,
+              }}
+            >
+              Xác thực tài khoản
+            </Text>
+          </View>
+
+          <View
+            style={{
+              width: "100%",
+              height: 60,
+              borderColor: COLORS.grey,
+              borderWidth: 0.5,
+              borderRadius: 8,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <TextInput
+              placeholder="XXX-XXX"
+              placeholderTextColor={'#ccc'}
+              keyboardType="numeric"
+              maxLength={6}
+              style={{
+                width: "100%",
+                textAlign: 'center',
+                fontSize: 33,
+                color: COLORS.textLabel,
+              }}
+              onChangeText={(text) => {
+                setLastName(text);
+              }} />
+          </View>
+          <View style={{ flexDirection: 'row', marginTop: 12 }}>
+            <Text
+              style={{
+                fontSize: 16,
+                color: '#656565',
+                textAlign: 'center',
+              }}
+            >
+              Chưa nhận được mã xác thực?
+            </Text>
+            <Pressable onPress={() => setVerify(false)}
+              style={{ marginTop: 1, marginLeft: 5 }}
+            ><Text style={{ color: COLORS.primary, fontWeight: 500, fontSize: 15 }}>Gửi lại</Text>
+            </Pressable>
+          </View>
+
+          <Button
+            title="Xác nhận"
+            filled
+            style={{
+              marginTop: 18,
+              marginBottom: 20,
+            }}
+            onPress={() => handleSignUp()}
+          />
+        </View>
+      </> : <View style={{ flex: 1, marginHorizontal: 22 }}>
         <View style={{ marginVertical: 22 }}>
           <Text
             style={{
@@ -87,17 +154,7 @@ const Signup = ({ navigation }) => {
           </Text>
         </View>
 
-        <View style={{ marginBottom: 12 }}>
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: 400,
-              marginVertical: 8,
-            }}
-          >
-            Tên
-          </Text>
-
+        <View style={{ marginBottom: 26 }}>
           <View
             style={{
               width: "100%",
@@ -122,17 +179,7 @@ const Signup = ({ navigation }) => {
           </View>
         </View>
 
-        <View style={{ marginBottom: 12 }}>
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: 400,
-              marginVertical: 8,
-            }}
-          >
-            Họ và tên lót
-          </Text>
-
+        <View style={{ marginBottom: 26 }}>
           <View
             style={{
               width: "100%",
@@ -157,17 +204,7 @@ const Signup = ({ navigation }) => {
           </View>
         </View>
 
-        <View style={{ marginBottom: 12 }}>
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: 400,
-              marginVertical: 8,
-            }}
-          >
-            Địa chỉ email
-          </Text>
-
+        <View style={{ marginBottom: 26 }}>
           <View
             style={{
               width: "100%",
@@ -192,16 +229,7 @@ const Signup = ({ navigation }) => {
           </View>
         </View>
 
-        <View style={{ marginBottom: 12 }}>
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: 400,
-              marginVertical: 8,
-            }}
-          >
-            Mật khẩu
-          </Text>
+        <View style={{ marginBottom: 26 }}>
 
           <View
             style={{
@@ -240,17 +268,7 @@ const Signup = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={{ marginBottom: 12 }}>
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: 400,
-              marginVertical: 8,
-            }}
-          >
-            Nhập lại mật khẩu
-          </Text>
-
+        <View style={{ marginBottom: 26 }}>
           <View
             style={{
               width: "100%",
@@ -363,7 +381,7 @@ const Signup = ({ navigation }) => {
             <Text
               style={{
                 color: COLORS.red,
-                marginBottom: 10,
+                marginBottom: 200,
                 textAlign: "center",
               }}
             >
@@ -380,7 +398,7 @@ const Signup = ({ navigation }) => {
             )}
           </View>
         )}
-      </View>
+      </View>}
     </SafeAreaView>
   );
 };

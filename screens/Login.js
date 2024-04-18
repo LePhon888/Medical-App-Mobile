@@ -42,25 +42,22 @@ const Login = ({ navigation }) => {
             try {
                 setIsLoading(true);
                 setError(null);
-
-                let res = await Apis.post(endpoints["login"], { email, password });
+                let res = await Apis.post(endpoints["login"], { 'email': email, 'password': password });
                 if (res && res.data && res.data.accessToken && res.data.refreshToken) {
-                    await AsyncStorage.setItem("accessToken", res.data);
-                    await AsyncStorage.setItem("refreshToken", res.data);
+                    await AsyncStorage.setItem("accessToken", res.data.accessToken);
+                    await AsyncStorage.setItem("refreshToken", res.data.refreshToken);
+                    await AsyncStorage.setItem("expiredDateRefreshToken", res.data.expiredDateRefreshToken);
+                    await AsyncStorage.setItem("expiredDateAccessToken", res.data.expiredDateAccessToken);
                 } else {
                     console.error("Access token or refresh token is missing or undefined");
                     // Handle the error or display a message to the user
                 }
 
-                const token = res.data;
-
-                console.log(res.data)
                 let { data } = await axios.get(endpoints["currentUser"], {
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        Authorization: `Bearer ${res.data.accessToken}`,
                     },
                 });
-
                 storeUserId(data.id)
 
                 await AsyncStorage.setItem("user", JSON.stringify(data));
@@ -84,28 +81,36 @@ const Login = ({ navigation }) => {
 
     const handleLoginGoogle = async () => {
         try {
+            await GoogleSignin.signOut();
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
-            // let res = await Apis.post(endpoints["googleLogin"], userInfo);
-            // const token = res.data;
-            // if (res && res.data) {
-            //     await AsyncStorage.setItem("token", res.data);
-            // }
-            // let { data } = await axios.get(endpoints["currentUser"], {
-            //     headers: {
-            //         Authorization: `Bearer ${token}`,
-            //     },
-            // });
-            // await AsyncStorage.setItem("user", JSON.stringify(data));
-            // storeUserId(data.id)
+            let res = await Apis.post(endpoints["googleLogin"], userInfo);
+            if (res && res.data && res.data.accessToken && res.data.refreshToken) {
+                await AsyncStorage.setItem("accessToken", res.data.accessToken);
+                await AsyncStorage.setItem("refreshToken", res.data.refreshToken);
+                await AsyncStorage.setItem("expiredDateRefreshToken", res.data.expiredDateRefreshToken);
+                await AsyncStorage.setItem("expiredDateAccessToken", res.data.expiredDateAccessToken);
+            } else {
+                console.error("Access token or refresh token is missing or undefined");
+                // Handle the error or display a message to the user
+            }
+            const token = res.data.accessToken;
+            let { data } = await axios.get(endpoints["currentUser"], {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
 
-            // dispatch({
-            //     type: "login",
-            //     payload: userInfo,
-            // });
+            await AsyncStorage.setItem("user", JSON.stringify(data));
+            storeUserId(data.id)
 
-            // const userData = await AsyncStorage.getItem("user");
-            // if (userData) navigation.navigate('MainScreen');
+            dispatch({
+                type: "login",
+                payload: userInfo,
+            });
+
+            const userData = await AsyncStorage.getItem("user");
+            if (userData) navigation.navigate('MainScreen');
         } catch (error) {
             if (error.code === statusCodes.SIGN_IN_CANCELLED) {
                 console.log("Google Sign-In Cancelled");
