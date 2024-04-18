@@ -72,8 +72,6 @@ export default function CustomLabel(props) {
         twoMarkerPressed,
     } = props;
 
-    console.log('twoMarkerLeftPosition', twoMarkerLeftPosition)
-
     return (
         <View style={styles.parentView}>
             <LabelBase

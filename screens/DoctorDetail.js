@@ -105,17 +105,15 @@ const DoctorDetail = ({ navigation, route }) => {
                 const detail = await Apis.get(`${endpoints["doctorDetail"]}/${doctorId}`);
                 setDetail(detail.data);
                 /* Check if current login user have existed appointment, then we allow this user to rating */
-                const currentUser = await AsyncStorage.getItem("user");
                 const accessToken = await AsyncStorage.getItem("accessToken");
-                if (currentUser) {
-                    const countAppointment = await Apis.get(`${endpoints["appointment"]}/count?doctorId=${doctorId}&userId=${JSON.parse(currentUser).id}`,
+                if (userId) {
+                    const countAppointment = await Apis.get(`${endpoints["appointment"]}/count?doctorId=${doctorId}&userId=${userId}`,
                         {
                             headers: {
                                 Authorization: `Bearer ${accessToken}`,
                             }
                         });
                     setEnableRating(countAppointment.data > 0);
-                    setUserId(JSON.parse(currentUser).id)
                 }
                 setDataFetched(true)
             } catch (error) {
@@ -167,112 +165,115 @@ const DoctorDetail = ({ navigation, route }) => {
                     </View>
                 </ScrollView>
                 {/* Doctor Info */}
-                <View>
-                    <View style={styles.avatarContainer}>
-                        {/* Avatar */}
-                        <Image source={{ uri: doctor?.image }} style={styles.avatar} />
-                        {/* Center content */}
-                        <View style={{ alignItems: 'center' }}>
-                            <Text style={styles.name}>{doctor.title} {doctor.fullName}</Text>
-                            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.department}>{doctor.departmentName}</Text>
-                            {/* <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap' }}><Text style={styles.consultation}>{doctor.consultation}</Text></View> */}
+                <View style={styles.body}>
+                    <View>
+                        <View style={styles.avatarContainer}>
+                            {/* Avatar */}
+                            <Image source={{ uri: doctor?.image }} style={styles.avatar} />
+                            {/* Center content */}
+                            <View style={{ alignItems: 'center' }}>
+                                <Text style={styles.name}>{doctor.title} {doctor.fullName}</Text>
+                                <Text numberOfLines={1} ellipsizeMode="tail" style={styles.department}>{doctor.departmentName}</Text>
+                                {/* <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap' }}><Text style={styles.consultation}>{doctor.consultation}</Text></View> */}
+                            </View>
                         </View>
-                    </View>
-                    <View style={{ paddingHorizontal: 15 }}>
-                        {/* <View style={{ flexDirection: 'row', marginBottom: 10, }}>
+                        <View style={{ paddingHorizontal: 15 }}>
+                            {/* <View style={{ flexDirection: 'row', marginBottom: 10, }}>
                             {doctor.target.split(',').map((label, index) => {
                                 return (<Text style={styles.target} key={index}>{label}</Text>)
                             })}
                         </View> */}
+                        </View>
+                        <View style={{ paddingHorizontal: 15 }}>
+                            <View style={styles.flexRowCenter}>
+                                <View style={styles.dollar}><Feather name='dollar-sign' color={'#f19534'} size={12} /></View>
+                                <Text style={styles.fee}>Phí thăm khám cố định<Text style={{ fontSize: 13, color: '#0e8558', fontWeight: '500' }}>{` ${Number(doctor.fee).toLocaleString('vi-VN')} đ`}</Text></Text>
+                            </View>
+                            <View style={styles.flexRowCenter}>
+                                <View style={styles.dollar}><MaterialCommunityIcons name='map-marker-outline' color={'#f19534'} size={12} /></View>
+                                <Text style={[styles.fee, { color: '#676767', fontWeight: '400' }]}>{doctor.hospitalAddress}</Text>
+                            </View>
+                        </View>
                     </View>
-                    <View style={{ paddingHorizontal: 15 }}>
-                        <View style={styles.flexRowCenter}>
-                            <View style={styles.dollar}><Feather name='dollar-sign' color={'#f19534'} size={12} /></View>
-                            <Text style={styles.fee}>Phí thăm khám cố định<Text style={{ fontSize: 13, color: '#0e8558', fontWeight: '500' }}>{` ${Number(doctor.fee).toLocaleString('vi-VN')} đ`}</Text></Text>
-                        </View>
-                        <View style={styles.flexRowCenter}>
-                            <View style={styles.dollar}><MaterialCommunityIcons name='map-marker-outline' color={'#f19534'} size={12} /></View>
-                            <Text style={[styles.fee, { color: '#676767', fontWeight: '400' }]}>{doctor.hospitalAddress}</Text>
-                        </View>
-                    </View>
-                </View>
-                <View style={{ backgroundColor: 'white' }}>
-                    <Animated.View style={{ ...styles.flexRowCenter, ...styles.content, height: height }}>
-                        <TouchableOpacity onPress={onBack}>
-                            <Ionicons size={20} name="chevron-back-outline" />
-                        </TouchableOpacity>
-                        <View>
-                            <Text style={{ ...styles.name, marginLeft: 5 }}>BS.CKI {doctor.fullName}</Text>
-                        </View>
-                        <View style={{ ...styles.flexRowCenter, marginLeft: 'auto' }}>
-                            <MaterialCommunityIcons size={20} name="heart-plus-outline" />
-                        </View>
-                    </Animated.View>
-                    <View style={styles.tabContainer}>
-                        {tabs.map((t) => (
-                            <TouchableOpacity key={t.key}
-                                style={[styles.tab, {
-                                    backgroundColor: activeTab === t.key ? COLORS.primary : '#f8f9fd',
-                                    transform: [{ scale: scaleValue }],
-                                },]}
-                                onPress={() => handleTabPress(t.key)}>
-                                <Text style={[styles.tabTitle, { color: activeTab === t.key ? '#FFFF' : '#504f54' }]}>{t.title}</Text>
+                    <View style={{ backgroundColor: 'white' }}>
+                        <Animated.View style={{ ...styles.flexRowCenter, ...styles.content, height: height }}>
+                            <TouchableOpacity onPress={onBack}>
+                                <Ionicons size={20} name="chevron-back-outline" />
                             </TouchableOpacity>
-                        ))}
-                    </View>
-                </View>
-                <View style={{ ...styles.content, display: activeTab === 1 ? 'flex' : 'none' }}>
-                    <View style={styles.info}>
-                        <View style={{ ...styles.flexRowCenter, marginBottom: 10 }}>
-                            <View style={styles.infoIcon}><Ionicons name='information' color={'#f49d41'} size={15} /></View>
-                            <Text style={styles.infoTitle}>Thông Tin Bác Sĩ</Text>
+                            <View>
+                                <Text style={{ ...styles.name, marginLeft: 5 }}>BS.CKI {doctor.fullName}</Text>
+                            </View>
+                            <View style={{ ...styles.flexRowCenter, marginLeft: 'auto' }}>
+                                <MaterialCommunityIcons size={20} name="heart-plus-outline" />
+                            </View>
+                        </Animated.View>
+                        <View style={styles.tabContainer}>
+                            {tabs.map((t) => (
+                                <TouchableOpacity key={t.key}
+                                    style={[styles.tab, {
+                                        backgroundColor: activeTab === t.key ? COLORS.primary : '#f8f9fd',
+                                        transform: [{ scale: scaleValue }],
+                                    },]}
+                                    onPress={() => handleTabPress(t.key)}>
+                                    <Text style={[styles.tabTitle, { color: activeTab === t.key ? '#FFFF' : '#504f54' }]}>{t.title}</Text>
+                                </TouchableOpacity>
+                            ))}
                         </View>
-                        <Text numberOfLines={showFullInfo ? undefined : 2} ellipsizeMode="tail" style={styles.infoText}>BS.CKI {doctor.fullName} {doctor.information}</Text>
-                        <TouchableOpacity onPress={toggleReadMore}><Text style={styles.buttonReadMore}>{showFullInfo ? 'Thu gọn' : 'Xem thêm'}</Text></TouchableOpacity>
                     </View>
-                    <View>
-                        {detail.length > 0 && detail.some(item => item.category === "Kinh Nghiệm") && (
-                            <BulletContent
-                                field={detail.filter(item => item.category === "Kinh Nghiệm")}
-                                title="Kinh Nghiệm"
-                                iconComponent={(<FontAwesome name={'star'} color={'#f49d41'} size={10} />)}
-                            />
-                        )}
-                    </View>
-                    <View>
-                        {detail.length > 0 && detail.some(item => item.category === "Quá trình đào tạo") && (
-                            <BulletContent
-                                field={detail.filter(item => item.category === "Quá trình đào tạo")}
-                                title="Quá Trình Đào Tạo"
-                                iconComponent={(<MaterialCommunityIcons name={'certificate'} color={'#f49d41'} size={13} />)}
-                            />
-                        )}
-                    </View>
+                    <View style={{ ...styles.content, display: activeTab === 1 ? 'flex' : 'none' }}>
+                        <View style={styles.info}>
+                            <View style={{ ...styles.flexRowCenter, marginBottom: 10 }}>
+                                <View style={styles.infoIcon}><Ionicons name='information' color={'#f49d41'} size={15} /></View>
+                                <Text style={styles.infoTitle}>Thông Tin Bác Sĩ</Text>
+                            </View>
+                            <Text numberOfLines={showFullInfo ? undefined : 2} ellipsizeMode="tail" style={styles.infoText}>BS.CKI {doctor.fullName} {doctor.information}</Text>
+                            <TouchableOpacity onPress={toggleReadMore}><Text style={styles.buttonReadMore}>{showFullInfo ? 'Thu gọn' : 'Xem thêm'}</Text></TouchableOpacity>
+                        </View>
+                        <View>
+                            {detail.length > 0 && detail.some(item => item.category === "Kinh Nghiệm") && (
+                                <BulletContent
+                                    field={detail.filter(item => item.category === "Kinh Nghiệm")}
+                                    title="Kinh Nghiệm"
+                                    iconComponent={(<FontAwesome name={'star'} color={'#f49d41'} size={10} />)}
+                                />
+                            )}
+                        </View>
+                        <View>
+                            {detail.length > 0 && detail.some(item => item.category === "Quá trình đào tạo") && (
+                                <BulletContent
+                                    field={detail.filter(item => item.category === "Quá trình đào tạo")}
+                                    title="Quá Trình Đào Tạo"
+                                    iconComponent={(<MaterialCommunityIcons name={'certificate'} color={'#f49d41'} size={13} />)}
+                                />
+                            )}
+                        </View>
 
-                    {/* Map */}
-                    <View style={styles.info}>
-                        <View style={{ ...styles.flexRowCenter, marginBottom: 20 }}>
-                            <View style={styles.infoIcon}><MaterialCommunityIcons name='map-marker-outline' color={'#f19534'} size={15} /></View>
-                            <Text style={styles.infoTitle}>Địa Chỉ Bệnh Viện</Text>
-                        </View>
-                        {/* <ViewMap height={170} /> */}
-                        <View style={styles.mapText}>
-                            <Text style={styles.bulletTitle}>{doctor.hospital}</Text>
-                            <Text style={styles.bulletSubTitle}>{doctor.hospitalAddress}</Text>
+                        {/* Map */}
+                        <View style={styles.info}>
+                            <View style={{ ...styles.flexRowCenter, marginBottom: 20 }}>
+                                <View style={styles.infoIcon}><MaterialCommunityIcons name='map-marker-outline' color={'#f19534'} size={15} /></View>
+                                <Text style={styles.infoTitle}>Địa Chỉ Bệnh Viện</Text>
+                            </View>
+                            {/* <ViewMap height={170} /> */}
+                            <View style={styles.mapText}>
+                                <Text style={styles.bulletTitle}>{doctor.hospital}</Text>
+                                <Text style={styles.bulletSubTitle}>{doctor.hospitalAddress}</Text>
+                            </View>
                         </View>
                     </View>
+                    {/* Rating View */}
+                    {activeTab === 2 && (
+                        <RatingContent
+                            doctorId={doctorId}
+                            userId={userId}
+                            ratingStats={ratingStats}
+                            listRating={rating}
+                            doctorRating={doctor.rating}
+                            enableRating={isEnableRating}
+                            refreshRating={refreshRating} />
+                    )}
                 </View>
-                {/* Rating View */}
-                {activeTab === 2 && (
-                    <RatingContent
-                        doctorId={doctorId}
-                        userId={userId}
-                        ratingStats={ratingStats}
-                        listRating={rating}
-                        doctorRating={doctor.rating}
-                        enableRating={isEnableRating}
-                        refreshRating={refreshRating} />
-                )}
+
             </ScrollView >
             <View style={{ backgroundColor: 'white' }}>
                 <TouchableOpacity style={styles.buttonSchedule} onPress={() => navigation.navigate("AppointmentRegister", doctor)}                >
@@ -335,21 +336,21 @@ const styles = StyleSheet.create({
         backgroundColor: '#faf9fe',
         borderRadius: 25,
     },
+    body: {
+        top: -60
+    },
     avatarContainer: {
-        top: -10,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'white',
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
-        height: 150
     },
     avatar: {
-        width: 100,
-        height: 100,
-        borderRadius: 50,
+        width: 120,
+        height: 120,
+        borderRadius: 99,
         borderColor: 'white',
-        borderWidth: 4
+        borderWidth: 4,
     },
     name: {
         fontSize: 16,

@@ -25,8 +25,8 @@ const DoctorList = ({ loading = true, doctors, onItemclickEvent }) => {
     }
 
     if (!loading && doctors.length === 0) {
-        // return <Text style={{ paddingHorizontal: 16, }}>Không tìm thấy kết quả...</Text>
-        return <ActivityIndicator size="small" color="#0000ff" style={{ marginTop: 30 }} />
+        return <Text style={{ paddingHorizontal: 16, }}>Không tìm thấy kết quả...</Text>
+        // return <ActivityIndicator size="small" color="#0000ff" style={{ marginTop: 30 }} />
     }
 
     const renderedList = useMemo(() => {
