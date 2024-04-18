@@ -12,7 +12,7 @@ import { ActivityIndicator } from 'react-native-paper';
  * This one use to display list of doctors, include information about each doctor
  * @param onItemclickEvent (optional) Function to hanlde when click the item of the list, can navigate to the detail
  */
-const DoctorList = ({ loading, doctors, onItemclickEvent }) => {
+const DoctorList = ({ loading = true, doctors, onItemclickEvent }) => {
     // On click item
     const onItemClick = (item) => {
         if (onItemclickEvent) {

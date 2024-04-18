@@ -699,7 +699,30 @@ const styles = StyleSheet.create({
     groupText: {
         color: COLORS.textLabel,
         fontWeight: '300',
-    }
+    },
+    medTabContainer: {
+        top: 25,
+        marginBottom: 5,
+        backgroundColor: 'white',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 20,
+        paddingVertical: 3,
+        marginHorizontal: 40,
+        elevation: 5,
+        zIndex: 10,
+    },
+    medTab: {
+        flex: 1,
+        paddingVertical: 11,
+        borderRadius: 20,
+        marginHorizontal: 3,
+    },
+    medTabTitle: {
+        fontSize: 14,
+        textAlign: 'center',
+    },
 });
 
 export default MedicationBox;

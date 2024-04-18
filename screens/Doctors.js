@@ -30,8 +30,8 @@ const Doctors = ({ navigation }) => {
     const [searchName, setSearchName] = useState('')
     const filterRef = useRef(null)
     const [filter, setFilter] = useState({
-        departmentName: '',
-        departmentImage: '',
+        departmentName: 'Đa khoa',
+        departmentImage: require('../assets/images/departments/AllDepartments.png'),
         male: true,
         female: true,
         feeMin: feeRange?.minValue ?? 0,
@@ -43,6 +43,7 @@ const Doctors = ({ navigation }) => {
         feeMin: feeRange?.minValue ?? 0,
         feeMax: feeRange?.maxValue ?? 0,
     })
+
     const openFilterSheet = () => {
         setShowFilterPopup(true)
         setTempFilter(filter)
@@ -73,18 +74,19 @@ const Doctors = ({ navigation }) => {
     const applyFilter = () => {
         setFilterValue(({ ...tempFilter }))
         setShowFilterPopup(false)
+        fetchDoctors()
     }
 
     const fetchDoctors = async () => {
         try {
-            const filter = filterRef.current
-
-            if (!filter) {
-                return;
-            }
-
             setLoadingDoctor(true)
-            const endpoint = `${endpoints["doctors"]}/?departmentName=${filter.departmentName}&feeMin=${filter.feeMin}
+            console.log('Run fetchDoctors')
+            const filter = filterRef.current
+            console.log(filter)
+            if (!filter) {
+                return setLoadingDoctor(false)
+            }
+            const endpoint = `${endpoints["doctors"]}/?departmentName=${filter.departmentName === 'Đa khoa' ? '' : filter.departmentName}&feeMin=${filter.feeMin}
             &feeMax=${filter.feeMax}&gender=${(!filter.male && !filter.female) || (filter.male && filter.female) ? 2 : filter.male ? 0 : 1}`
             const res = await Apis.get(endpoint);
             setDoctors(res.data);
@@ -99,14 +101,16 @@ const Doctors = ({ navigation }) => {
         const fetchData = async () => {
             try {
                 const department = await Apis.get(endpoints.departments);
-                setDepartments(department.data);
+                setDepartments([
+                    { name: "Đa khoa", image: 'AllDepartments' },
+                    ...department.data,
+                ]);
                 const feeRange = await Apis.get(`${endpoints["fee"]}/range`)
                 setFeeRange(feeRange.data)
                 setFilterValue({
+                    ...filter,
                     feeMin: feeRange.data.minValue,
                     feeMax: feeRange.data.maxValue,
-                    departmentName: 'Dị ứng',
-                    departmentImage: require('../assets/images/departments/Allergeries.png'),
                 });
                 fetchDoctors()
             } catch (error) {
@@ -116,9 +120,6 @@ const Doctors = ({ navigation }) => {
         fetchData()
     }, [])
 
-    useEffect(() => {
-        fetchDoctors()
-    }, [filterRef.current]);
 
     useEffect(() => {
         if (isSearch && textInputRef.current) {
@@ -159,6 +160,7 @@ const Doctors = ({ navigation }) => {
             departmentName: item.name,
             departmentImage: item.imageUri,
         }))
+        fetchDoctors()
     }
 
     return (
@@ -232,7 +234,7 @@ const Doctors = ({ navigation }) => {
                     filterName={searchName}
                     departments={departments}
                     onClickItem={(item) => onClickDepartment(item)}
-                    style={{ paddingTop: 20, flex: 1, paddingBottom: 40 }}
+                    style={{ paddingTop: 20, flex: 1, paddingBottom: 48 }}
                 />
             }
             <BottomSheet
