@@ -12,13 +12,14 @@ const height = 30;
 const pointerWidth = width * 0.3;
 
 function LabelBase(props) {
-    const { position, value, leftDiff, pressed } = props;
-    const scaleValue = React.useRef(new Animated.Value(0)); // Behaves oddly if set to 0
+    const { scaleValue, position, value, leftDiff, pressed } = props;
     const cachedPressed = React.useRef(pressed);
     const screenWidth = Dimensions.get('window').width;
 
     // Calculate maximum position to keep the label within screen bounds
     const maxPosition = screenWidth - width / 2;
+
+    const toolTipWidth = pointerWidth + width + 8 + position
 
     // Adjust the position to prevent it from going beyond the screen bounds
     const adjustedPosition = Math.min(position, maxPosition);
@@ -46,11 +47,12 @@ function LabelBase(props) {
                             { translateY: width },
                             { scale: scaleValue.current },
                             { translateY: -width },
+                            { translateX: toolTipWidth >= screenWidth ? -(pointerWidth + 8) : 0 }
                         ],
                     },
                 ]}
             >
-                <View style={styles.pointer} />
+                <View style={[styles.pointer, { left: toolTipWidth >= screenWidth ? (width - pointerWidth) * 1.1 : (width - pointerWidth) * 0.55 }]} />
                 <Text style={styles.sliderLabelText}>{value.toLocaleString('vi-VN') + ' đ'}</Text>
             </AnimatedView>
         )
@@ -58,6 +60,8 @@ function LabelBase(props) {
 }
 
 export default function CustomLabel(props) {
+    const scaleValue = React.useRef(new Animated.Value(0));
+
     const {
         leftDiff,
         oneMarkerValue,
@@ -71,12 +75,14 @@ export default function CustomLabel(props) {
     return (
         <View style={styles.parentView}>
             <LabelBase
+                scaleValue={scaleValue}
                 position={oneMarkerLeftPosition}
                 value={oneMarkerValue}
                 leftDiff={leftDiff}
                 pressed={oneMarkerPressed}
             />
             <LabelBase
+                scaleValue={scaleValue}
                 position={twoMarkerLeftPosition}
                 value={twoMarkerValue}
                 leftDiff={leftDiff}
@@ -109,7 +115,6 @@ const styles = StyleSheet.create({
     pointer: {
         position: 'absolute',
         bottom: -pointerWidth / 5,
-        left: (width - pointerWidth) * 0.6,
         transform: [{ rotate: '45deg' }],
         width: pointerWidth,
         height: pointerWidth,

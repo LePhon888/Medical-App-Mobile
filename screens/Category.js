@@ -20,6 +20,7 @@ const departmentImages = {
     Orthopedics: require('../assets/images/departments/Orthopedics.png'),
     Respiratory: require('../assets/images/departments/Respiratory.png'),
     Urological: require('../assets/images/departments/Urological.png'),
+    AllDepartments: require('../assets/images/departments/AllDepartments.png')
 };
 
 export default function Category({ departments, filterName, onClickItem, style }) {
@@ -69,7 +70,10 @@ export default function Category({ departments, filterName, onClickItem, style }
                         return (
                             <TouchableOpacity style={{ width: '30%', marginHorizontal: 6, marginBottom: 30 }} key={index} onPress={() => onClickDepartment({ ...item, imageUri: departmentImages[item.image] })}>
                                 <View key={index} style={{ borderWidth: 0.4, borderColor: '#ccc', borderRadius: 10, padding: 20 }}>
-                                    <Image source={departmentImages[item.image]} style={{ width: '90%', height: 84 }} />
+                                    <Image
+                                        resizeMode="contain"
+                                        source={departmentImages[item.image]}
+                                        style={{ width: '100%', height: 84 }} />
                                 </View>
                                 <View style={{ alignItems: 'center', marginTop: 4 }}>
                                     <Text>{item.name}</Text>

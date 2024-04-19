@@ -27,7 +27,6 @@ const AddMedicine = ({ navigation, route }) => {
     const [isTrigger, setTrigger] = useState(false)
     const [med, setMed] = useState([])
     const cache = new Cache(optionCache);
-
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -90,6 +89,7 @@ const AddMedicine = ({ navigation, route }) => {
 
 
     const navigateToSchedule = (medicine) => {
+        const groupInfo = route.params?.groupInfo ?? null;
         if (route.params && route.params.schedule) {
             const { schedule, unitList } = route.params;
 
@@ -97,9 +97,9 @@ const AddMedicine = ({ navigation, route }) => {
                 ...schedule,
                 medicine: medicine,
             };
-            navigation.navigate('MedicationSchedule', { updatedSchedule: updatedSchedule, unitList: unitList });
+            navigation.navigate('MedicationSchedule', { updatedSchedule: updatedSchedule, unitList: unitList, groupInfo: groupInfo });
         } else {
-            navigation.navigate('MedicationSchedule', { medicine: medicine });
+            navigation.navigate('MedicationSchedule', { medicine: medicine, groupInfo: groupInfo, addMore: true });
         }
     };
 

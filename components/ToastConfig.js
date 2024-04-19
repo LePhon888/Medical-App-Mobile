@@ -56,7 +56,7 @@ const config = {
 
 const styles = StyleSheet.create({
     text: {
-        fontSize: 15,
+        fontSize: 13,
         color: 'white',
     },
     container: {
