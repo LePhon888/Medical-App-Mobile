@@ -78,7 +78,7 @@ export default function News({ navigation }) {
 
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#fff', marginBottom: 40 }}>
+    <View style={{ flex: 1, backgroundColor: '#fff' }}>
       <View>
         <SafeAreaView>
           <HeaderWithBackButton title={'Chuyên mục'} navigation={navigation} />

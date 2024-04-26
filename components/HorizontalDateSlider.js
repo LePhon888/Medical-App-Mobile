@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import moment from 'moment';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -23,6 +23,11 @@ const HorizontalDateSlider = ({ selectedMoment, onSelectDate }) => {
         setSelectedDate(date);
         onSelectDate(date);
     };
+
+    useEffect(() => {
+        setCurrentWeek(selectedMoment)
+        setSelectedDate(selectedMoment)
+    }, [selectedMoment])
 
     // Generate from monday to sunday based on selected week
     for (let current = startOfWeek.clone(); current.isSameOrBefore(endOfWeek); current.add(1, 'days')) {
@@ -167,4 +172,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default HorizontalDateSlider;
+export default memo(HorizontalDateSlider);

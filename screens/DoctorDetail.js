@@ -98,6 +98,7 @@ const DoctorDetail = ({ navigation, route }) => {
     useEffect(() => {
         const getData = async () => {
             try {
+                setDataFetched(true)
                 /* Get the basic information for current doctor */
                 const doctor = await Apis.get(`${endpoints["doctors"]}/detail/${doctorId}`);
                 setDoctor(doctor.data);
@@ -115,7 +116,7 @@ const DoctorDetail = ({ navigation, route }) => {
                         });
                     setEnableRating(countAppointment.data > 0);
                 }
-                setDataFetched(true)
+
             } catch (error) {
                 console.error('Error fetching 123 data:', error);
             }

@@ -155,6 +155,7 @@ const Notification = ({ navigation, route }) => {
                 OnBack={() => onBack()}
             />
             <SectionList
+                keyboardShouldPersistTaps={'always'}
                 showsVerticalScrollIndicator={false}
                 sections={filteredSections}
                 keyExtractor={(item) => item.id.toString()}
