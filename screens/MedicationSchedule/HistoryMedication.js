@@ -71,7 +71,13 @@ const HistoryMedication = ({ navigation }) => {
 
     return (
         <View style={styles.screen}>
-            <HeaderWithBackButton title={'Lịch sử dùng thuốc'} navigation={navigation} />
+            <HeaderWithBackButton
+                title={'Lịch sử dùng thuốc'}
+                navigation={navigation}
+                headerStyle={{ backgroundColor: COLORS.primary }}
+                titleStyle={{ color: COLORS.white }}
+                backIconStyle={{ color: COLORS.white }}
+            />
             {/* <View style={styles.header}> */}
             {/* <View style={styles.flexRowCenter}> */}
             {/* <TouchableOpacity style={{ ...styles.backButton, marginRight: 'auto' }} onPress={() => goBack()}>

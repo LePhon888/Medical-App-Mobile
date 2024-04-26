@@ -15,7 +15,7 @@ import * as GlobalNavigation from "../utils/GlobalNavigation"
  * @param titleStyle - (optional) provide the style to override the existing one
  * @returns {JSX.Element} Header component.
  */
-const HeaderWithBackButton = ({ title, isCustomEvent = false, OnBack, customIcons, headerStyle, titleStyle }) => {
+const HeaderWithBackButton = ({ title, isCustomEvent = false, OnBack, customIcons, headerStyle, titleStyle, backIconStyle }) => {
     const OnBackPressed = () => {
         if (isCustomEvent) {
             return OnBack()
@@ -26,7 +26,7 @@ const HeaderWithBackButton = ({ title, isCustomEvent = false, OnBack, customIcon
     return (
         <View style={{ ...styles.header, ...headerStyle }}>
             <TouchableOpacity onPress={() => OnBackPressed()}>
-                <Entypo name="chevron-thin-left" size={19} />
+                <Entypo name="chevron-thin-left" size={19} style={{ ...backIconStyle }} />
             </TouchableOpacity>
             <Text style={{ ...styles.titleText, ...titleStyle }}>{title}</Text>
             <View style={{ position: 'absolute', right: 6, flexDirection: 'row' }}>

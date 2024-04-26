@@ -84,7 +84,7 @@ const DoctorList = ({ loading = true, doctors, onItemclickEvent }) => {
 const styles = StyleSheet.create({
     container: {
         paddingHorizontal: 20,
-        marginBottom: 70
+
     },
     itemContainer: {
         marginVertical: 5,

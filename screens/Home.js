@@ -17,6 +17,7 @@ import Apis, { endpoints } from "../config/Apis";
 import { useNotification } from "../context/NotificationContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
+import HealthPlanSection from "../components/HealthPlanSection";
 
 const { width: windowWidth } = Dimensions.get('window');
 
@@ -267,6 +268,17 @@ const Home = ({ navigation, route }) => {
             />
             <SimplePaginationDot currentIndex={currentIndex} length={data.length} />
           </View>
+
+          {/* Start Health Plan Section */}
+          <View style={{ marginVertical: 16, }}>
+            <View style={[style.listHeader, { marginBottom: 16 }]}>
+              <Text style={style.listTitle}>{'Kế hoạch sức khỏe'}</Text>
+            </View>
+            <HealthPlanSection />
+          </View>
+
+          {/* End Health Plan Section */}
+
           <View style={style.list}>
             <View style={style.listHeader}>
               <Text style={style.listTitle}>Chuyên mục</Text>
@@ -279,6 +291,7 @@ const Home = ({ navigation, route }) => {
               </TouchableOpacity>
             </View>
           </View>
+
           <ScrollView contentContainerStyle={style.listContent} horizontal={true} showsHorizontalScrollIndicator={false}>
             {dataCategoryNews.map(({ path, label, color }, index) => (
               <TouchableOpacity

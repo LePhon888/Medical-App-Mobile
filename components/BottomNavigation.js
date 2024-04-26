@@ -46,7 +46,7 @@ function BottomNavigation({ navigation }) {
           borderTopRightRadius: 24,
           borderWidth: 0.1,
           borderColor: '#ccc',
-          position: 'absolute',
+          //position: 'absolute',
           overflow: 'hidden',
         },
       }}

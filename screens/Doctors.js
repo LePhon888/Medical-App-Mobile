@@ -234,7 +234,7 @@ const Doctors = ({ navigation }) => {
                     filterName={searchName}
                     departments={departments}
                     onClickItem={(item) => onClickDepartment(item)}
-                    style={{ paddingTop: 20, flex: 1, paddingBottom: 48 }}
+                    style={{ paddingTop: 20, flex: 1 }}
                 />
             }
             <BottomSheet

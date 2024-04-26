@@ -7,24 +7,13 @@ import Apis, { endpoints } from "../../config/Apis";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment";
 import COLORS from "../../constants/colors";
-import Octicons from "react-native-vector-icons/Octicons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { formatDateMoment, formatDateTimeFromNow, formatDuration } from "../../config/date";
 import Loading from "../../components/Loading";
 import Toast from "react-native-toast-message";
 import { getUserFromStorage } from "../../utils/GetUserFromStorage";
-
-const StatusIcon = ({ iconName, iconColor, lightColor = false, text, onPress }) => (
-    <TouchableOpacity style={styles.iconContainer} onPress={onPress}>
-        {!lightColor ? (
-            <Octicons name={iconName} color={iconColor} style={styles.icon} />
-        ) : (
-            <Octicons name={iconName} color={'white'} style={{ ...styles.icon, backgroundColor: iconColor }} />
-        )}
-
-        <Text style={{ ...styles.iconText, color: iconColor }}>{text}</Text>
-    </TouchableOpacity>
-);
+import { useUser } from "../../context/UserContext";
+import StatusIcon from "../../components/MedicationReminder/StatusIcon";
 
 const MedicationBox = ({ navigation, route }) => {
     const [bottomActiveTab, setBottomActiveTab] = useState(1);
@@ -34,7 +23,7 @@ const MedicationBox = ({ navigation, route }) => {
     const [scheduleTimes, setScheduleTimes] = useState([])
     const [medicationSchedule, setMedicationSchedule] = useState([])
     const [visibleSections, setVisibleSections] = useState({});
-    const [userId, setUserId] = useState(2)
+    const { userId } = useUser()
 
     const [isFetched, setFetched] = useState(false)
     const assetsImageUri = '../../assets/images/'
@@ -94,11 +83,8 @@ const MedicationBox = ({ navigation, route }) => {
     const getscheduleTimes = async () => {
         try {
             setFetched(false);
-            const user = await getUserFromStorage()
-            const userId = user.id || 2
             const scheduleTimes = await Apis.get(`${endpoints["scheduleTime"]}/user/${userId}?startDate=${formatDateMoment(selectedMoment)}`)
             setScheduleTimes(scheduleTimes.data)
-            setUserId(userId)
         } catch (error) {
             Toast.show({
                 type: "error",
@@ -320,17 +306,16 @@ const MedicationBox = ({ navigation, route }) => {
                                             {item.isUsed === null && (
                                                 <>
                                                     <StatusIcon
-                                                        iconName="x-circle-fill"
+                                                        iconName="x-circle"
                                                         iconColor={COLORS.toastError}
                                                         text="Bỏ qua"
-                                                        lightColor={true}
                                                         onPress={() => updateStatus({ item, isUsed: false })}
                                                     />
                                                     <StatusIcon
-                                                        iconName="check-circle-fill"
+                                                        style={{ marginLeft: 16 }}
+                                                        iconName="check-circle"
                                                         iconColor={COLORS.toastInfo}
                                                         text="Dùng"
-                                                        lightColor={true}
                                                         onPress={() => updateStatus({ item, isUsed: true })}
                                                     />
                                                 </>
