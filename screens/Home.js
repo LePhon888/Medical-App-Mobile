@@ -26,6 +26,7 @@ const Home = ({ navigation, route }) => {
   const carouselRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(INITIAL_INDEX);
   const [countUnread, setCountUnread] = useState(0)
+  const [userInfo, setUserInfo] = useState(null);
   const { userId } = useUser()
   const { state, dispatch } = useNotification();
   const slideForward = () => {
@@ -33,6 +34,17 @@ const Home = ({ navigation, route }) => {
     carouselRef.current.scrollToIndex(nextIndex);
     setCurrentIndex(nextIndex);
   };
+  useEffect(() => {
+    const getUserAndToken = async () => {
+      try {
+        const currentUser = await AsyncStorage.getItem("user");
+        setUserInfo(JSON.parse(currentUser));
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getUserAndToken();
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -118,7 +130,7 @@ const Home = ({ navigation, route }) => {
             }}
               onPress={() => navigation.navigate(item.nav)}
             >
-              <Image source={item.path} style={{ width: 32, height: 32, marginBottom: 3 }} />
+              <Image source={item.path} style={{ width: 31, height: 31, marginBottom: 3 }} />
               <Text style={{ textAlign: 'center' }}>{item.text}</Text>
             </TouchableOpacity>
           </View>
@@ -214,7 +226,7 @@ const Home = ({ navigation, route }) => {
       <StatusBar translucent={false} backgroundColor={COLORS.primary} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={style.header}>
-          <View style={{ marginTop: 4 }}><Text style={{ color: COLORS.white, fontSize: 20, fontWeight: 700 }}>Chào bạn !</Text></View>
+          <View style={{ marginTop: 4 }}><Text style={{ color: COLORS.white, fontSize: 20, fontWeight: 600 }}>Chào bạn {userInfo?.firstName}</Text></View>
           <View style={{ flexDirection: 'row' }}>
             {/* <View style={{ padding: 6, backgroundColor: COLORS.white, width: 40, height: 40, marginRight: 10, borderRadius: 50 }}>
               <AntDesign name="search1" size={21} color={COLORS.black} style={{ marginLeft: 3, marginTop: 2 }} />

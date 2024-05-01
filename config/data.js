@@ -22,7 +22,9 @@ export const categoryIcons = [
     },
     {
         path: require('../assets/images/first-aid-kit.png'),
-        text: 'Y tế chuyên khoa'
+        text: 'Theo dõi cân nặng',
+        nav: 'Weight'
+
     },
     {
         path: require('../assets/images/medical-history.png'),

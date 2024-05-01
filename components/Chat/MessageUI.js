@@ -34,9 +34,9 @@ const MessageUI = ({ isBotMode, setTitle }) => {
     const prevSender = useRef(null)
 
     const [remoteUser, setRemoteUser] = useState({
-        userName: 'Trợ lý AI',
+        userName: '',
         fromUser: 'AI',
-        avatar: `https://static.vecteezy.com/system/resources/previews/034/874/115/large_2x/ai-generated-doctor-medic-avatar-icon-clip-art-sticker-decoration-simple-background-free-photo.jpg`,
+        avatar: 'https://img.freepik.com/free-vector/chatbot-chat-message-vectorart_78370-4104.jpg?size=626&ext=jpg&ga=GA1.1.34619204.1714543244&semt=sph',
         typing: false,
     })
 

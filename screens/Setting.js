@@ -87,7 +87,6 @@ export default function Setting({ navigation, route }) {
     };
     getUserAndToken();
   }, [isFocused]);
-  console.log('userIduserIduserId', userId);
 
   const handleLogout = async () => {
     try {
