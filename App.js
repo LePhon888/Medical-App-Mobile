@@ -32,6 +32,7 @@ import { Cache } from "react-native-cache";
 import optionCache from "./utils/optionCache";
 import { DoctorRatingProvider } from "./context/DoctorRatingContext";
 import AddGroupMedicine from "./screens/MedicationSchedule/AddGroupMedicine";
+import ForgotPassword from "./screens/ForgotPassword";
 
 const Stack = createNativeStackNavigator();
 export const UserContext = createContext();
@@ -112,6 +113,7 @@ export default function App({ navigation }) {
                 <Stack.Screen name="Weight" component={Weight} options={{ headerShown: false }} />
                 <Stack.Screen name="WeightHistory" component={WeightHistory} options={{ headerShown: false }} />
                 <Stack.Screen name="SyntheticNews" component={SyntheticNews} options={{ headerShown: false }} />
+                <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerShown: false }} />
               </Stack.Navigator>
             </NavigationContainer>
             <ToastConfig />

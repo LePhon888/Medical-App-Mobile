@@ -12,9 +12,11 @@ import StatusIcon from "./MedicationReminder/StatusIcon";
 import * as GlobalNavigation from "../utils/GlobalNavigation"
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Loading from "./Loading";
+import { useIsFocused } from "@react-navigation/native";
 
 
 const HealthPlanSection = () => {
+    const isFocused = useIsFocused()
     const [loading, setLoading] = useState(false)
     const { userId } = useUser()
     const [medicationReminder, setMedicationReminder] = useState({
@@ -35,7 +37,6 @@ const HealthPlanSection = () => {
                 totalSkipped: scheduleTimes.data.filter(item => item.isUsed === false).length,
                 list: scheduleTimes.data
             }))
-            console.log(scheduleTimes.data)
         } catch (error) {
             Toast.show({
                 type: "error",
@@ -48,8 +49,10 @@ const HealthPlanSection = () => {
     }
 
     useEffect(() => {
-        getMedicationReminder()
-    }, [])
+        if (isFocused) {
+            getMedicationReminder()
+        }
+    }, [isFocused])
 
     const createOrUpdateDetail = async ({ item, isUsed }) => {
         try {
@@ -174,11 +177,11 @@ const HealthPlanSection = () => {
                                             <View style={styles.dashed} />
                                         }
                                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                            <View>
+                                            <View style={{ flex: 1 }}>
                                                 <Text style={styles.medicineName}>{item.medicineName}</Text>
                                                 <Text style={styles.usage}>{`Uống ${item.quantity} ${item.unitName} lúc ${formatDuration(item.time)}`}</Text>
                                             </View>
-                                            <View style={styles.flexRowCenter}>
+                                            <View style={[styles.flexRowCenter]}>
                                                 {item.isUsed === null && (
                                                     <>
                                                         <StatusIcon
@@ -294,7 +297,6 @@ const styles = StyleSheet.create({
     },
     list: {
         marginTop: 16,
-
     },
     listItem: {
 

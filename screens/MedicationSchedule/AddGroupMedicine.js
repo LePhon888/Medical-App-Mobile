@@ -1,33 +1,17 @@
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { Image, Keyboard, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
 import COLORS from "../../constants/colors"
 import HeaderWithBackButton from "../../common/HeaderWithBackButton"
 import Feather from "react-native-vector-icons/Feather";
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import Button from "../../components/Button";
 import Toast from "react-native-toast-message";
 import { useUser } from "../../context/UserContext";
 import Apis, { endpoints } from "../../config/Apis";
 import Loading from "../../components/Loading";
 import { Switch } from "react-native-paper";
+import InputWithRightIcon from "../../components/InputWithRightIcon";
+import CenterSheet from "../../components/CenterSheet";
 
-const InputWithIcon = memo(({ placeholder, value, onChangeText }) => {
-    return (
-        <View style={[styles.flexRowCenter, styles.input]}>
-            <TextInput
-                placeholder={placeholder}
-                value={value}
-                onChangeText={(text) => onChangeText(text)}
-            />
-            {value !== '' &&
-                <Feather
-                    style={{ color: COLORS.textLabel, marginLeft: 'auto' }}
-                    name={'x-circle'}
-                    onPress={() => onChangeText('')}
-                    size={24} />
-            }
-        </View>
-    );
-});
 
 const AddGroupMedicine = ({ navigation, route }) => {
     const [loading, setLoading] = useState(false)
@@ -42,6 +26,9 @@ const AddGroupMedicine = ({ navigation, route }) => {
         doctorName: '',
         isActive: true,
     })
+    const [showDeleteButton, setShowDeleteButton] = useState(false)
+    const [showConfirmSheet, setShowConfirmSheet] = useState(false)
+    const scrollViewRef = useRef(null)
 
     useEffect(() => {
         if (route.params && route.params.groupInfo) {
@@ -52,6 +39,7 @@ const AddGroupMedicine = ({ navigation, route }) => {
                     setLoading(true)
                     const res = await Apis.get(`${endpoints["medicationScheduleGroup"]}/${route.params.id}`)
                     setGroupInfo(res.data)
+                    setShowDeleteButton(!res.data.isActive)
                 } catch (error) {
                     console.error('AddGroupMedicine- GetData', error)
                 } finally {
@@ -128,10 +116,45 @@ const AddGroupMedicine = ({ navigation, route }) => {
         }
     }
 
+    const deleteGroupMedicine = async () => {
+        try {
+            setLoading(true)
+            await Apis.delete(`${endpoints["medicationScheduleGroup"]}/${groupInfo.id}`)
+
+            Toast.show({
+                type: 'success',
+                text1: 'Xóa toa thuốc thành công.'
+            })
+
+            navigation.navigate('MedicationBox', { saveScheduleSuccess: true });
+
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: 'Hệ thống lỗi. Vui lòng thử lại sau.'
+            })
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', (event) => {
+            console.log('keyboardDidShow')
+            scrollViewRef.current.scrollToEnd({ animated: true })
+        });
+
+        return () => {
+            keyboardDidShowListener.remove();
+        };
+    }, []);
+
     return (
         <View style={styles.screen}>
             <HeaderWithBackButton title={`${groupInfo.id > 0 ? 'Đổi thông tin' : 'Thêm'} toa thuốc`} />
-            <ScrollView style={styles.form} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps='always'>
+            <ScrollView style={styles.form}
+                ref={scrollViewRef}
+                showsVerticalScrollIndicator={false} keyboardShouldPersistTaps='always'>
 
                 {groupInfo.id > 0 && (
                     <View style={styles.container}>
@@ -156,9 +179,10 @@ const AddGroupMedicine = ({ navigation, route }) => {
                     <Text style={styles.label}>Tên toa thuốc
                         <Text style={{ fontSize: 10 }}>{' (Bắt buộc)'}</Text>
                     </Text>
-                    <InputWithIcon
+                    <InputWithRightIcon
                         placeholder={'Tên toa thuốc của bạn là gì?'}
                         value={groupInfo.groupName}
+                        iconVisible={groupInfo.groupName.length > 0}
                         onChangeText={(text) => setGroupInfoValueChanged('groupName', text)}
                     />
                 </View>
@@ -205,9 +229,10 @@ const AddGroupMedicine = ({ navigation, route }) => {
                     <Text style={styles.label}>{'Bệnh viện & Phòng khám'}
                         <Text style={{ fontSize: 10 }}>{' (Tùy chọn)'}</Text>
                     </Text>
-                    <InputWithIcon
+                    <InputWithRightIcon
                         placeholder='Toa thuốc của bạn được kê ở đâu?'
                         value={groupInfo.hospitalName}
+                        iconVisible={groupInfo.hospitalName.length > 0}
                         onChangeText={(text) => setGroupInfoValueChanged('hospitalName', text)}
                     />
                 </View>
@@ -215,17 +240,43 @@ const AddGroupMedicine = ({ navigation, route }) => {
                     <Text style={styles.label}>{'Bác sĩ'}
                         <Text style={{ fontSize: 10 }}>{' (Tùy chọn)'}</Text>
                     </Text>
-                    <InputWithIcon
+                    <InputWithRightIcon
                         placeholder='Bác sĩ kê thuốc của bạn là ai?'
                         value={groupInfo.doctorName}
+                        iconVisible={groupInfo.doctorName.length > 0}
                         onChangeText={(text) => setGroupInfoValueChanged('doctorName', text)}
                     />
                 </View>
                 <View style={{ paddingBottom: 48 }} />
             </ScrollView>
             <View style={styles.buttonContainer}>
+                {showDeleteButton &&
+                    <Button title="Xóa toa thuốc" onPress={() => setShowConfirmSheet(true)}
+                        style={{ marginBottom: 16, borderColor: COLORS.toastError }}
+                        textStyle={{ color: COLORS.toastError }}
+                    />
+                }
                 <Button title="Lưu" filled onPress={saveGroupMedicine} />
             </View>
+
+            <CenterSheet
+                visible={showConfirmSheet}
+                onClose={() => setShowConfirmSheet(false)}>
+                <View>
+                    <Image
+                        source={{ uri: 'https://cdn-icons-png.flaticon.com/512/3030/3030201.png' }}
+                        style={{ width: 72, height: 72, marginLeft: 'auto', marginRight: 'auto', marginTop: 16 }}
+                    />
+                    <Text style={{ fontWeight: 'bold', fontSize: 16, textAlign: 'center', marginVertical: 16 }}>{'Xóa toa thuốc'}</Text>
+                    <Text style={{ marginHorizontal: 32, textAlign: 'center' }}>{'Bạn có chắc chắn muốn xóa toa thuốc này?'}</Text>
+                    <Button title="Xác nhận" filled onPress={deleteGroupMedicine}
+                        style={{ backgroundColor: COLORS.toastError, borderColor: COLORS.toastError, marginVertical: 16 }} />
+                    <Button title="Đóng" filled onPress={() => setShowConfirmSheet(false)}
+                        style={{ backgroundColor: COLORS.white, borderColor: '#ccc', borderWidth: 0.8 }}
+                        textStyle={{ color: COLORS.textLabel }}
+                    />
+                </View>
+            </CenterSheet>
 
             {loading && <Loading transparent={true} />}
         </View>

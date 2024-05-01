@@ -15,9 +15,10 @@ const Button = (props) => {
         ...{ backgroundColor: bgColor },
         ...props.style,
       }}
+      disabled={props.disabled}
       onPress={props.onPress}
     >
-      <Text style={{ fontSize: 15, fontWeight: 600, ...{ color: textColor } }}>
+      <Text style={{ fontSize: 15, fontWeight: 600, ...{ color: textColor }, ...props.textStyle }}>
         {props.title}
       </Text>
     </TouchableOpacity>

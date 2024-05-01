@@ -158,6 +158,10 @@ const Login = ({ navigation }) => {
         loadStoredCredentials();
     }, []);
 
+    const navigateToForgotPassword = () => {
+        navigation.navigate('ForgotPassword')
+    }
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
             <View style={{ flex: 1, marginHorizontal: 22 }}>
@@ -229,6 +233,10 @@ const Login = ({ navigation }) => {
                         </TouchableOpacity>
                     </View>
                 </View>
+
+                <TouchableOpacity style={{ marginLeft: 'auto' }} onPress={navigateToForgotPassword}>
+                    <Text>{'Quên mật khẩu?'}</Text>
+                </TouchableOpacity>
 
                 <Button
                     title="Đăng nhập"
