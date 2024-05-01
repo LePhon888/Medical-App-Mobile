@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import HeaderWithBackButton from "../../common/HeaderWithBackButton"
 import Feather from "react-native-vector-icons/Feather";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -16,6 +16,7 @@ import { Switch } from "react-native-paper";
 import { ScrollView } from "react-native";
 import Button from "../../components/Button";
 import { useUser } from "../../context/UserContext";
+import CenterSheet from "../../components/CenterSheet";
 
 const InputItem = memo(({ titleLeft, titleRight, includeBottomLine, onPress }) => {
     return (
@@ -42,6 +43,8 @@ const MedicationSchedule = ({ navigation, route }) => {
     const [isFetched, setFetched] = useState(false)
     const groupInfo = route?.params.groupInfo
     const addMore = route?.params.addMore ?? false
+    const [showDeleteButton, setShowDeleteButton] = useState(false)
+    const [showConfirmSheet, setShowConfirmSheet] = useState(false)
 
     const [schedule, setSchedule] = useState({
         id: 0,
@@ -99,6 +102,8 @@ const MedicationSchedule = ({ navigation, route }) => {
                             selectedDays: schedule.data.selectedDays && schedule.data.selectedDays.split(',').map(Number),
                             id: id
                         });
+
+                        setShowDeleteButton(!schedule.data.isActive)
                     }
                     else if (selectedSchedule) {
                         setSchedule({
@@ -285,6 +290,32 @@ const MedicationSchedule = ({ navigation, route }) => {
         console.log(schedule);
     };
 
+    const deleteMedicationSchedule = async () => {
+        try {
+            setSubmitted(true)
+            if (groupInfo && groupInfo.medicineList === 1) {
+                await Apis.delete(`${endpoints["medicationScheduleGroup"]}/${groupInfo.id}`)
+            } else {
+                await Apis.delete(`${endpoints["medicationSchedule"]}/${schedule.id}`)
+            }
+
+            Toast.show({
+                type: 'success',
+                text1: 'Xóa thuốc thành công.'
+            })
+
+            navigation.navigate('MedicationBox', { saveScheduleSuccess: true });
+
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: 'Hệ thống lỗi. Vui lòng thử lại sau.'
+            })
+        } finally {
+            setSubmitted(false)
+        }
+    }
+
     return (
         <View style={styles.content}>
             <View style={styles.header}>
@@ -384,6 +415,12 @@ const MedicationSchedule = ({ navigation, route }) => {
                 {/* <TouchableOpacity style={{ ...styles.buttonNext, marginTop: 15 }} onPress={() => saveSchedule()}>
                     <Text style={styles.buttonText}>Lưu</Text>
                 </TouchableOpacity> */}
+                {showDeleteButton &&
+                    <Button title="Xóa thuốc" onPress={() => setShowConfirmSheet(true)}
+                        style={{ marginBottom: 16, borderColor: COLORS.toastError, }}
+                        textStyle={{ color: COLORS.toastError }}
+                    />
+                }
                 <Button title="Lưu" onPress={() => saveSchedule()} filled />
             </View>
 
@@ -486,6 +523,26 @@ const MedicationSchedule = ({ navigation, route }) => {
                     </TouchableOpacity>
                 </View>
             </BottomSheet>
+
+            <CenterSheet
+                visible={showConfirmSheet}
+                onClose={() => setShowConfirmSheet(false)}>
+                <View>
+                    <Image
+                        source={{ uri: 'https://cdn-icons-png.flaticon.com/512/3030/3030201.png' }}
+                        style={{ width: 72, height: 72, marginLeft: 'auto', marginRight: 'auto', marginTop: 16 }}
+                    />
+                    <Text style={{ fontWeight: 'bold', fontSize: 16, textAlign: 'center', marginVertical: 16 }}>{'Xóa thuốc'}</Text>
+                    <Text style={{ marginHorizontal: 32, textAlign: 'center' }}>{'Bạn có chắc chắn muốn xóa thuốc này?'}</Text>
+                    <Button title="Xác nhận" filled onPress={deleteMedicationSchedule}
+                        style={{ backgroundColor: COLORS.toastError, borderColor: COLORS.toastError, marginVertical: 16 }} />
+                    <Button title="Đóng" filled onPress={() => setShowConfirmSheet(false)}
+                        style={{ backgroundColor: COLORS.white, borderColor: '#ccc', borderWidth: 0.8 }}
+                        textStyle={{ color: COLORS.textLabel }}
+                    />
+                </View>
+            </CenterSheet>
+
             {showDatePicker && (
                 <RNDateTimePicker
                     value={schedule.startDate}

@@ -43,6 +43,7 @@ export const endpoints = {
   verify: `${SERVER}/api/auth/verify`,
   resendCode: `${SERVER}/api/auth/re-send-verify`,
   checkEmail: `${SERVER}/api/auth/check-email`,
+  otp: `${SERVER}/api/otp`,
 };
 
 // export const authApi = async () => {

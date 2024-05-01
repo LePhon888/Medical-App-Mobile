@@ -294,7 +294,7 @@ const MedicationBox = ({ navigation, route }) => {
                                         borderColor: item.isUsed === null ? '#ccc' : item.isUsed ? COLORS.toastInfo : COLORS.toastError,
                                         borderWidth: 0.4
                                     }}>
-                                        <View>
+                                        <View style={{ flex: 1 }}>
                                             <Text style={styles.medicineName}>{item.medicineName}</Text>
                                             <Text style={styles.usage}>{`Uống ${item.quantity} ${item.unitName} lúc ${formatDuration(item.time)}`}</Text>
                                             <View style={styles.groupTag}>
