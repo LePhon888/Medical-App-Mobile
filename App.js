@@ -7,7 +7,7 @@ import {
   Login, Welcome, Signup, Home, ChatBot, Chat, MainScreen, Setting,
   AppointmentList, News, NewsDetail, Call, VideoHome, AppointmentRegister, Category,
   Notification, MedicineList, Status, JoinScreen, IncomingCallScreen, OutgoingCallScreen, VideoConferencePage,
-  Weight, WeightHistory
+  Weight, WeightHistory, SyntheticNews
 } from "./screens";
 
 import DoctorAppointment from "./screens/DoctorAppointment";
@@ -111,6 +111,7 @@ export default function App({ navigation }) {
                 <Stack.Screen name="VideoConferencePage" component={VideoConferencePage} options={{ headerShown: false }} />
                 <Stack.Screen name="Weight" component={Weight} options={{ headerShown: false }} />
                 <Stack.Screen name="WeightHistory" component={WeightHistory} options={{ headerShown: false }} />
+                <Stack.Screen name="SyntheticNews" component={SyntheticNews} options={{ headerShown: false }} />
               </Stack.Navigator>
             </NavigationContainer>
             <ToastConfig />

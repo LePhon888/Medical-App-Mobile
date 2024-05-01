@@ -22,7 +22,7 @@ import OutgoingCallScreen from "./OutgoingCallScreen";
 import VideoConferencePage from "./VideoConferencePage";
 import Weight from "./Weight";
 import WeightHistory from "./WeightHistory";
-
+import SyntheticNews from "./SyntheticNews";
 
 export {
   Login,
@@ -42,5 +42,6 @@ export {
   Category,
   Notification,
   MedicineList,
-  Status, JoinScreen, IncomingCallScreen, OutgoingCallScreen, VideoConferencePage, Weight, WeightHistory
+  Status, JoinScreen, IncomingCallScreen, OutgoingCallScreen, VideoConferencePage, Weight, WeightHistory,
+  SyntheticNews
 };

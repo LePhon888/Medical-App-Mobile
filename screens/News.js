@@ -74,7 +74,6 @@ export default function News({ navigation }) {
       setPage(prevPage => prevPage + 1);
     }
   };
-  var htmlRegexG = /<(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+>/g;
 
 
   return (

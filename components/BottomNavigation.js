@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import AntDesign from "react-native-vector-icons/AntDesign";
-
+import Ionicons from "react-native-vector-icons/Ionicons";
 import Chatbot from "../screens/Chatbot";
 import Home from "../screens/Home";
 import News from "../screens/News";
@@ -11,6 +11,7 @@ import Doctors from "../screens/Doctors";
 import AppointmentRegister from "../screens/AppointmentRegister";
 import { useUser } from "../context/UserContext";
 import DoctorAppointment from "../screens/DoctorAppointment";
+import { SyntheticNews } from "../screens";
 
 const Tab = createBottomTabNavigator();
 
@@ -73,6 +74,19 @@ function BottomNavigation({ navigation }) {
           ),
           tabBarPress: () => {
             navigation.navigate("News");
+          },
+          headerShown: false,
+        }}
+      />
+      <Tab.Screen
+        name="Tin tức"
+        component={SyntheticNews}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="newspaper-outline" size={25} color={color} />
+          ),
+          tabBarPress: () => {
+            navigation.navigate("SyntheticNews");
           },
           headerShown: false,
         }}
