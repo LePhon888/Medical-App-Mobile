@@ -114,9 +114,15 @@ const ForgotPassword = ({ navigation }) => {
     }
 
     const onChangeEmail = (text) => {
-        setEmail(text)
-        setValidation({ valid: true })
-    }
+        setEmail(text);
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Regular expression for email pattern
+        const isValidEmail = emailPattern.test(text); // Check if the provided text matches the email pattern
+        setValidation({
+            valid: isValidEmail,
+            message: 'Địa chỉ email không hợp lệ. Vui lòng nhập theo định dạng abc@mail.com'
+        });
+    };
+
 
     const validateOtp = async () => {
         try {
