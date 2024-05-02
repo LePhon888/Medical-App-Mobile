@@ -30,11 +30,9 @@ export default function AppointmentList({ navigation }) {
     { key: 2, title: 'Lịch sử đặt hẹn' },
   ];
   useEffect(() => {
-    getNewAccessToken();
-  }, []);
-  useEffect(() => {
     const fetchData = async () => {
       try {
+        await getNewAccessToken();
         const user = await AsyncStorage.getItem("user");
         const accessToken = await AsyncStorage.getItem("accessToken");
         const response = await Apis.get(

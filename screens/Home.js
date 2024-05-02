@@ -2,8 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { Image } from 'react-native';
 import { SafeAreaView, ScrollView, StatusBar, StyleSheet, View, Text, ImageBackground, FlatList, Dimensions, TouchableOpacity, } from "react-native";
 import { FloatingAction } from "react-native-floating-action";
-const { width } = Dimensions.get("screen");
-import { } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SimplePaginationDot } from '../components';
 import { categoryIcons, data, dataCategoryNews } from "../config/data";
@@ -18,8 +16,12 @@ import { useNotification } from "../context/NotificationContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
 import HealthPlanSection from "../components/HealthPlanSection";
+import Draggable from "react-native-draggable";
+import WeightPlanSection from "../components/WeightPlanSection";
 
+const { width } = Dimensions.get("screen");
 const { width: windowWidth } = Dimensions.get('window');
+const { height: windowHeight } = Dimensions.get('window');
 
 const INITIAL_INDEX = 1;
 const Home = ({ navigation, route }) => {
@@ -84,6 +86,9 @@ const Home = ({ navigation, route }) => {
             visibilityTime: 4000,
             autoHide: true,
             delay: 3000
+          });
+          dispatch({
+            type: "logout",
           });
           navigation.navigate("Login");
         }, timeoutDuration);
@@ -222,7 +227,7 @@ const Home = ({ navigation, route }) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#faf9fe' }}>
       <StatusBar translucent={false} backgroundColor={COLORS.primary} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={style.header}>
@@ -234,8 +239,8 @@ const Home = ({ navigation, route }) => {
             {/* Notification bell */}
             <TouchableOpacity style={{ padding: 6, backgroundColor: COLORS.white, width: 40, height: 40, borderRadius: 50, position: 'relative' }}
               onPress={() => navigation.navigate('Notification')}>
-              <AntDesign name="bells" size={21} color={COLORS.black} style={{ marginLeft: 3, marginTop: 2 }} />
-              <View style={{ backgroundColor: '#f44236', width: 18, height: 18, borderRadius: 50, alignItems: 'center', position: 'absolute', top: 0, right: 4, bottom: 0 }}>
+              <AntDesign name="bells" size={21} color={COLORS.black} style={{ marginLeft: 3, marginTop: 3 }} />
+              <View style={{ backgroundColor: '#f44236', width: 18, height: 18, borderRadius: 50, alignItems: 'center', position: 'absolute', top: 3, right: 4, bottom: 0 }}>
                 <Text style={{ color: COLORS.white, fontWeight: 500, fontSize: 10 }}>{countUnread < 10 ? countUnread : '9+'}</Text>
               </View>
             </TouchableOpacity>
@@ -244,10 +249,10 @@ const Home = ({ navigation, route }) => {
         <View
           style={{
             backgroundColor: COLORS.primary,
-            height: 120,
+            height: 112,
             paddingHorizontal: 20,
-            borderBottomEndRadius: 18,
-            borderBottomStartRadius: 18
+            borderBottomEndRadius: 38,
+            borderBottomStartRadius: 38,
           }}
         >
         </View>
@@ -286,12 +291,14 @@ const Home = ({ navigation, route }) => {
             <View style={[style.listHeader, { marginBottom: 16 }]}>
               <Text style={style.listTitle}>{'Kế hoạch sức khỏe'}</Text>
             </View>
+            <WeightPlanSection navigation={navigation} />
             <HealthPlanSection />
           </View>
 
+
           {/* End Health Plan Section */}
 
-          <View style={style.list}>
+          {/* <View style={style.list}>
             <View style={style.listHeader}>
               <Text style={style.listTitle}>Chuyên mục</Text>
               <TouchableOpacity
@@ -302,9 +309,9 @@ const Home = ({ navigation, route }) => {
                 <FeatherIcon color="#706F7B" name="chevron-right" size={16} />
               </TouchableOpacity>
             </View>
-          </View>
+          </View> */}
 
-          <ScrollView contentContainerStyle={style.listContent} horizontal={true} showsHorizontalScrollIndicator={false}>
+          {/* <ScrollView contentContainerStyle={style.listContent} horizontal={true} showsHorizontalScrollIndicator={false}>
             {dataCategoryNews.map(({ path, label, color }, index) => (
               <TouchableOpacity
                 key={index}
@@ -318,7 +325,7 @@ const Home = ({ navigation, route }) => {
                 </View>
               </TouchableOpacity>
             ))}
-          </ScrollView>
+          </ScrollView> */}
           <FlatList
             snapToInterval={width - 20}
             contentContainerStyle={{ paddingLeft: 20, paddingBottom: 20, marginBottom: 60 }}
@@ -329,18 +336,18 @@ const Home = ({ navigation, route }) => {
           />
         </View>
       </ScrollView>
-      {/* <Draggable x={300} y={200} renderSize={80} renderColor='black' isCircle onLongPress={() => console.log('touched!!')}>
+      <Draggable x={windowWidth} y={windowHeight * 0.93} renderSize={80} renderColor='black' isCircle >
         <FloatingAction
           iconHeight={70}
           iconWidth={70}
           actions={[]}
-          onPressMain={() => navigation.navigate("ChatBot")}
+          onPressMain={() => navigation.navigate("Chatbot")}
           overlayColor={"#FFFFF"}
           floatingIcon={{
-            uri: "https://cdn.dribbble.com/userupload/2798813/file/original-a9da6aa3bf061621ab9d8c97a226a358.png",
+            uri: 'https://img.freepik.com/free-vector/chatbot-chat-message-vectorart_78370-4104.jpg?size=626&ext=jpg&ga=GA1.1.34619204.1714543244&semt=sph',
           }}
         />
-      </Draggable> */}
+      </Draggable>
     </SafeAreaView >
   );
 };

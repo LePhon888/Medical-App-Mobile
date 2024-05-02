@@ -10,7 +10,6 @@ import Feather from "react-native-vector-icons/Feather"
 import Octicons from "react-native-vector-icons/Octicons";
 import StatusIcon from "./MedicationReminder/StatusIcon";
 import * as GlobalNavigation from "../utils/GlobalNavigation"
-import { TouchableOpacity } from "react-native-gesture-handler";
 import Loading from "./Loading";
 import { useIsFocused } from "@react-navigation/native";
 
@@ -111,14 +110,11 @@ const HealthPlanSection = () => {
 
                 {/* Header View */}
                 <View style={[styles.flexRowCenter]}>
-                    <Image
-                        source={{ uri: 'https://cdn-icons-png.flaticon.com/512/3030/3030201.png' }}
-                        style={{ width: 32, height: 32 }}
-                    />
+                    <Image source={require('../assets/images/medicinebox2.png')} style={{ width: 31, height: 31 }} />
                     <Text style={styles.title}>{'Nhắc nhở uống thuốc'}</Text>
                     <Feather
                         name="arrow-up-right"
-                        size={24}
+                        size={20}
                         style={{
                             backgroundColor: COLORS.toastInfo,
                             color: COLORS.white,
@@ -134,18 +130,18 @@ const HealthPlanSection = () => {
                         {/* Stats View */}
                         <View style={[styles.medicationReminderStats, styles.flexRowCenter]}>
                             <View style={{ marginRight: 'auto' }}>
-                                <Text>{'Tổng số liều'}</Text>
+                                <Text style={{ fontSize: 17 }}>Tổng số liều</Text>
                                 <View style={[styles.flexRowCenter, styles.marginTopS]}>
                                     <Image
                                         source={require('../assets/images/pill.png')}
-                                        style={{ width: 32, height: 32 }}
+                                        style={{ width: 31, height: 31 }}
                                     />
                                     <Text style={styles.bold}>{medicationReminder.total}</Text>
 
                                 </View>
                             </View>
                             <View style={{ marginRight: 24, alignItems: 'center' }}>
-                                <Text>{'Dùng'}</Text>
+                                <Text style={{ fontSize: 17 }}>{'Dùng'}</Text>
                                 <View style={[styles.flexRowCenter, styles.marginTopS]}>
                                     <StatusIcon
                                         iconName="check-circle-fill"
@@ -156,7 +152,7 @@ const HealthPlanSection = () => {
                                 </View>
                             </View>
                             <View style={{ alignItems: 'center' }}>
-                                <Text>{'Bỏ qua'}</Text>
+                                <Text style={{ fontSize: 17 }}>{'Bỏ qua'}</Text>
                                 <View style={[styles.flexRowCenter, styles.marginTopS]}>
                                     <StatusIcon
                                         iconName="x-circle-fill"
@@ -263,7 +259,7 @@ const HealthPlanSection = () => {
 const styles = StyleSheet.create({
     section: {
         backgroundColor: 'white',
-        borderColor: COLORS.grey,
+        borderColor: '#f0f0f0',
         borderWidth: 0.8,
         borderRadius: 15,
         padding: 16,
@@ -275,7 +271,8 @@ const styles = StyleSheet.create({
     title: {
         marginLeft: 12,
         marginRight: 'auto',
-        fontWeight: 'bold'
+        fontSize: 17,
+        fontWeight: '500'
     },
     medicationReminderStats: {
         marginTop: 16,
@@ -285,7 +282,8 @@ const styles = StyleSheet.create({
     },
     bold: {
         fontWeight: 'bold',
-        marginLeft: 8
+        marginLeft: 8,
+        fontSize: 18
     },
     marginTopS: {
         marginTop: 8

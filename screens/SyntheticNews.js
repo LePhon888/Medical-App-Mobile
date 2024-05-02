@@ -29,16 +29,17 @@ function SyntheticNews({ navigation }) {
         fetchData();
     }, [])
     return (
-        <View style={{ flex: 1, backgroundColor: '#fff', marginBottom: 40 }}>
+        <View style={{ flex: 1, backgroundColor: '#fff', marginBottom: -10 }}>
             <View>
                 <SafeAreaView>
                     <HeaderWithBackButton title={'Tin tức'} navigation={navigation} />
                 </SafeAreaView>
             </View>
-            <View>
-                <View style={{ marginTop: 8 }}>
+            <ScrollView>
+                <View style={{ marginTop: 1 }}>
                     {<View style={{ marginLeft: 16, marginVertical: 5 }}>
-                        {posts?.map((item, index) => {
+                        {loading && <ActivityIndicator size="large" color="#0000ff" style={{ marginTop: 200 }} />}
+                        {posts?.filter(item => item.source_id != 'investing_vn').map((item, index) => {
                             return (
                                 index == 0 ?
                                     <TouchableOpacity key={index} style={{
@@ -48,7 +49,7 @@ function SyntheticNews({ navigation }) {
                                         paddingBottom: 30,
                                         marginTop: 14
                                     }}
-                                        onPress={() => navigation.navigate("NewsDetail", item)}>
+                                        onPress={() => navigation.navigate("SyntheticNewsDetail", item.link)}>
                                         <View style={{
                                             flexDirection: 'column',
                                             alignItems: 'stretch',
@@ -88,7 +89,7 @@ function SyntheticNews({ navigation }) {
                                                 <View style={styles.cardRowNews}>
                                                     <View style={styles.cardRowItemNews}>
                                                         <Text style={styles.cardRowItemTextNews}>
-                                                            {item.pubDate}
+                                                            {moment(item.pubDate, "YYYYMMDD").fromNow()}
                                                         </Text>
                                                     </View>
                                                 </View>
@@ -97,7 +98,7 @@ function SyntheticNews({ navigation }) {
                                     </TouchableOpacity> :
                                     <TouchableOpacity
                                         key={index}
-                                        onPress={() => navigation.navigate("NewsDetail", item)}
+                                        onPress={() => navigation.navigate("SyntheticNewsDetail", item.link)}
                                         style={{
                                             borderBottomColor: '#f3f4f6',
                                             borderBottomWidth: 0.7,
@@ -120,8 +121,7 @@ function SyntheticNews({ navigation }) {
                                                 <View style={styles.cardRowNews}>
                                                     <View style={styles.cardRowItemNews}>
                                                         <Text style={styles.cardRowItemTextNews}>
-                                                            {/* {moment(new Date(parseInt(item.createdDate)).toLocaleDateString('vi'), "DDMMYYYY").fromNow()} */}
-                                                            {item.pubDate}
+                                                            {moment(item.pubDate, "YYYYMMDD").fromNow()}
                                                         </Text>
                                                     </View>
                                                 </View>
@@ -132,7 +132,7 @@ function SyntheticNews({ navigation }) {
                         })}
                     </View>}
                 </View>
-            </View>
+            </ScrollView>
         </View>
     )
 }

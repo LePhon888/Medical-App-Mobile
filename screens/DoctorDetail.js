@@ -17,11 +17,9 @@ import RatingContent from '../components/Doctor/RatingContent';
 import ToastConfig from '../components/ToastConfig';
 import { useDoctorRating } from '../context/DoctorRatingContext';
 import { useUser } from '../context/UserContext';
-/**
- * The doctor detail screen
- * 
- * @returns 
- */
+import getNewAccessToken from '../utils/getNewAccessToken';
+
+
 const DoctorDetail = ({ navigation, route }) => {
 
     const doctorId = route.params // get the doctorId from route
@@ -92,12 +90,9 @@ const DoctorDetail = ({ navigation, route }) => {
     }
 
     useEffect(() => {
-        getNewAccessToken();
-    }, []);
-
-    useEffect(() => {
         const getData = async () => {
             try {
+                await getNewAccessToken();
                 setDataFetched(true)
                 /* Get the basic information for current doctor */
                 const doctor = await Apis.get(`${endpoints["doctors"]}/detail/${doctorId}`);

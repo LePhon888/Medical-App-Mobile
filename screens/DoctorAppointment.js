@@ -24,7 +24,7 @@ import { useUser } from "../context/UserContext";
 import DateRangePicker from "../components/DateRangePicker";
 import { formatDateMoment } from "../config/date";
 import Loading from "../components/Loading";
-import GetNewAccessToken from "../utils/getNewAccessToken";
+import getNewAccessToken from "../utils/getNewAccessToken";
 
 const DoctorAppointment = () => {
     const [tempList, setTempList] = useState([])
@@ -37,13 +37,12 @@ const DoctorAppointment = () => {
     const [startDate, setStartDate] = useState(new Date())
     const [endDate, setEndDate] = useState(currentDate.setDate(currentDate.getDate() + 3))
     const [isFetched, setFetched] = useState(false)
-    useEffect(() => {
-        GetNewAccessToken();
-    }, []);
+
     useEffect(() => {
         const getUserAndToken = async () => {
             try {
                 setFetched(false)
+                await getNewAccessToken();
                 const tokenInfo = await AsyncStorage.getItem("accessToken");
                 if (userId && tokenInfo) {
                     const e = `${endpoints["appointment"]}/doctor/${userId}?startDate=${formatDateMoment(moment(startDate))}&endDate=${formatDateMoment(moment(endDate))}`;

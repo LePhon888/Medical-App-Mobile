@@ -119,7 +119,7 @@ const ForgotPassword = ({ navigation }) => {
         const isValidEmail = emailPattern.test(text); // Check if the provided text matches the email pattern
         setValidation({
             valid: isValidEmail,
-            message: 'Địa chỉ email không hợp lệ. Vui lòng nhập theo định dạng abc@mail.com'
+            message: 'Vui lòng nhập theo định dạng @mail.com'
         });
     };
 
@@ -259,13 +259,13 @@ const ForgotPassword = ({ navigation }) => {
                 {/* Start Send Email  */}
                 {currentStep === step["sendEmail"] &&
                     <>
-                        <Text style={styles.title}>{'Quên mật khẩu ?'}</Text>
+                        <Text style={styles.title}>{'Quên mật khẩu'}</Text>
                         <Text style={styles.description}>{'Vui lòng nhập địa chỉ email của bạn để nhận mã'}
                             <Text style={{ fontWeight: 'bold' }}>{' OTP'}</Text>
                             {' để xác thực'}
                         </Text>
                         <View style={styles.container}>
-                            <Text style={styles.label}>{'Địa chỉ email'}</Text>
+                            {/* <Text style={styles.label}>{'Địa chỉ email'}</Text> */}
                             <InputWithRightIcon
                                 placeholder={'Nhập địa chỉ email'}
                                 value={email}
@@ -421,7 +421,7 @@ const styles = StyleSheet.create({
     title: {
         fontStyle: 'normal',
         color: '#353535',
-        fontSize: 30,
+        fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 8,
     },

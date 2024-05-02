@@ -21,7 +21,7 @@ export const categoryIcons = [
         nav: 'MedicineList'
     },
     {
-        path: require('../assets/images/first-aid-kit.png'),
+        path: require('../assets/images/kitchen-scale.png'),
         text: 'Theo dõi cân nặng',
         nav: 'Weight'
 
@@ -43,13 +43,13 @@ export const categoryIcons = [
     },
     {
         path: require('../assets/images/medicine.png'),
-        text: 'Hộp thuốc cá nhân',
+        text: 'Hộp thuốc',
         nav: 'MedicationBox'
     },
     {
-        path: require('../assets/images/customer-behavior.png'),
-        text: 'Tùy chọn',
-        nav: 'Setting'
+        path: require('../assets/images/chat.png'),
+        text: 'Chat với bác sĩ',
+        nav: 'Chat'
     },
 ]
 export const dataCategoryNews = [

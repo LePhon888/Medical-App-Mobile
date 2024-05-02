@@ -19,6 +19,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import HeaderWithBackButton from "../common/HeaderWithBackButton";
 import Button from "../components/Button";
+import getNewAccessToken from "../utils/getNewAccessToken";
 
 const EditProfile = ({ route, navigation }) => {
     const [user, setUser] = useState(route.params.userInfo);
@@ -75,6 +76,7 @@ const EditProfile = ({ route, navigation }) => {
 
     const handleSubmit = async () => {
         const formData = new FormData();
+        await getNewAccessToken();
 
         formData.append("user", {
             string: JSON.stringify(user),

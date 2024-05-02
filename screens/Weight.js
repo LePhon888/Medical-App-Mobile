@@ -21,23 +21,6 @@ const medTabs = [
 ];
 const defaultColor = '#a3a3a3';
 const activeColor = COLORS.primary;
-const data1 = [
-    { value: 70 },
-    { value: 36 },
-    { value: 50 },
-    { value: 40 },
-    { value: 18 },
-    { value: 38 },
-];
-const data2 = [
-    { value: 50 },
-    { value: 10 },
-    { value: 45 },
-    { value: 30 },
-    { value: 45 },
-    { value: 18 },
-];
-
 
 export default function Weight({ navigation }) {
     const date = moment().format('DD/MM/YYYY');

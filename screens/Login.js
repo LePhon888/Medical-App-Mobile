@@ -235,7 +235,7 @@ const Login = ({ navigation }) => {
                 </View>
 
                 <TouchableOpacity style={{ marginLeft: 'auto' }} onPress={navigateToForgotPassword}>
-                    <Text>{'Quên mật khẩu?'}</Text>
+                    <Text>{'Quên mật khẩu'}</Text>
                 </TouchableOpacity>
 
                 <Button

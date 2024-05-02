@@ -27,6 +27,7 @@ import MessageUI from "../components/Chat/MessageUI";
 
 const Chat = () => {
   const [title, setTitle] = useState('Trò chuyện')
+  console.log('title', title)
   return (
     <View style={styles.container}>
       <Header title={`Trò chuyện ${title}`} />
