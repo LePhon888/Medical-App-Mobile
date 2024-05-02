@@ -38,6 +38,7 @@ function SyntheticNews({ navigation }) {
             <ScrollView>
                 <View style={{ marginTop: 1 }}>
                     {<View style={{ marginLeft: 16, marginVertical: 5 }}>
+                        {loading && <ActivityIndicator size="large" color="#0000ff" style={{ marginTop: 200 }} />}
                         {posts?.filter(item => item.source_id != 'investing_vn').map((item, index) => {
                             return (
                                 index == 0 ?

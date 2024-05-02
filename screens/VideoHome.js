@@ -324,11 +324,11 @@ const styles = StyleSheet.create({
     },
     videoContainer: {
         marginTop: 16,
-        height: '50%',
+        height: '60%',
         backgroundColor: '#202020',
         overflow: 'hidden',
         borderRadius: 25,
-        marginHorizontal: '25%'
+        marginHorizontal: '15%'
     },
     cameraButton: {
         position: 'absolute',

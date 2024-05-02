@@ -35,7 +35,7 @@ function BottomNavigation({ navigation }) {
     <Tab.Navigator
       screenOptions={{
         tabBarLabelStyle: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: "600",
           marginBottom: 5,
         },
@@ -49,7 +49,7 @@ function BottomNavigation({ navigation }) {
           overflow: 'hidden',
         },
         tabBarActiveTintColor: COLORS.primary,
-        tabBarInactiveTintColor: COLORS.gray,
+        tabBarInactiveTintColor: '#787878',
       }}
     >
       <Tab.Screen

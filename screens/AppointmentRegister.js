@@ -15,6 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import WebView from 'react-native-webview';
 import moment from 'moment';
 import getNewAccessToken from '../utils/getNewAccessToken';
+import Toast from 'react-native-toast-message';
 
 export default function AppointmentRegister({ navigation, route }) {
     const tabs = [{ name: 'Chọn giờ đặt hẹn' }];
@@ -24,12 +25,13 @@ export default function AppointmentRegister({ navigation, route }) {
     const [active, setActive] = useState(false);
     const [value, setValue] = useState(0);
     const [hour, setHour] = useState(0);
-    const [selectHour, setSelectHour] = useState('Chọn giờ đặt hẹn');
+    const [selectHour, setSelectHour] = useState(null);
     const [user, setUser] = useState(null);
     const [reason, setReason] = useState('');
     const [selectedStartDate, setSelectedStartDate] = useState(minDate);
     const [payment, setPayment] = useState(null);
     const [appointment, setAppointment] = useState(null);
+    const [conditionHour, setConditionHour] = useState([]);
     useEffect(() => {
         const fetch = async () => {
             try {
@@ -43,11 +45,6 @@ export default function AppointmentRegister({ navigation, route }) {
         };
         fetch();
     }, []);
-
-    useEffect(() => {
-        getNewAccessToken();
-    }, []);
-
 
     useEffect(() => {
         const fetchHour = async () => {
@@ -65,11 +62,12 @@ export default function AppointmentRegister({ navigation, route }) {
             userId: user.id,
             doctorId: doctor.userId,
             date: selectedStartDate,
-            hour: selectHour.id,
+            hour: selectHour?.id,
             reason,
         };
         const token = await AsyncStorage.getItem("accessToken");
         try {
+            await getNewAccessToken();
             const res = await Apis.post(endpoints.appointment, userInfor, {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -77,7 +75,7 @@ export default function AppointmentRegister({ navigation, route }) {
             });
             setAppointment(res.data);
             const resPayment = await Apis.get(
-                `${endpoints["payment"]}?orderInfo=${res.data.id}&amount=${res.doctor.fee.fee}`
+                `${endpoints["payment"]}?orderInfo=${res.data.id}&amount=${res.data.doctor.fee.fee}`
             );
             setPayment(resPayment);
         } catch (error) {
@@ -86,11 +84,32 @@ export default function AppointmentRegister({ navigation, route }) {
     }
     const onNavigationStateChange = (navState) => {
         //192.168.1.7
-        navState.url?.includes('payment-response') && navState.url?.includes('vnp_PayDate') ?
-            navigation.navigate('Status', { status: 1 }) : navigation.navigate('Status', { status: 0 });
+        // const pathWithoutHost = navState.url.split('//')[1].split('/').slice(1).join('/');
+        // console.log('pathWithoutHost==============', pathWithoutHost);
+        navState.url?.includes('payment-response') && navState.url?.includes('vnp_PayDate') &&
+            navigation.navigate('Status', { status: 1 });
     }
 
+    //check duplicate hour
+    const fetchAppointmentHour = async (formattedDate) => {
+        try {
+            await getNewAccessToken();
+            const token = await AsyncStorage.getItem("accessToken");
+            const response = await Apis.get(endpoints.appointmentHour + '?date=' + formattedDate + '&doctorId=' + doctor.userId,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+            setConditionHour(response.data);
+        } catch (error) {
+            console.error('Error retrieving appointment hour:', error);
+        }
+    };
+
     onDateChange = date => {
+        let formattedDate = moment(new Date(date)).format("YYYY-MM-DD");
+        fetchAppointmentHour(formattedDate);
         setSelectedStartDate(date.toString());
     }
     if (payment?.data.url) {
@@ -112,7 +131,7 @@ export default function AppointmentRegister({ navigation, route }) {
                                 <Image alt="image" style={styles.profileAvatar} source={{ uri: user?.image || "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2.5&w=256&h=256&q=80" }} />
                             </View>
                             <View style={styles.radioTop}>
-                                <Text style={styles.radioLabel}>{user?.lastName ?? '' + ' ' + user?.firstName}</Text>
+                                <Text style={styles.radioLabel}>{user?.lastName + ' ' + user?.firstName}</Text>
                                 <View style={{ flexDirection: 'row', marginBottom: 2 }}>
                                     <Fontisto name="email" size={14} style={{ color: '#969ca3', marginTop: 4 }} />
                                     <Text style={styles.radioDescription}>{user?.email}</Text>
@@ -160,7 +179,7 @@ export default function AppointmentRegister({ navigation, route }) {
                             <View style={styles.radioTop}>
                                 <Text style={styles.radioLabel}>Ngày: {selectedStartDate ? moment(selectedStartDate).format('DD/MM/YYYY') : formatDate(minDate)}</Text>
                                 <View >
-                                    <Text style={{ fontSize: 14, fontWeight: '400', color: '#848a96' }}>Giờ: {selectHour.hour}</Text>
+                                    <Text style={{ fontSize: 14, fontWeight: '400', color: '#848a96' }}>Giờ: {selectHour?.hour}</Text>
                                 </View>
                                 <View style={{ position: 'absolute', right: 60, top: 15 }}>
                                     <Entypo name="chevron-thin-down" size={15} style={{ color: '#89919d', transform: [{ rotate: active ? '0deg' : '90deg' }] }} />
@@ -221,14 +240,16 @@ export default function AppointmentRegister({ navigation, route }) {
                                         const currentDate = moment().startOf('day');
                                         const compareDate = moment(selectedStartDate).startOf('day');
                                         const isPast = compareDate.isSame(currentDate) && item.hour < currentHour;
+                                        const ids = conditionHour?.map(item => item?.id);
+                                        const isDuplicate = item && ids.includes(item?.id.toString());
                                         return (
                                             <TouchableOpacity
                                                 style={{
-                                                    backgroundColor: isPast ? '#ecf0f1' : (index + 1 == selectHour.id ? COLORS.primary : COLORS.white), paddingHorizontal: 20,
+                                                    backgroundColor: isPast ? '#ecf0f1' : (isDuplicate ? '#ecf0f1' : index + 1 == selectHour?.id ? COLORS.primary : COLORS.white), paddingHorizontal: 20,
                                                     paddingVertical: 6, margin: 5, borderWidth: 0.3, borderColor: '#ccc', borderRadius: 50
-                                                }} onPress={() => !isPast && setSelectHour(item)} key={index}>
+                                                }} onPress={() => !isDuplicate && !isPast && setSelectHour(item)} key={index}>
                                                 <Text style={{
-                                                    color: isPast ? '#ccc' : (index + 1 == selectHour.id ? COLORS.white : '#353b48'), fontWeight: 500
+                                                    color: isPast ? '#ccc' : (isDuplicate ? '#ccc' : (index + 1 == selectHour?.id ? COLORS.white : '#353b48')), fontWeight: 500
                                                 }}>
                                                     {item.hour}
                                                 </Text>
@@ -283,7 +304,10 @@ export default function AppointmentRegister({ navigation, route }) {
                             <Text style={{ fontSize: 15 }}>Phí tư vấn </Text>
                             <Text style={{ color: '#019d5c', fontWeight: 700 }}>{doctor.fee.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</Text>
                         </View>
-                        <Button title={'Xác nhận đặt hẹn'} filled style={{ borderRadius: 6 }} onPress={() => onSubmit()} />
+                        <Button title={'Xác nhận đặt hẹn'} filled style={{ borderRadius: 6 }} onPress={() => selectHour == null ? Toast.show({
+                            type: "error",
+                            text1: "Vui lòng chọn giờ hẹn",
+                        }) : onSubmit()} />
                     </View>
                 </ScrollView >
             </View >

@@ -23,11 +23,11 @@ const SECTIONS = [
   {
     header: "Cài đặt",
     items: [
-      { id: "pass", icon: "user", label: "Đổi mật khẩu", type: "link" },
+      // { id: "pass", icon: "user", label: "Đổi mật khẩu", type: "link" },
       // { id: "delete", icon: "user-minus", label: "Xóa tài khoản", type: "link" },
       { id: "notify", icon: "volume-2", label: "Thông báo", type: "link" },
       // { id: "language", icon: "globe", label: "Ngôn ngữ", type: "select" },
-      { id: "darkMode", icon: "moon", label: "Giao diện", type: "toggle" },
+      // { id: "darkMode", icon: "moon", label: "Giao diện", type: "toggle" },
     ],
   },
   {
@@ -96,12 +96,11 @@ export default function Setting({ navigation, route }) {
       await Apis.delete(`${endpoints["userDevice"]}/delete/user/${userId}`)
       await AsyncStorage.removeItem("token");
       await AsyncStorage.removeItem("user");
-      navigation.navigate("Login");
 
       dispatch({
         type: "logout",
       });
-      console.log('logoouttt')
+      navigation.navigate("Login");
 
     } catch (error) {
       // Handle errors if needed
@@ -113,7 +112,7 @@ export default function Setting({ navigation, route }) {
 
 
   return (
-    <SafeAreaView style={{ backgroundColor: '#fff', paddingBottom: '66%' }}>
+    <View style={{ backgroundColor: '#fff', height: '100%' }}>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.profile}>
           <TouchableOpacity>
@@ -170,8 +169,8 @@ export default function Setting({ navigation, route }) {
                       onPress={() => {
                         if (id === "logout") {
                           handleLogout()
-                        } else {
-                          // Handle other item actions
+                        } else if (id === 'notify') {
+                          navigation.navigate('Notification')
                         }
                       }}
                     >
@@ -213,8 +212,15 @@ export default function Setting({ navigation, route }) {
             </View>
           </View>
         ))}
+        <View>
+          <View style={{ alignItems: "center", marginTop: 70 }}>
+            <Image source={require('../assets/images/logo.png')}
+              style={{ width: 300, height: 200 }} />
+          </View>
+          <Text style={{ textAlign: 'center', color: 'gray', marginTop: -50 }}>Phiên bản 1.0.0</Text>
+        </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 

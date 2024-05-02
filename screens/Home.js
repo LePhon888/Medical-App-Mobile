@@ -87,6 +87,9 @@ const Home = ({ navigation, route }) => {
             autoHide: true,
             delay: 3000
           });
+          dispatch({
+            type: "logout",
+          });
           navigation.navigate("Login");
         }, timeoutDuration);
       }
@@ -224,7 +227,7 @@ const Home = ({ navigation, route }) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#faf9fe' }}>
       <StatusBar translucent={false} backgroundColor={COLORS.primary} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={style.header}>
@@ -236,8 +239,8 @@ const Home = ({ navigation, route }) => {
             {/* Notification bell */}
             <TouchableOpacity style={{ padding: 6, backgroundColor: COLORS.white, width: 40, height: 40, borderRadius: 50, position: 'relative' }}
               onPress={() => navigation.navigate('Notification')}>
-              <AntDesign name="bells" size={21} color={COLORS.black} style={{ marginLeft: 3, marginTop: 2 }} />
-              <View style={{ backgroundColor: '#f44236', width: 18, height: 18, borderRadius: 50, alignItems: 'center', position: 'absolute', top: 0, right: 4, bottom: 0 }}>
+              <AntDesign name="bells" size={21} color={COLORS.black} style={{ marginLeft: 3, marginTop: 3 }} />
+              <View style={{ backgroundColor: '#f44236', width: 18, height: 18, borderRadius: 50, alignItems: 'center', position: 'absolute', top: 3, right: 4, bottom: 0 }}>
                 <Text style={{ color: COLORS.white, fontWeight: 500, fontSize: 10 }}>{countUnread < 10 ? countUnread : '9+'}</Text>
               </View>
             </TouchableOpacity>
@@ -246,10 +249,10 @@ const Home = ({ navigation, route }) => {
         <View
           style={{
             backgroundColor: COLORS.primary,
-            height: 120,
+            height: 112,
             paddingHorizontal: 20,
-            borderBottomEndRadius: 18,
-            borderBottomStartRadius: 18
+            borderBottomEndRadius: 38,
+            borderBottomStartRadius: 38,
           }}
         >
         </View>
@@ -288,7 +291,7 @@ const Home = ({ navigation, route }) => {
             <View style={[style.listHeader, { marginBottom: 16 }]}>
               <Text style={style.listTitle}>{'Kế hoạch sức khỏe'}</Text>
             </View>
-            <WeightPlanSection />
+            <WeightPlanSection navigation={navigation} />
             <HealthPlanSection />
           </View>
 

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { View, Image, Text, StyleSheet } from 'react-native'
+import { View, Image, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import Feather from "react-native-vector-icons/Feather"
 import COLORS from '../constants/colors'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Apis, { endpoints } from '../config/Apis'
 
-const WeightPlanSection = () => {
+const WeightPlanSection = ({ navigation }) => {
     const [newWeight, setNewWeight] = useState(null);
 
     useEffect(() => {
@@ -24,32 +24,41 @@ const WeightPlanSection = () => {
         <View style={{ paddingHorizontal: 16, marginBottom: 20 }}>
             <View style={styles.section}>
                 <View style={[styles.flexRowCenter]}>
-                    <Image
-                        source={{ uri: 'https://cdn-icons-png.flaticon.com/512/3030/3030201.png' }}
-                        style={{ width: 32, height: 32 }}
-                    />
-                    <Text style={styles.title}>{'Cân nặng của bạn'}</Text>
-                    <Feather
-                        name="arrow-up-right"
-                        size={20}
-                        style={{
-                            backgroundColor: COLORS.toastInfo,
-                            color: COLORS.white,
-                            borderRadius: 99,
-                            padding: 4,
-                        }}
-                    // onPress={navigateToMedicationBox}
-                    />
+                    <Image source={require('../assets/images/weight.png')} style={{ width: 32, height: 32 }} />
+                    <Text style={styles.title}>{'Cân nặng hiện tại'}</Text>
+                    <TouchableOpacity onPress={() => navigation.navigate("Weight")}>
+                        <Feather
+                            name="arrow-up-right"
+                            size={20}
+                            style={{
+                                backgroundColor: COLORS.toastInfo,
+                                color: COLORS.white,
+                                borderRadius: 99,
+                                padding: 4,
+                            }}
+                        />
+                    </TouchableOpacity>
+
                 </View>
-                <View>
-                    <View style={styles.medicationReminderStats}>
-                        <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{'Cân nặng mới'}</Text>
-                        <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.primary, marginTop: 8 }}>{newWeight?.weight} kg</Text>
-                        <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.primary, marginTop: 8 }}>{newWeight?.date}</Text>
+                <View style={styles.medicationReminderStats}>
+                    <View style={{ width: '30%', alignItems: 'center' }}>
+                        <Text style={{ fontSize: 16, color: '#898989', borderBottomWidth: 0.2, borderColor: '#c0bcbc', paddingBottom: 5 }}>Cân nặng</Text>
+                        <Text style={{ fontWeight: 600, fontSize: 18, paddingTop: 5 }}>{newWeight?.weight} 68</Text>
+                        <Text style={{ color: '#898989', marginTop: 5 }}>{newWeight?.weight} (kg)</Text>
+                    </View>
+                    <View style={{ width: '40%', alignItems: 'center' }}>
+                        <Text style={{ fontSize: 16, color: '#898989', borderBottomWidth: 0.2, borderColor: '#c0bcbc', paddingBottom: 5 }}>BMI</Text>
+                        <Text style={{ fontWeight: 600, fontSize: 18, paddingTop: 5 }}>{newWeight?.bmi}</Text>
+                        <Text style={{ color: '#898989', marginTop: 5 }}>{newWeight?.classification}</Text>
+                    </View>
+                    <View style={{ width: '30%', alignItems: 'center' }}>
+                        <Text style={{ fontSize: 16, color: '#898989', borderBottomWidth: 0.2, borderColor: '#c0bcbc', paddingBottom: 5 }}>BMR</Text>
+                        <Text style={{ fontWeight: 600, fontSize: 18, paddingTop: 5 }}>{newWeight?.bmr}</Text>
+                        <Text style={{ color: '#898989', marginTop: 5 }}>(kcal)</Text>
                     </View>
                 </View>
-            </View>
-        </View>
+            </View >
+        </View >
     )
 }
 
@@ -58,7 +67,7 @@ export default WeightPlanSection
 const styles = StyleSheet.create({
     section: {
         backgroundColor: 'white',
-        borderColor: COLORS.grey,
+        borderColor: '#f0f0f0',
         borderWidth: 0.8,
         borderRadius: 15,
         padding: 16,
@@ -74,6 +83,7 @@ const styles = StyleSheet.create({
         fontWeight: '500'
     },
     medicationReminderStats: {
+        flexDirection: 'row',
         marginTop: 16,
         backgroundColor: '#f8f9fd',
         borderRadius: 15,

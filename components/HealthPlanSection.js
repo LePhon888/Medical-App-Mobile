@@ -10,7 +10,6 @@ import Feather from "react-native-vector-icons/Feather"
 import Octicons from "react-native-vector-icons/Octicons";
 import StatusIcon from "./MedicationReminder/StatusIcon";
 import * as GlobalNavigation from "../utils/GlobalNavigation"
-import { TouchableOpacity } from "react-native-gesture-handler";
 import Loading from "./Loading";
 import { useIsFocused } from "@react-navigation/native";
 
@@ -111,10 +110,7 @@ const HealthPlanSection = () => {
 
                 {/* Header View */}
                 <View style={[styles.flexRowCenter]}>
-                    <Image
-                        source={{ uri: 'https://cdn-icons-png.flaticon.com/512/3030/3030201.png' }}
-                        style={{ width: 32, height: 32 }}
-                    />
+                    <Image source={require('../assets/images/medicinebox2.png')} style={{ width: 31, height: 31 }} />
                     <Text style={styles.title}>{'Nhắc nhở uống thuốc'}</Text>
                     <Feather
                         name="arrow-up-right"
@@ -138,7 +134,7 @@ const HealthPlanSection = () => {
                                 <View style={[styles.flexRowCenter, styles.marginTopS]}>
                                     <Image
                                         source={require('../assets/images/pill.png')}
-                                        style={{ width: 32, height: 32 }}
+                                        style={{ width: 31, height: 31 }}
                                     />
                                     <Text style={styles.bold}>{medicationReminder.total}</Text>
 
@@ -263,7 +259,7 @@ const HealthPlanSection = () => {
 const styles = StyleSheet.create({
     section: {
         backgroundColor: 'white',
-        borderColor: COLORS.grey,
+        borderColor: '#f0f0f0',
         borderWidth: 0.8,
         borderRadius: 15,
         padding: 16,
