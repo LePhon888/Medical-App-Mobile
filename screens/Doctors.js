@@ -30,7 +30,7 @@ const Doctors = ({ navigation }) => {
     const [searchName, setSearchName] = useState('')
     const filterRef = useRef(null)
     const [filter, setFilter] = useState({
-        departmentName: 'Đa khoa',
+        departmentName: 'Tất cả',
         departmentImage: require('../assets/images/departments/AllDepartments.png'),
         male: true,
         female: true,
@@ -86,7 +86,7 @@ const Doctors = ({ navigation }) => {
             if (!filter) {
                 return setLoadingDoctor(false)
             }
-            const endpoint = `${endpoints["doctors"]}/?departmentName=${filter.departmentName === 'Đa khoa' ? '' : filter.departmentName}&feeMin=${filter.feeMin}
+            const endpoint = `${endpoints["doctors"]}/?departmentName=${filter.departmentName === 'Tất cả' ? '' : filter.departmentName}&feeMin=${filter.feeMin}
             &feeMax=${filter.feeMax}&gender=${(!filter.male && !filter.female) || (filter.male && filter.female) ? 2 : filter.male ? 0 : 1}`
             const res = await Apis.get(endpoint);
             setDoctors(res.data);
@@ -102,7 +102,7 @@ const Doctors = ({ navigation }) => {
             try {
                 const department = await Apis.get(endpoints.departments);
                 setDepartments([
-                    { name: "Đa khoa", image: 'AllDepartments' },
+                    { name: "Tất cả", image: 'AllDepartments' },
                     ...department.data,
                 ]);
                 const feeRange = await Apis.get(`${endpoints["fee"]}/range`)

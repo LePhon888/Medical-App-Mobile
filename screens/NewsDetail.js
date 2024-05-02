@@ -158,9 +158,9 @@ export default function NewsDetail({ navigation, route }) {
               <Text style={styles.headerLocationText}>
                 Tác giả: {news.author}
               </Text>
-              {news.audio && <TouchableOpacity onPress={() => setIsPlaying(pre => !pre)}>
+              {/* {news.audio && <TouchableOpacity onPress={() => setIsPlaying(pre => !pre)}>
                 <Ionicons name={isPlaying ? "pause-circle-outline" : "play-circle-outline"} size={30} color={COLORS.primary} />
-              </TouchableOpacity>}
+              </TouchableOpacity>} */}
             </View>
 
             {/* <Text style={styles.headerPrice}>$650.00</Text> */}

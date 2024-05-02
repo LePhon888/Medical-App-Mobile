@@ -129,7 +129,7 @@ export default function News({ navigation }) {
                         <Text style={{ ...styles.cardSubtitle, fontSize: 12 }}>
                           {moment(new Date(parseInt(item.createdDate)).toLocaleDateString('vi'), "DDMMYYYY").fromNow()}
                         </Text>
-                        {item.audio && <Ionicons name="volume-high" size={19} style={{ color: '#7f8c8d', marginLeft: -70 }} />}
+                        {/* {item.audio && <Ionicons name="volume-high" size={19} style={{ color: '#7f8c8d', marginLeft: -70 }} />} */}
                       </View>
                     </View>
                     <Image alt="img" source={{ uri: item.image }} style={styles.cardCover} />
@@ -255,7 +255,7 @@ export default function News({ navigation }) {
                               <Text style={styles.cardRowItemTextNews}>
                                 {moment(new Date(parseInt(item.createdDate)).toLocaleDateString('vi'), "DDMMYYYY").fromNow()}
                               </Text>
-                              {item.audio && <Ionicons name="volume-high" size={19} style={{ color: '#7f8c8d', marginLeft: 8 }} />}
+                              {/* {item.audio && <Ionicons name="volume-high" size={19} style={{ color: '#7f8c8d', marginLeft: 8 }} />} */}
                               {/* <Text>{item.content.replace(htmlRegexG, '').replace(/undefined/g, '').replace(/&nbsp;/g, '').replace(/\s+/g, ' ').length}</Text> */}
                             </View>
                           </View>
@@ -302,7 +302,7 @@ export default function News({ navigation }) {
                               <Text style={styles.cardRowItemTextNews}>
                                 {moment(new Date(parseInt(item.createdDate)).toLocaleDateString('vi'), "DDMMYYYY").fromNow()}
                               </Text>
-                              {item.audio && <Ionicons name="volume-high" size={20} style={{ color: '#7f8c8d', marginLeft: 8 }} />}
+                              {/* {item.audio && <Ionicons name="volume-high" size={20} style={{ color: '#7f8c8d', marginLeft: 8 }} />} */}
                             </View>
                             {/* <Text>{item.content.replace(htmlRegexG, '').replace(/undefined/g, '').replace(/&nbsp;/g, '').replace(/\s+/g, ' ').length}</Text> */}
                           </View>

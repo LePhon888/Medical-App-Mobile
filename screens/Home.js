@@ -2,8 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { Image } from 'react-native';
 import { SafeAreaView, ScrollView, StatusBar, StyleSheet, View, Text, ImageBackground, FlatList, Dimensions, TouchableOpacity, } from "react-native";
 import { FloatingAction } from "react-native-floating-action";
-const { width } = Dimensions.get("screen");
-import { } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SimplePaginationDot } from '../components';
 import { categoryIcons, data, dataCategoryNews } from "../config/data";
@@ -18,8 +16,12 @@ import { useNotification } from "../context/NotificationContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
 import HealthPlanSection from "../components/HealthPlanSection";
+import Draggable from "react-native-draggable";
+import WeightPlanSection from "../components/WeightPlanSection";
 
+const { width } = Dimensions.get("screen");
 const { width: windowWidth } = Dimensions.get('window');
+const { height: windowHeight } = Dimensions.get('window');
 
 const INITIAL_INDEX = 1;
 const Home = ({ navigation, route }) => {
@@ -286,12 +288,14 @@ const Home = ({ navigation, route }) => {
             <View style={[style.listHeader, { marginBottom: 16 }]}>
               <Text style={style.listTitle}>{'Kế hoạch sức khỏe'}</Text>
             </View>
+            <WeightPlanSection />
             <HealthPlanSection />
           </View>
 
+
           {/* End Health Plan Section */}
 
-          <View style={style.list}>
+          {/* <View style={style.list}>
             <View style={style.listHeader}>
               <Text style={style.listTitle}>Chuyên mục</Text>
               <TouchableOpacity
@@ -302,9 +306,9 @@ const Home = ({ navigation, route }) => {
                 <FeatherIcon color="#706F7B" name="chevron-right" size={16} />
               </TouchableOpacity>
             </View>
-          </View>
+          </View> */}
 
-          <ScrollView contentContainerStyle={style.listContent} horizontal={true} showsHorizontalScrollIndicator={false}>
+          {/* <ScrollView contentContainerStyle={style.listContent} horizontal={true} showsHorizontalScrollIndicator={false}>
             {dataCategoryNews.map(({ path, label, color }, index) => (
               <TouchableOpacity
                 key={index}
@@ -318,7 +322,7 @@ const Home = ({ navigation, route }) => {
                 </View>
               </TouchableOpacity>
             ))}
-          </ScrollView>
+          </ScrollView> */}
           <FlatList
             snapToInterval={width - 20}
             contentContainerStyle={{ paddingLeft: 20, paddingBottom: 20, marginBottom: 60 }}
@@ -329,18 +333,18 @@ const Home = ({ navigation, route }) => {
           />
         </View>
       </ScrollView>
-      {/* <Draggable x={300} y={200} renderSize={80} renderColor='black' isCircle onLongPress={() => console.log('touched!!')}>
+      <Draggable x={windowWidth} y={windowHeight * 0.93} renderSize={80} renderColor='black' isCircle >
         <FloatingAction
           iconHeight={70}
           iconWidth={70}
           actions={[]}
-          onPressMain={() => navigation.navigate("ChatBot")}
+          onPressMain={() => navigation.navigate("Chatbot")}
           overlayColor={"#FFFFF"}
           floatingIcon={{
-            uri: "https://cdn.dribbble.com/userupload/2798813/file/original-a9da6aa3bf061621ab9d8c97a226a358.png",
+            uri: 'https://img.freepik.com/free-vector/chatbot-chat-message-vectorart_78370-4104.jpg?size=626&ext=jpg&ga=GA1.1.34619204.1714543244&semt=sph',
           }}
         />
-      </Draggable> */}
+      </Draggable>
     </SafeAreaView >
   );
 };

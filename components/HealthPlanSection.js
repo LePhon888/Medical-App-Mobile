@@ -118,7 +118,7 @@ const HealthPlanSection = () => {
                     <Text style={styles.title}>{'Nhắc nhở uống thuốc'}</Text>
                     <Feather
                         name="arrow-up-right"
-                        size={24}
+                        size={20}
                         style={{
                             backgroundColor: COLORS.toastInfo,
                             color: COLORS.white,
@@ -134,7 +134,7 @@ const HealthPlanSection = () => {
                         {/* Stats View */}
                         <View style={[styles.medicationReminderStats, styles.flexRowCenter]}>
                             <View style={{ marginRight: 'auto' }}>
-                                <Text>{'Tổng số liều'}</Text>
+                                <Text style={{ fontSize: 17 }}>Tổng số liều</Text>
                                 <View style={[styles.flexRowCenter, styles.marginTopS]}>
                                     <Image
                                         source={require('../assets/images/pill.png')}
@@ -145,7 +145,7 @@ const HealthPlanSection = () => {
                                 </View>
                             </View>
                             <View style={{ marginRight: 24, alignItems: 'center' }}>
-                                <Text>{'Dùng'}</Text>
+                                <Text style={{ fontSize: 17 }}>{'Dùng'}</Text>
                                 <View style={[styles.flexRowCenter, styles.marginTopS]}>
                                     <StatusIcon
                                         iconName="check-circle-fill"
@@ -156,7 +156,7 @@ const HealthPlanSection = () => {
                                 </View>
                             </View>
                             <View style={{ alignItems: 'center' }}>
-                                <Text>{'Bỏ qua'}</Text>
+                                <Text style={{ fontSize: 17 }}>{'Bỏ qua'}</Text>
                                 <View style={[styles.flexRowCenter, styles.marginTopS]}>
                                     <StatusIcon
                                         iconName="x-circle-fill"
@@ -275,7 +275,8 @@ const styles = StyleSheet.create({
     title: {
         marginLeft: 12,
         marginRight: 'auto',
-        fontWeight: 'bold'
+        fontSize: 17,
+        fontWeight: '500'
     },
     medicationReminderStats: {
         marginTop: 16,
@@ -285,7 +286,8 @@ const styles = StyleSheet.create({
     },
     bold: {
         fontWeight: 'bold',
-        marginLeft: 8
+        marginLeft: 8,
+        fontSize: 18
     },
     marginTopS: {
         marginTop: 8

@@ -12,6 +12,7 @@ import AppointmentRegister from "../screens/AppointmentRegister";
 import { useUser } from "../context/UserContext";
 import DoctorAppointment from "../screens/DoctorAppointment";
 import { SyntheticNews } from "../screens";
+import COLORS from "../constants/colors";
 
 const Tab = createBottomTabNavigator();
 
@@ -42,14 +43,13 @@ function BottomNavigation({ navigation }) {
           height: 60,
           paddingTop: 8,
           paddingBottom: 4,
-          backgroundColor: '#fff',
-          borderTopLeftRadius: 24,
-          borderTopRightRadius: 24,
-          borderWidth: 0.1,
-          borderColor: '#ccc',
+          // borderTopLeftRadius: 24,
+          // borderTopRightRadius: 24,
           //position: 'absolute',
           overflow: 'hidden',
         },
+        tabBarActiveTintColor: COLORS.primary,
+        tabBarInactiveTintColor: COLORS.gray,
       }}
     >
       <Tab.Screen
