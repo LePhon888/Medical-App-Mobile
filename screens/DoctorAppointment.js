@@ -25,6 +25,7 @@ import DateRangePicker from "../components/DateRangePicker";
 import { formatDateMoment } from "../config/date";
 import Loading from "../components/Loading";
 import getNewAccessToken from "../utils/getNewAccessToken";
+import Toast from "react-native-toast-message";
 
 const DoctorAppointment = () => {
     const [tempList, setTempList] = useState([])
@@ -70,6 +71,7 @@ const DoctorAppointment = () => {
                     console.log(sections)
                 }
             } catch (error) {
+                Toast.show('Lỗi khi lấy dữ liệu lịch khám', { position: 'bottom' });
                 console.error(error);
             } finally {
                 setFetched(true)

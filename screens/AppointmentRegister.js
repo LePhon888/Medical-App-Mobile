@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useEffect, useReducer, useRef, useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView, Image, TextInput, ScrollView, TouchableWithoutFeedback, Linking, Share } from 'react-native';
 import HeaderWithBackButton from '../common/HeaderWithBackButton';
 import Fontisto from 'react-native-vector-icons/Fontisto';
@@ -10,7 +10,7 @@ import CalendarPicker from 'react-native-calendar-picker';
 import { morning, afternoon, evening } from '../config/data';
 import { formatDate } from '../config/date';
 import { getUserFromStorage } from '../utils/GetUserFromStorage';
-import Apis, { endpoints } from '../config/Apis';
+import Apis, { SERVER, endpoints } from '../config/Apis';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import WebView from 'react-native-webview';
 import moment from 'moment';
@@ -79,15 +79,25 @@ export default function AppointmentRegister({ navigation, route }) {
             );
             setPayment(resPayment);
         } catch (error) {
+            Toast.show({
+                type: "error",
+                text1: "Đặt hẹn thất bại",
+            });
             console.error("Error fetching appointment data:", error);
         }
     }
+
+    const webviewRef = useRef(null);
+
+
     const onNavigationStateChange = (navState) => {
-        //192.168.1.7
-        // const pathWithoutHost = navState.url.split('//')[1].split('/').slice(1).join('/');
-        // console.log('pathWithoutHost==============', pathWithoutHost);
-        navState.url?.includes('payment-response') && navState.url?.includes('vnp_PayDate') &&
-            navigation.navigate('Status', { status: 1 });
+        if (navState.url.startsWith('http://192.168')) {
+            // webviewRef.current.stopLoading();
+            const pathWithoutHost = navState.url.split('//')[1].split('/').slice(1).join('/');
+            const newUrl = SERVER + '/' + pathWithoutHost;
+            webviewRef.current.injectJavaScript(`window.location.href = "${newUrl}";`);
+            navState.url?.includes('payment-response') && navState.url?.includes('vnp_PayDate') && navigation.navigate('Status', { status: 1 });
+        }
     }
 
     //check duplicate hour
@@ -103,6 +113,10 @@ export default function AppointmentRegister({ navigation, route }) {
                 });
             setConditionHour(response.data);
         } catch (error) {
+            Toast.show({
+                type: "error",
+                text1: "Lỗi khi lấy giờ hẹn",
+            });
             console.error('Error retrieving appointment hour:', error);
         }
     };
@@ -113,7 +127,7 @@ export default function AppointmentRegister({ navigation, route }) {
         setSelectedStartDate(date.toString());
     }
     if (payment?.data.url) {
-        return (<WebView source={{ uri: payment?.data.url }} style={{ flex: 1 }} onNavigationStateChange={onNavigationStateChange} />)
+        return (<WebView ref={webviewRef} source={{ uri: payment?.data.url }} style={{ flex: 1 }} onNavigationStateChange={onNavigationStateChange} />)
     }
     else
         return (
