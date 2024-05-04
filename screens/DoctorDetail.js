@@ -18,6 +18,7 @@ import ToastConfig from '../components/ToastConfig';
 import { useDoctorRating } from '../context/DoctorRatingContext';
 import { useUser } from '../context/UserContext';
 import getNewAccessToken from '../utils/getNewAccessToken';
+import Toast from 'react-native-toast-message';
 
 
 const DoctorDetail = ({ navigation, route }) => {
@@ -115,6 +116,7 @@ const DoctorDetail = ({ navigation, route }) => {
                 }
 
             } catch (error) {
+                Toast.show(ToastConfig("error", "Lỗi", "Không thể lấy dữ liệu bác sĩ"));
                 console.error('Error fetching 123 data:', error);
             }
         };

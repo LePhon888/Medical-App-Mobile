@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -20,6 +20,7 @@ import { ActivityIndicator } from "react-native-paper";
 import WebView from "react-native-webview";
 import getNewAccessToken from "../utils/getNewAccessToken";
 import { useUser } from "../context/UserContext";
+import Toast from "react-native-toast-message";
 
 export default function AppointmentList({ navigation }) {
   const [appointment, setAppointment] = useState(null);
@@ -34,9 +35,7 @@ export default function AppointmentList({ navigation }) {
     const fetchData = async () => {
       try {
         await getNewAccessToken();
-        const user = await AsyncStorage.getItem("user");
         const accessToken = await AsyncStorage.getItem("accessToken");
-
         const response = await Apis.get(
           endpoints.appointment + "/detail/" + userId,
           {
@@ -47,6 +46,13 @@ export default function AppointmentList({ navigation }) {
         );
         setAppointment(response.data);
       } catch (error) {
+        Toast.show({
+          type: 'error',
+          text1: 'Lỗi',
+          text2: 'Không thể lấy dữ liệu lịch sử đặt hẹn',
+          visibilityTime: 2000,
+          autoHide: true,
+        });
         console.error("Error fetching appointment detail data:", error);
       }
     };
@@ -64,12 +70,19 @@ export default function AppointmentList({ navigation }) {
     }
   }
 
+  const webviewRef = useRef(null);
   const onNavigationStateChange = (navState) => {
-    navState.url?.includes('payment-response') && navState.url?.includes('vnp_PayDate') && navigation.navigate('Status', { status: 1 });
+    if (navState.url.startsWith('http://192.168')) {
+      // webviewRef.current.stopLoading();
+      const pathWithoutHost = navState.url.split('//')[1].split('/').slice(1).join('/');
+      const newUrl = SERVER + '/' + pathWithoutHost;
+      webviewRef.current.injectJavaScript(`window.location.href = "${newUrl}";`);
+      navState.url?.includes('payment-response') && navState.url?.includes('vnp_PayDate') && navigation.navigate('Status', { status: 1 });
+    }
   }
 
   if (payment?.data.url) {
-    return (<WebView source={{ uri: payment?.data.url }} style={{ flex: 1 }} onNavigationStateChange={onNavigationStateChange} />)
+    return (<WebView ref={webviewRef} source={{ uri: payment?.data.url }} style={{ flex: 1 }} onNavigationStateChange={onNavigationStateChange} />)
   }
   return (
     <SafeAreaView style={{ backgroundColor: "#fff", flex: 1 }}>
@@ -91,7 +104,8 @@ export default function AppointmentList({ navigation }) {
         {appointment === null && <ActivityIndicator size={40} color={COLORS.primary} style={{ marginTop: 300 }} />}
         {medActiveTab == 1 ? appointment?.filter(item =>
           moment(item.date).isSameOrAfter(moment(), 'day') &&
-          item.hour.hour.slice(0, 2) >= moment().hour() && item.hour.hour.slice(3, 5) + 1 >= moment().minute()
+          (moment(item.date).isSame(moment(), 'day') ?
+            moment().format('HH:mm') <= item.hour.hour : true)
         ).map((item, index) => {
           return (
             <View key={index}>

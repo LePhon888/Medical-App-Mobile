@@ -20,6 +20,7 @@ export default function MedicineList({ navigation }) {
         const fetchData = async () => {
             try {
                 const value = await cache.get("medicineList");
+                console.log("value", value);
                 setMed(value);
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -67,14 +68,13 @@ export default function MedicineList({ navigation }) {
                     value={searchQuery}                >
                 </TextInput>
             </View>
-            <ScrollView>
-                {!searchQuery &&
-                    <View style={{ marginHorizontal: 12 }}>
-                        <Image source={require('../assets/images/medicinebanner.png')} style={{ width: '100%', height: 200, marginBottom: 3, borderRadius: 10 }} />
-                    </View>
-                }
-                <View>
-                    {/* {med?.map((item, index) => {
+            {!searchQuery &&
+                <View style={{ marginHorizontal: 12 }}>
+                    <Image source={require('../assets/images/medicinebanner.png')} style={{ width: '100%', height: 200, marginBottom: 3, borderRadius: 10 }} />
+                </View>
+            }
+            <View>
+                {/* {med?.map((item, index) => {
                         return (
                             <TouchableOpacity key={index} style={{ borderBottomWidth: 0.3, borderColor: '#ccc', paddingVertical: 18, marginHorizontal: 16 }}>
                                 <Text style={{ fontWeight: 600, fontSize: 15 }}>
@@ -83,13 +83,12 @@ export default function MedicineList({ navigation }) {
                             </TouchableOpacity>
                         )
                     })} */}
-                    <FlatList
-                        data={med}
-                        renderItem={renderItem}
-                        keyExtractor={item => item.id} // Provide a unique key for each item
-                    />
-                </View>
-            </ScrollView>
+                <FlatList
+                    data={med}
+                    renderItem={renderItem}
+                    keyExtractor={item => item.id} // Provide a unique key for each item
+                />
+            </View>
         </View>
     )
 }

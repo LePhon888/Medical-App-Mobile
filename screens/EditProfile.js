@@ -110,6 +110,7 @@ const EditProfile = ({ route, navigation }) => {
             }
         } catch (error) {
             console.log(error);
+            Toast.show("Có lỗi xảy ra, vui lòng thử lại sau", Toast.LONG);
             if (error.response && error.response.status === 400)
                 setError(error.response.data);
             else setError("Vui lòng chọn ảnh có kích thước nhỏ");
