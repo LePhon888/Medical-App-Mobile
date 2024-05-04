@@ -19,12 +19,13 @@ import moment from "moment/moment";
 import { ActivityIndicator } from "react-native-paper";
 import WebView from "react-native-webview";
 import getNewAccessToken from "../utils/getNewAccessToken";
+import { useUser } from "../context/UserContext";
 
 export default function AppointmentList({ navigation }) {
   const [appointment, setAppointment] = useState(null);
   const [payment, setPayment] = useState(null);
   const [medActiveTab, setMedActiveTab] = useState(1);
-
+  const { userId } = useUser();
   const medTabs = [
     { key: 1, title: 'Sắp đến' },
     { key: 2, title: 'Lịch sử đặt hẹn' },
@@ -35,8 +36,9 @@ export default function AppointmentList({ navigation }) {
         await getNewAccessToken();
         const user = await AsyncStorage.getItem("user");
         const accessToken = await AsyncStorage.getItem("accessToken");
+
         const response = await Apis.get(
-          endpoints.appointment + "/detail/" + JSON.parse(user).id,
+          endpoints.appointment + "/detail/" + userId,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`
@@ -45,7 +47,7 @@ export default function AppointmentList({ navigation }) {
         );
         setAppointment(response.data);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching appointment detail data:", error);
       }
     };
     fetchData();

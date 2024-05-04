@@ -67,31 +67,37 @@ const Home = ({ navigation, route }) => {
     }
   }, []);
 
+  const logout = async () => {
+    await Apis.delete(`${endpoints["userDevice"]}/delete/user/${userId}`)
+    await AsyncStorage.removeItem("accessToken");
+    await AsyncStorage.removeItem("refreshToken");
+    Toast.show({
+      type: "error",
+      position: "top",
+      text1: "Phiên đăng nhập đã hết hạn",
+      text2: "Vui lòng đăng nhập lại",
+      visibilityTime: 4000,
+      autoHide: true,
+      delay: 3000
+    });
+    dispatch({
+      type: "logout",
+    });
+    navigation.navigate("Login");
+  }
+
   useEffect(() => {
     const setupTimeout = async () => {
-      const expiredDateAccessToken = await AsyncStorage.getItem("expiredDateRefreshToken");
+      const expiredDateRefreshToken = await AsyncStorage.getItem("expiredDateRefreshToken");
       const currentTime = new Date();
-      const expiredTime = new Date(expiredDateAccessToken);
+      const expiredTime = new Date(expiredDateRefreshToken);
       const timeoutDuration = expiredTime - currentTime;
       if (timeoutDuration > 0) {
         setTimeout(async () => {
-          await Apis.delete(`${endpoints["userDevice"]}/delete/user/${userId}`)
-          await AsyncStorage.removeItem("accessToken");
-          await AsyncStorage.removeItem("refreshToken");
-          Toast.show({
-            type: "error",
-            position: "top",
-            text1: "Phiên đăng nhập đã hết hạn",
-            text2: "Vui lòng đăng nhập lại",
-            visibilityTime: 4000,
-            autoHide: true,
-            delay: 3000
-          });
-          dispatch({
-            type: "logout",
-          });
-          navigation.navigate("Login");
+          await logout();
         }, timeoutDuration);
+      } else if (timeoutDuration <= 0) {
+        await logout();
       }
     };
 
@@ -136,7 +142,7 @@ const Home = ({ navigation, route }) => {
               onPress={() => navigation.navigate(item.nav)}
             >
               <Image source={item.path} style={{ width: 31, height: 31, marginBottom: 3 }} />
-              <Text style={{ textAlign: 'center' }}>{item.text}</Text>
+              <Text style={{ textAlign: 'center', lineHeight: 20 }}>{item.text}</Text>
             </TouchableOpacity>
           </View>
         ))
@@ -231,7 +237,7 @@ const Home = ({ navigation, route }) => {
       <StatusBar translucent={false} backgroundColor={COLORS.primary} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={style.header}>
-          <View style={{ marginTop: 4 }}><Text style={{ color: COLORS.white, fontSize: 20, fontWeight: 600 }}>Chào bạn {userInfo?.firstName}</Text></View>
+          <View style={{ marginTop: 4 }}><Text style={{ color: COLORS.white, fontSize: 19, fontWeight: 600 }}>Chào bạn {userInfo?.firstName}</Text></View>
           <View style={{ flexDirection: 'row' }}>
             {/* <View style={{ padding: 6, backgroundColor: COLORS.white, width: 40, height: 40, marginRight: 10, borderRadius: 50 }}>
               <AntDesign name="search1" size={21} color={COLORS.black} style={{ marginLeft: 3, marginTop: 2 }} />
@@ -248,11 +254,12 @@ const Home = ({ navigation, route }) => {
         </View>
         <View
           style={{
-            backgroundColor: COLORS.primary,
-            height: 112,
+            backgroundColor: COLORS.white,
+            height: 102,
             paddingHorizontal: 20,
-            borderBottomEndRadius: 38,
-            borderBottomStartRadius: 38,
+            borderTopEndRadius: 40,
+            borderTopStartRadius: 40,
+            marginTop: -40,
           }}
         >
         </View>
@@ -285,7 +292,6 @@ const Home = ({ navigation, route }) => {
             />
             <SimplePaginationDot currentIndex={currentIndex} length={data.length} />
           </View>
-
           {/* Start Health Plan Section */}
           <View style={{ marginVertical: 16, }}>
             <View style={[style.listHeader, { marginBottom: 16 }]}>
@@ -336,7 +342,13 @@ const Home = ({ navigation, route }) => {
           />
         </View>
       </ScrollView>
-      <Draggable x={windowWidth} y={windowHeight * 0.93} renderSize={80} renderColor='black' isCircle >
+      <Draggable
+        x={windowWidth}
+        y={windowHeight * 0.93}
+        renderSize={80}
+        renderColor='black'
+        isCircle
+      >
         <FloatingAction
           iconHeight={70}
           iconWidth={70}
@@ -354,12 +366,13 @@ const Home = ({ navigation, route }) => {
 
 const style = StyleSheet.create({
   header: {
-    paddingTop: 14,
+    paddingTop: 8,
     paddingBottom: 8,
     paddingHorizontal: 20,
     flexDirection: "row",
     justifyContent: "space-between",
     backgroundColor: COLORS.primary,
+    height: 180,
   },
   headerTitle: {
     color: COLORS.white,
@@ -385,7 +398,7 @@ const style = StyleSheet.create({
     backgroundColor: COLORS.white,
     padding: 10,
     height: 190,
-    marginTop: -100,
+    marginTop: -180,
     width: '90%',
     alignItems: 'center',
     justifyContent: 'center',
@@ -401,8 +414,8 @@ const style = StyleSheet.create({
     elevation: 5,
   },
   iconContainer: {
-    height: 80,
-    width: '24%',
+    height: 86,
+    width: '25%',
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,

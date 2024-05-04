@@ -80,9 +80,7 @@ const Doctors = ({ navigation }) => {
     const fetchDoctors = async () => {
         try {
             setLoadingDoctor(true)
-            console.log('Run fetchDoctors')
             const filter = filterRef.current
-            console.log(filter)
             if (!filter) {
                 return setLoadingDoctor(false)
             }

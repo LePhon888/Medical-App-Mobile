@@ -10,6 +10,8 @@ import { ActivityIndicator } from "react-native";
 import optionCache from '../utils/optionCache';
 import { Cache } from 'react-native-cache';
 import moment from 'moment';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useUser } from '../context/UserContext';
 
 const CARD_WIDTH = Math.min(Dimensions.get('screen').width * 0.84, 400);
 
@@ -22,6 +24,9 @@ export default function News({ navigation }) {
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [savedPosts, setSavedPosts] = useState([]);
+  const { userId } = useUser()
+
   const cache = new Cache(optionCache);
 
   useEffect(() => {
@@ -50,12 +55,10 @@ export default function News({ navigation }) {
     };
     fetchData();
   }, [selectedCategory])
-
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const response = await Apis.get(`${endpoints.news}/random?page=${page}&size=${5}`);
-        console.log(response.data.pageable.pageNumber);
         setPosts(prevPosts => [...prevPosts, ...response.data.content]);
       } catch (error) {
         console.error('Error fetching posts:', error);
@@ -74,6 +77,16 @@ export default function News({ navigation }) {
       setPage(prevPage => prevPage + 1);
     }
   };
+
+  // const handleSave = async (postId) => {
+  //   try {
+  //     savedPosts.includes(postId) ?
+  //       await Apis.delete(`${endpoints.savePost}/delete?userId=${userId}&postId=${postId}`) :
+  //       await Apis.post(endpoints.savePost, { userId, postId });
+  //   } catch (error) {
+  //     console.error("Error fetching save post data:", error);
+  //   }
+  // };
 
 
   return (
@@ -111,7 +124,7 @@ export default function News({ navigation }) {
               return (
                 <TouchableOpacity
                   key={index}
-                  onPress={() => navigation.navigate("NewsDetail", item)}
+                  onPress={() => navigation.navigate("NewsDetail", { item, isSaved: savedPosts.includes(item.id) })}
                 >
                   <View style={styles.card}>
                     <View style={styles.cardBody}>
@@ -123,7 +136,7 @@ export default function News({ navigation }) {
                       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                         {/* <Text style={styles.cardRowItemTextNews}>{String(item.author)}</Text> */}
                         {/* <Text style={{ ...styles.cardRowDividerNews, marginHorizontal: 6 }}>·</Text> */}
-                        {/* <FontAwesome name="bookmark-o" size={18} style={{ marginLeft: '94%' }} /> */}
+                        {/* <FontAwesome name="bookmark-o" size={18} style={{ marginLeft: '94%' }} onPress={console.log('aaaa')} /> */}
                       </View>
                       <View style={{ flexDirection: 'row' }}>
                         <Text style={{ ...styles.cardSubtitle, fontSize: 12 }}>
@@ -194,15 +207,14 @@ export default function News({ navigation }) {
               {posts?.map((item, index) => {
                 return (
                   index == 0 ?
-                    <TouchableOpacity key={index} style={{
+                    <View key={index} style={{
                       marginTop: 10,
                       borderBottomColor: '#f3f4f6',
                       borderBottomWidth: 0.7,
-                      paddingBottom: 30,
+                      paddingBottom: 10,
                       marginTop: 14
-                    }}
-                      onPress={() => navigation.navigate("NewsDetail", item)}>
-                      <View style={{
+                    }}>
+                      <TouchableOpacity style={{
                         flexDirection: 'column',
                         alignItems: 'stretch',
                         borderRadius: 12,
@@ -210,7 +222,9 @@ export default function News({ navigation }) {
                         backgroundColor: '#fff',
                         position: 'relative',
                         height: 300
-                      }}>
+                      }}
+                        onPress={() => navigation.navigate("NewsDetail", { item, isSaved: savedPosts.includes(item.id) })}
+                      >
                         <Image
                           alt=""
                           resizeMode="cover"
@@ -239,17 +253,17 @@ export default function News({ navigation }) {
                           <Text style={styles.cardTitleNews}>{String(item.header)}</Text>
 
                           <View style={styles.cardRowNews}>
-                            {/* <View style={styles.cardRowItemNews}> */}
-                            {/* <Image
+                            <View style={styles.cardRowItemNews}>
+                              {/* <Image
                                 alt=""
                                 source={{ uri: item.authorImage ? item.authorImage : item.image }}
                                 style={styles.cardRowItemImgNews}
                               /> */}
 
-                            {/* <Text style={styles.cardRowItemTextNews}>{String(item.author)}</Text> */}
-                            {/* </View> */}
+                              <Text style={styles.cardRowItemTextNews}>{String(item.author)}</Text>
+                            </View>
 
-                            {/* <Text style={styles.cardRowDividerNews}>·</Text> */}
+                            <Text style={styles.cardRowDividerNews}>·</Text>
 
                             <View style={styles.cardRowItemNews}>
                               <Text style={styles.cardRowItemTextNews}>
@@ -259,20 +273,29 @@ export default function News({ navigation }) {
                               {/* <Text>{item.content.replace(htmlRegexG, '').replace(/undefined/g, '').replace(/&nbsp;/g, '').replace(/\s+/g, ' ').length}</Text> */}
                             </View>
                           </View>
-                          {/* <FontAwesome name="bookmark-o" size={19} style={{ position: 'absolute', right: 20, bottom: -20 }} /> */}
                         </View>
-                      </View>
-                    </TouchableOpacity> :
-                    <TouchableOpacity
+                      </TouchableOpacity>
+                      {/* <TouchableOpacity onPress={() => {
+                        //toggle save and unsave
+                        savedPosts.includes(item.id) ?
+                          setSavedPosts(savedPosts.filter(id => id !== item.id)) :
+                          setSavedPosts([...savedPosts, item.id]);
+                        handleSave(item.id)
+                      }}>
+                        <FontAwesome name={savedPosts.includes(item.id) ? "bookmark" : "bookmark-o"} size={22} style={{ position: 'absolute', right: 28, bottom: 10, color: savedPosts.includes(item.id) ? COLORS.primary : COLORS.black }} />
+                      </TouchableOpacity> */}
+                    </View> :
+                    <View
                       key={index}
-                      onPress={() => navigation.navigate("NewsDetail", item)}
                       style={{
                         borderBottomColor: '#f3f4f6',
                         borderBottomWidth: 0.7,
                         marginTop: 15
                       }}
                     >
-                      <View style={styles.cardNews}>
+                      <TouchableOpacity
+                        onPress={() => navigation.navigate("NewsDetail", { item, isSaved: savedPosts.includes(item.id) })}
+                        style={styles.cardNews}>
                         <Image
                           alt=""
                           resizeMode="cover"
@@ -286,17 +309,17 @@ export default function News({ navigation }) {
                           <Text style={styles.cardTitleNews}>{String(item.header)}</Text>
 
                           <View style={styles.cardRowNews}>
-                            {/* <View style={styles.cardRowItemNews}> */}
-                            {/* <Image
+                            <View style={styles.cardRowItemNews}>
+                              {/* <Image
                                 alt=""
                                 source={{ uri: item.authorImage ? item.authorImage : item.image }}
                                 style={styles.cardRowItemImgNews}
                               /> */}
 
-                            {/* <Text style={styles.cardRowItemTextNews}>{String(item.author)}</Text> */}
-                            {/* </View> */}
+                              <Text style={styles.cardRowItemTextNews}>{String(item.author)}</Text>
+                            </View>
 
-                            {/* <Text style={styles.cardRowDividerNews}>·</Text> */}
+                            <Text style={styles.cardRowDividerNews}>·</Text>
 
                             <View style={styles.cardRowItemNews}>
                               <Text style={styles.cardRowItemTextNews}>
@@ -306,10 +329,17 @@ export default function News({ navigation }) {
                             </View>
                             {/* <Text>{item.content.replace(htmlRegexG, '').replace(/undefined/g, '').replace(/&nbsp;/g, '').replace(/\s+/g, ' ').length}</Text> */}
                           </View>
-                          {/* <FontAwesome name="bookmark-o" size={19} style={{ position: 'absolute', right: 20, bottom: 4 }} /> */}
                         </View>
-                      </View>
-                    </TouchableOpacity>
+                      </TouchableOpacity>
+                      {/* <TouchableOpacity onPress={() => {
+                        savedPosts.includes(item.id) ?
+                          setSavedPosts(savedPosts.filter(id => id !== item.id)) :
+                          setSavedPosts([...savedPosts, item.id]);
+                        handleSave(item.id)
+                      }}>
+                        <FontAwesome name={savedPosts.includes(item.id) ? "bookmark" : "bookmark-o"} size={22} style={{ position: 'absolute', right: 28, bottom: 16, color: savedPosts.includes(item.id) ? COLORS.primary : COLORS.black }} />
+                      </TouchableOpacity> */}
+                    </View>
                 );
               })}
               {!posts && <ActivityIndicator size="large" color={COLORS.primary} style={{ marginTop: 50, justifyContent: 'center' }} />}
@@ -499,7 +529,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 19,
     color: '#000',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   cardRowNews: {
     flexDirection: 'row',

@@ -102,6 +102,8 @@ const DoctorDetail = ({ navigation, route }) => {
                 setDetail(detail.data);
                 /* Check if current login user have existed appointment, then we allow this user to rating */
                 const accessToken = await AsyncStorage.getItem("accessToken");
+                console.log(`${endpoints["appointment"]}/count?doctorId=${doctorId}&userId=${userId}`)
+                console.log(accessToken)
                 if (userId) {
                     const countAppointment = await Apis.get(`${endpoints["appointment"]}/count?doctorId=${doctorId}&userId=${userId}`,
                         {

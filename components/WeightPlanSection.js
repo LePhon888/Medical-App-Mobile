@@ -24,7 +24,7 @@ const WeightPlanSection = ({ navigation }) => {
         <View style={{ paddingHorizontal: 16, marginBottom: 20 }}>
             <View style={styles.section}>
                 <View style={[styles.flexRowCenter]}>
-                    <Image source={require('../assets/images/weight.png')} style={{ width: 32, height: 32 }} />
+                    <Image source={require('../assets/images/bathroom-scale.png')} style={{ width: 32, height: 32 }} />
                     <Text style={styles.title}>{'Cân nặng hiện tại'}</Text>
                     <TouchableOpacity onPress={() => navigation.navigate("Weight")}>
                         <Feather

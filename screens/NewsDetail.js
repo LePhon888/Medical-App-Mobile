@@ -21,76 +21,93 @@ import { useWindowDimensions } from 'react-native';
 import Sound from 'react-native-sound';
 import axios from "axios";
 import Apis, { endpoints } from "../config/Apis";
-const customIcons = [
-  <MaterialCommunityIcons
-    name="format-letter-case"
-    size={23}
-    onPress={() => {
-      setClickCount(prevCount => prevCount + 1);
+import { useUser } from "../context/UserContext";
 
-      if (clickCount >= 2) {
-        setFontSize(initialFontSize);
-        setClickCount(0);
-      } else {
-        setFontSize(prevSize => prevSize + 5);
-      }
-    }}
-  />,
-  // <FontAwesome name="bookmark-o" size={19} />,
-  // <FeatherIcon color="#242329" name="share" size={19} />
-];
 
 export default function NewsDetail({ navigation, route }) {
-  const news = route.params;
+  const news = route.params.item;
+  const isSaved = route.params.isSaved;
+  console.log('isSaved', isSaved)
   const { width } = useWindowDimensions();
   const source = { html: `${news?.content}` };
   const initialFontSize = 16;
   const [fontSize, setFontSize] = useState(initialFontSize);
-  const [clickCount, setClickCount] = useState(0);
   const [header, setHeader] = useState(null);
-  const [audio, setAudio] = useState(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [sound, setSound] = useState(null);
+  // const [audio, setAudio] = useState(null);
+  // const [isPlaying, setIsPlaying] = useState(false);
+  // const [sound, setSound] = useState(null);
   const [newsByCategory, setNewsByCategory] = useState([]);
+  const [isSavedPost, setIsSavedPost] = useState(isSaved);
+  const { userId } = useUser()
   const scrollViewRef = useRef(null);
 
-  var htmlRegexG = /<(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+>/g;
-  var modifiedContent = news.content.replace(htmlRegexG, '').replace(/undefined/g, '').replace(/&nbsp;/g, '').replace(/\s+/g, ' ');
+  const handleSave = async (postId) => {
+    try {
+      console.log(isSavedPost, userId, postId)
+      isSavedPost ?
+        await Apis.delete(`${endpoints.savePost}/delete?userId=${userId}&postId=${postId}`) :
+        await Apis.post(endpoints.savePost, { userId, postId });
+    } catch (error) {
+      console.error("Error fetching save post data:", error);
+    }
+  };
+
+  const customIcons = [
+    <MaterialCommunityIcons
+      name="format-letter-case"
+      size={23}
+      onPress={() => {
+        setClickCount(prevCount => prevCount + 1);
+        if (clickCount >= 2) {
+          setFontSize(initialFontSize);
+          setClickCount(0);
+        } else {
+          setFontSize(prevSize => prevSize + 5);
+        }
+      }}
+    />,
+    <FontAwesome
+      onPress={() => { setIsSavedPost(!isSavedPost); handleSave(news.id) }}
+      name={isSavedPost ? "bookmark" : "bookmark-o"} size={22} style={{ color: isSavedPost ? COLORS.primary : COLORS.black }} />
+    // <FeatherIcon color="#242329" name="share" size={19} />
+  ];
+  // var htmlRegexG = /<(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+>/g;
+  // var modifiedContent = news.content.replace(htmlRegexG, '').replace(/undefined/g, '').replace(/&nbsp;/g, '').replace(/\s+/g, ' ');
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await Apis.get(`${endpoints["postBycategory"]}${news.category.id}?size=${3}`)
+        const response = await Apis.get(`${endpoints["postBycategory"]}${news.category?.id}?size=${3}`)
         setNewsByCategory(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
     fetchData();
-  }, [news.category.id, news.id])
+  }, [news.category?.id, news?.id])
 
-  useEffect(() => {
-    const soundObject = new Sound(news.audio ?? '', '', (error) => {
-      setSound(soundObject);
-    });
+  // useEffect(() => {
+  //   const soundObject = new Sound(news.audio ?? '', '', (error) => {
+  //     setSound(soundObject);
+  //   });
 
-    return () => {
-      soundObject.release();
-    };
-  }, []);
+  //   return () => {
+  //     soundObject.release();
+  //   };
+  // }, []);
 
-  useEffect(() => {
-    if (isPlaying && sound) {
-      sound.play((success) => {
-        if (!success) {
-          console.log('Sound did not play successfully');
-        } else {
-          console.log('Sound play successfully');
-        }
-      });
-    } else if (!isPlaying && sound) {
-      sound.pause();
-    }
-  }, [isPlaying, sound]);
+  // useEffect(() => {
+  //   if (isPlaying && sound) {
+  //     sound.play((success) => {
+  //       if (!success) {
+  //         console.log('Sound did not play successfully');
+  //       } else {
+  //         console.log('Sound play successfully');
+  //       }
+  //     });
+  //   } else if (!isPlaying && sound) {
+  //     sound.pause();
+  //   }
+  // }, [isPlaying, sound]);
 
   // useEffect(() => {
   //   const fetchAudio = async () => {
@@ -212,19 +229,19 @@ export default function NewsDetail({ navigation, route }) {
                   <Image
                     alt=""
                     resizeMode="cover"
-                    source={{ uri: item.image }}
+                    source={{ uri: item?.image }}
                     style={styles.cardImgNews}
                   />
 
                   <View style={styles.cardBodyNews}>
-                    <Text style={styles.cardTagNews}>{String(item.category.name)}</Text>
+                    <Text style={styles.cardTagNews}>{String(item?.category?.name)}</Text>
 
-                    <Text style={styles.cardTitleNews}>{String(item.header)}</Text>
+                    <Text style={styles.cardTitleNews}>{String(item?.header)}</Text>
 
                     <View style={styles.cardRowNews}>
                       <View style={styles.cardRowItemNews}>
-                        <Text style={styles.cardRowItemTextNews}>{new Date(parseInt(item.createdDate)).toLocaleDateString('vi')}</Text>
-                        {item.audio && <Ionicons name="volume-high" size={20} style={{ color: '#7f8c8d', marginLeft: 6 }} />}
+                        <Text style={styles.cardRowItemTextNews}>{new Date(parseInt(item?.createdDate)).toLocaleDateString('vi')}</Text>
+                        {/* {item.audio && <Ionicons name="volume-high" size={20} style={{ color: '#7f8c8d', marginLeft: 6 }} />} */}
                       </View>
                     </View>
                     {/* <FontAwesome name="bookmark-o" size={19} style={{ position: 'absolute', right: 20, bottom: 4 }} /> */}

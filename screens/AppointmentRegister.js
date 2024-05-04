@@ -236,7 +236,7 @@ export default function AppointmentRegister({ navigation, route }) {
                                 </View>
                                 <View style={{ marginVertical: 10, flexDirection: 'row', flexWrap: 'wrap' }}>
                                     {hour.map((item, index) => {
-                                        const currentHour = moment().format('HH');
+                                        const currentHour = moment().format('HH:mm');
                                         const currentDate = moment().startOf('day');
                                         const compareDate = moment(selectedStartDate).startOf('day');
                                         const isPast = compareDate.isSame(currentDate) && item.hour < currentHour;

@@ -24,6 +24,7 @@ import Weight from "./Weight";
 import WeightHistory from "./WeightHistory";
 import SyntheticNews from "./SyntheticNews";
 import SyntheticNewsDetail from "./SyntheticNewsDetail";
+import SavedNews from "./SavedNews";
 
 export {
   Login,
@@ -45,5 +46,5 @@ export {
   MedicineList,
   Status, JoinScreen, IncomingCallScreen, OutgoingCallScreen, VideoConferencePage, Weight, WeightHistory,
   SyntheticNewsDetail,
-  SyntheticNews
+  SyntheticNews, SavedNews
 };
