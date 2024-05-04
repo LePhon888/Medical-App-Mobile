@@ -7,7 +7,7 @@ import {
   Login, Welcome, Signup, Home, ChatBot, Chat, MainScreen, Setting,
   AppointmentList, News, NewsDetail, Call, VideoHome, AppointmentRegister, Category,
   Notification, MedicineList, Status, JoinScreen, IncomingCallScreen, OutgoingCallScreen, VideoConferencePage,
-  Weight, WeightHistory, SyntheticNews, SyntheticNewsDetail
+  Weight, WeightHistory, SyntheticNews, SyntheticNewsDetail, SavedNews
 } from "./screens";
 
 import DoctorAppointment from "./screens/DoctorAppointment";
@@ -115,6 +115,7 @@ export default function App({ navigation }) {
                 <Stack.Screen name="SyntheticNews" component={SyntheticNews} options={{ headerShown: false }} />
                 <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerShown: false }} />
                 <Stack.Screen name="SyntheticNewsDetail" component={SyntheticNewsDetail} options={{ headerShown: false }} />
+                <Stack.Screen name="SavedNews" component={SavedNews} options={{ headerShown: false }} />
               </Stack.Navigator>
             </NavigationContainer>
             <ToastConfig />

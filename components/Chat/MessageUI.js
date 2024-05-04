@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 14,
     },
     imageContainer: {
-        marginTop: 10,
+        marginTop: 5,
         width: 32,
         height: 32,
     },
@@ -336,8 +336,8 @@ const styles = StyleSheet.create({
     messageContentContainer: {
         maxWidth: '80%',
         borderRadius: 15,
-        paddingHorizontal: 10,
-        paddingVertical: 8,
+        paddingHorizontal: 12,
+        paddingVertical: 12,
         backgroundColor: '#ECE5DD',
         marginTop: 3,
         marginBottom: 2,
@@ -354,6 +354,8 @@ const styles = StyleSheet.create({
     },
     messageText: {
         color: '#39393b',
+        fontSize: 14,
+        lineHeight: 22
     },
     inputContainer: {
         flexDirection: 'row',
@@ -388,7 +390,7 @@ const styles = StyleSheet.create({
     timestampText: {
         color: '#5c5c5c',
         fontWeight: 'bold',
-        fontSize: 13,
+        fontSize: 14,
     },
     timestamp: {
         color: '#5e5e5e',

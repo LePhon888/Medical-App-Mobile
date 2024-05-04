@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Apis, { endpoints } from "../config/Apis";
 
 export default getNewAccessToken = async () => {
+    const user = await AsyncStorage.getItem("user");
     const expiredDateAccessToken = await AsyncStorage.getItem("expiredDateAccessToken");
     const currentTime = new Date();
     const expiredTime = new Date(expiredDateAccessToken);
@@ -10,7 +11,7 @@ export default getNewAccessToken = async () => {
         try {
             const resAccessToken = await Apis.post(endpoints.refreshToken, {
                 refreshToken: refreshToken,
-                email: JSON.stringify(user).email,
+                email: JSON.parse(user).email,
             },);
             if (resAccessToken) {
                 await AsyncStorage.setItem("accessToken", resAccessToken.data.accessToken);

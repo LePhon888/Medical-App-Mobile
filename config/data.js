@@ -11,20 +11,20 @@ export const data = [
 ];
 export const categoryIcons = [
     {
-        path: require('../assets/images/robot.png'),
-        text: 'Chatbot AI',
-        nav: 'Chatbot'
-    },
-    {
         path: require('../assets/images/drugs.png'),
         text: 'Thư viện thuốc',
         nav: 'MedicineList'
     },
     {
-        path: require('../assets/images/kitchen-scale.png'),
+        path: require('../assets/images/weighing-management.png'),
         text: 'Theo dõi cân nặng',
         nav: 'Weight'
 
+    },
+    {
+        path: require('../assets/images/bookmark.png'),
+        text: 'Bài viết đã lưu',
+        nav: 'SavedNews'
     },
     {
         path: require('../assets/images/medical-history.png'),
@@ -32,19 +32,19 @@ export const categoryIcons = [
         nav: 'AppointmentList'
     },
     {
-        path: require('../assets/images/medical-report.png'),
+        path: require('../assets/images/membership.png'),
         text: 'Đăng ký khám',
         nav: 'Doctors'
-    },
-    {
-        path: require('../assets/images/video-call.png'),
-        text: 'Gọi video',
-        nav: 'VideoHome',
     },
     {
         path: require('../assets/images/medicine.png'),
         text: 'Hộp thuốc',
         nav: 'MedicationBox'
+    },
+    {
+        path: require('../assets/images/video.png'),
+        text: 'Gọi video',
+        nav: 'VideoHome',
     },
     {
         path: require('../assets/images/chat.png'),

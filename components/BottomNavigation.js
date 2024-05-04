@@ -13,6 +13,8 @@ import { useUser } from "../context/UserContext";
 import DoctorAppointment from "../screens/DoctorAppointment";
 import { SyntheticNews } from "../screens";
 import COLORS from "../constants/colors";
+import { TouchableOpacity, View } from "react-native";
+import { FloatingAction } from "react-native-floating-action";
 
 const Tab = createBottomTabNavigator();
 
