@@ -34,7 +34,7 @@ const MessageUI = ({ isBotMode, setTitle, room }) => {
     const prevSender = useRef(null)
 
     const [remoteUser, setRemoteUser] = useState({
-        userName: 'Medcare AI',
+        userName: 'MedCare AI',
         fromUser: 'AI',
         avatar: 'https://res.cloudinary.com/dkttl75tl/image/upload/v1715450898/chatbot_muwxkd.png',
         //avatar: 'https://img.freepik.com/free-vector/chatbot-chat-message-vectorart_78370-4104.jpg?size=626&ext=jpg&ga=GA1.1.34619204.1714543244&semt=sph',
@@ -130,7 +130,10 @@ const MessageUI = ({ isBotMode, setTitle, room }) => {
                 res.data.message,
                 false)
         } catch (error) {
-            console.error("onBotMessageRecieved", error)
+            Toast.show({
+                type: 'error',
+                text1: 'Lỗi hệ thống. Vui lòng thử lại sau.'
+            })
         } finally {
             setRemoteUser((prev) => ({ ...prev, typing: false }));
         }
