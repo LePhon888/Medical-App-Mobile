@@ -12,6 +12,7 @@ import { Cache } from 'react-native-cache';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUser } from '../context/UserContext';
+import { useFocusEffect } from '@react-navigation/native';
 
 const CARD_WIDTH = Math.min(Dimensions.get('screen').width * 0.84, 400);
 
@@ -27,10 +28,30 @@ export default function News({ navigation }) {
   const [savedPosts, setSavedPosts] = useState([]);
   const { userId } = useUser()
 
-  const cache = new Cache(optionCache);
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const response = await Apis.get(`${endpoints["postBycategory"]}${selectedCategory}?size=${5}`)
+      setNewsByCategory(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const fetchPosts = async () => {
+    try {
+      const response = await Apis.get(`${endpoints.news}/random?page=${page}&size=${5}`);
+      setPosts(prevPosts => [...prevPosts, ...response.data.content]);
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchDataCategory = async () => {
       try {
         const resCategory = await Apis.get(endpoints["category"])
         setCategory(resCategory.data);
@@ -40,34 +61,21 @@ export default function News({ navigation }) {
         console.error("Error fetching data:", error);
       }
     };
-    fetchData();
+    fetchDataCategory();
   }, [])
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const response = await Apis.get(`${endpoints["postBycategory"]}${selectedCategory}?size=${5}`)
-        setNewsByCategory(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
     fetchData();
   }, [selectedCategory])
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await Apis.get(`${endpoints.news}/random?page=${page}&size=${5}`);
-        setPosts(prevPosts => [...prevPosts, ...response.data.content]);
-      } catch (error) {
-        console.error('Error fetching posts:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchPosts();
   }, [page]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchPosts();
+      return () => { };
+    }, [])
+  );
 
   const handleScroll = event => {
     const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
