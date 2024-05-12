@@ -41,6 +41,7 @@ export default function NewsDetail({ navigation, route }) {
   const [clickCount, setClickCount] = useState(0);
   const scrollViewRef = useRef(null);
 
+
   const handleSave = async (postId) => {
     try {
       console.log(isSavedPost, userId, postId)

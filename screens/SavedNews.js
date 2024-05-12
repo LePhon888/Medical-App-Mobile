@@ -9,15 +9,21 @@ import { useUser } from '../context/UserContext'
 import moment from 'moment'
 import COLORS from '../constants/colors'
 import { useFocusEffect } from '@react-navigation/native'
-FontAwesome
+import { set } from 'lodash'
+import { ActivityIndicator } from 'react-native-paper'
 const SavedNews = ({ navigation }) => {
     const [news, setNews] = useState([])
     const { userId } = useUser()
     const [savedPosts, setSavedPosts] = useState([])
+    const [loading, setLoading] = useState(true)
     const fetchNews = async () => {
+        console.log('aaaaaaaa')
         try {
+            setLoading(true)
             const res = await Apis.get(endpoints.savePost + '/' + userId)
+            console.log("res.data", res.data.length)
             setNews(res.data)
+            setLoading(false)
         } catch (error) {
             console.error("Error fetching news:", error);
         }
@@ -25,12 +31,14 @@ const SavedNews = ({ navigation }) => {
     useEffect(() => {
         fetchNews();
     }, [])
+
     useFocusEffect(
         React.useCallback(() => {
             fetchNews();
             return () => { };
         }, [])
     );
+
     const handleSave = async (postId) => {
         try {
             savedPosts.includes(postId) ?
@@ -47,47 +55,49 @@ const SavedNews = ({ navigation }) => {
                 [<FontAwesome5Icon name="bookmark" size={22} />]
             } />
             <ScrollView style={{ marginHorizontal: 10 }} contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-                {news?.map((item, index) => {
-                    return (
-                        <View
-                            key={index}
-                            style={{
-                                borderBottomColor: '#f3f4f6',
-                                borderBottomWidth: 0.7,
-                                marginTop: 15
-                            }}
-                        >
-                            <TouchableOpacity
-                                onPress={() => navigation.navigate("NewsDetail", { item: item.post, isSaved: true })}
-                                style={styles.cardNews}>
-                                <Image
-                                    alt=""
-                                    resizeMode="cover"
-                                    source={{ uri: item.post.image }}
-                                    style={styles.cardImgNews}
-                                />
+                {loading ? <ActivityIndicator size="small" color={COLORS.primary} style={{ marginTop: 250 }}
+                /> :
+                    news?.map((item, index) => {
+                        return (
+                            <View
+                                key={index}
+                                style={{
+                                    borderBottomColor: '#f3f4f6',
+                                    borderBottomWidth: 0.7,
+                                    marginTop: 15
+                                }}
+                            >
+                                <TouchableOpacity
+                                    onPress={() => navigation.navigate("NewsDetail", { item: item.post, isSaved: true })}
+                                    style={styles.cardNews}>
+                                    <Image
+                                        alt=""
+                                        resizeMode="cover"
+                                        source={{ uri: item.post.image }}
+                                        style={styles.cardImgNews}
+                                    />
 
-                                <View style={styles.cardBodyNews}>
-                                    <Text style={styles.cardTagNews}>{String(item.post.category.name)}</Text>
+                                    <View style={styles.cardBodyNews}>
+                                        <Text style={styles.cardTagNews}>{String(item.post.category.name)}</Text>
 
-                                    <Text style={styles.cardTitleNews}>{String(item.post.header)}</Text>
+                                        <Text style={styles.cardTitleNews}>{String(item.post.header)}</Text>
 
-                                    <View style={styles.cardRowNews}>
-                                        <View style={styles.cardRowItemNews}>
-                                            <Text style={styles.cardRowItemTextNews}>{String(item.post.author)}</Text>
-                                        </View>
+                                        <View style={styles.cardRowNews}>
+                                            <View style={styles.cardRowItemNews}>
+                                                <Text style={styles.cardRowItemTextNews}>{String(item.post.author)}</Text>
+                                            </View>
 
-                                        <Text style={styles.cardRowDividerNews}>·</Text>
+                                            <Text style={styles.cardRowDividerNews}>·</Text>
 
-                                        <View style={styles.cardRowItemNews}>
-                                            <Text style={styles.cardRowItemTextNews}>
-                                                {moment(new Date(parseInt(item.post.createdDate)).toLocaleDateString('vi'), "DDMMYYYY").fromNow()}
-                                            </Text>
+                                            <View style={styles.cardRowItemNews}>
+                                                <Text style={styles.cardRowItemTextNews}>
+                                                    {moment(new Date(parseInt(item.post.createdDate)).toLocaleDateString('vi'), "DDMMYYYY").fromNow()}
+                                                </Text>
+                                            </View>
                                         </View>
                                     </View>
-                                </View>
-                            </TouchableOpacity>
-                            {/* <TouchableOpacity onPress={() => {
+                                </TouchableOpacity>
+                                {/* <TouchableOpacity onPress={() => {
                                 savedPosts.includes(item.post.id) ?
                                     setSavedPosts(savedPosts.filter(id => id !== item.post.id)) :
                                     setSavedPosts([...savedPosts, item.post.id]);
@@ -95,9 +105,9 @@ const SavedNews = ({ navigation }) => {
                             }}>
                                 <FontAwesome name={savedPosts.includes(item.post.id) ? "bookmark" : "bookmark-o"} size={22} style={{ position: 'absolute', right: 28, bottom: 16, color: savedPosts.includes(item.id) ? COLORS.primary : COLORS.black }} />
                             </TouchableOpacity> */}
-                        </View>
-                    )
-                })}
+                            </View>
+                        )
+                    })}
             </ScrollView>
         </View>
     )
