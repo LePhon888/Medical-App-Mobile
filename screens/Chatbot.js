@@ -7,7 +7,7 @@ const ChatBot = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <HeaderWithBackButton title={"Chatbot AI"} navigation={navigation} />
+      <HeaderWithBackButton title={"Trợ lý ảo"} navigation={navigation} />
       <MessageUI isBotMode={true} />
     </View>
   );

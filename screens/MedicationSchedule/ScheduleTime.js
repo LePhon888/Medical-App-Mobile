@@ -148,7 +148,7 @@ const ScheduleTime = ({ route, navigation }) => {
                         date={localDate}
                         onDateChange={(time) => handleOnTimeChange(time)}
                         androidVariant="nativeAndroid"
-                        locale="vi"
+                        locale="en"
                         textColor={COLORS.textLabel}
                         style={{
                             flex: 1, justifyContent: 'center', alignSelf: 'center'

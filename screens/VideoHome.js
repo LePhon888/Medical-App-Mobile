@@ -10,6 +10,7 @@ import COLORS from '../constants/colors';
 import Loading from '../components/Loading';
 import { useUser } from '../context/UserContext';
 import Apis, { endpoints } from '../config/Apis';
+import InputWithRightIcon from '../components/InputWithRightIcon';
 export default function VideoHome(props) {
     const navigation = useNavigation();
     const [roomId, setRoomId] = useState('')
@@ -25,6 +26,11 @@ export default function VideoHome(props) {
     const [localStream, setLocalStream] = useState(null)
     const { userId } = useUser()
     const userDetail = useRef(null)
+
+    const [validation, setValidation] = useState({
+        valid: true,
+        message: ''
+    })
 
     const requestCameraPermission = async () => {
         try {
@@ -166,7 +172,7 @@ export default function VideoHome(props) {
 
 
             localStream.getVideoTracks().forEach(track => {
-                track.enabled = !track.enabled;
+                track.enabled = !localDevice.camera;
             });
 
         } catch (err) {
@@ -202,7 +208,22 @@ export default function VideoHome(props) {
         }
     };
 
-    const insets = useSafeAreaInsets();
+    const onChangeRoomId = (text) => {
+        setRoomId(text);
+        setValidation({
+            valid: !text.includes(' '),
+            message: 'Mã phòng không được có khoảng trống.'
+        })
+    }
+
+    useEffect(() => {
+        const { deviceInfo } = props.route?.params || {};
+        if (deviceInfo) {
+            getLocalStream(true, true)
+            setLocalDevice((prev) => ({ ...prev, ...deviceInfo }))
+        }
+    }, [props.route])
+
 
     return (
         <View style={styles.screen}>
@@ -242,16 +263,32 @@ export default function VideoHome(props) {
                 </TouchableOpacity>
             </View>
 
-            <TextInput
-                placeholder="Nhập mã phòng"
-                style={[styles.input]}
-                onChangeText={text => setRoomId(text)}
-                value={roomId}
-            />
+            <View style={{ marginVertical: 16 }}>
+                <InputWithRightIcon
+                    placeholder={'Nhập mã phòng'}
+                    value={roomId}
+                    valid={validation.valid}
+                    errorMsg={validation.message}
+                    iconVisible={roomId.length > 0}
+                    onChangeText={(text) => onChangeRoomId(text)}
+                    style={{ marginHorizontal: '15%' }}
+                    errorMsgStyle={{ textAlign: 'center' }}
+                    textStyle={{ textAlign: 'center' }}
+                />
+            </View>
+
+
             <View style={[styles.buttonLine]}>
-                <Button title={'Tham gia'}
-                    filled style={{ borderRadius: 6 }}
-                    onPress={() => onJoinConferencePress()} />
+                <Button
+                    filled
+                    title={'Tham gia'}
+                    onPress={onJoinConferencePress}
+                    disabled={!validation.valid || roomId.length < 1}
+                    style={{
+                        borderRadius: 6,
+                        opacity: (!validation.valid || roomId.length < 1) ? 0.6 : 1
+                    }}
+                />
             </View>
 
             {loading && <Loading transparent={true} />}
@@ -345,7 +382,7 @@ const styles = StyleSheet.create({
     },
     icon: {
         color: 'white',
-        fontSize: 16,
+        fontSize: 24,
         backgroundColor: '#0e0e0e',
         borderRadius: 999,
         paddingVertical: 5,

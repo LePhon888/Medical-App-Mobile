@@ -24,14 +24,14 @@ import ChatIntroduction from "../components/Chat/ChatIntroduction";
 import Header from "../common/Header";
 
 import MessageUI from "../components/Chat/MessageUI";
+import HeaderWithBackButton from "../common/HeaderWithBackButton";
 
-const Chat = () => {
-  const [title, setTitle] = useState('Trò chuyện')
-  console.log('title', title)
+const Chat = ({ route }) => {
+  const { roomId } = route?.params || ''
   return (
     <View style={styles.container}>
-      <Header title={`Trò chuyện ${title}`} />
-      <MessageUI isBotMode={false} setTitle={(title) => setTitle(title)} />
+      <HeaderWithBackButton title={`Phòng ${roomId}`} />
+      <MessageUI isBotMode={false} room={roomId} />
     </View>
   )
 };

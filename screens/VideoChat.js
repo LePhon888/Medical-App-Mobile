@@ -15,8 +15,9 @@ import { CommonActions } from '@react-navigation/native';
 import COLORS from '../constants/colors';
 import HeaderWithBackButton from '../common/HeaderWithBackButton';
 import * as GlobalNavigation from '../utils/GlobalNavigation'
+import { PanResponder } from 'react-native';
 
-const VideoChat = (props) => {
+const VideoChat = ({ navigation, route }) => {
 
     const [message, setMessage] = useState(null)
     const [isShowButtons, setShowButtons] = useState(true)
@@ -34,8 +35,6 @@ const VideoChat = (props) => {
     const peerConnection = useRef(null)
     const broadCaster = useRef(true)
     const doneOffer = useRef(false)
-
-    const { route } = props;
     const { params } = route;
     const { roomId, userId, userName, userImage, device } = params
 
@@ -62,7 +61,11 @@ const VideoChat = (props) => {
             { urls: 'stun:stun1.l.google.com:19302' },
             { urls: 'stun:stun2.l.google.com:19302' },
             { urls: 'stun:stun3.l.google.com:19302' },
-            { urls: 'stun:stun4.l.google.com:19302' }
+            { urls: "stun:stun.relay.metered.ca:80" },
+            { urls: "turn:asia-east.relay.metered.ca:80", "username": "b53f27633883eac1523a1f09", "credential": "kUmedgnWMTl01F6F" },
+            { urls: "turn:asia-east.relay.metered.ca:80?transport=tcp", "username": "b53f27633883eac1523a1f09", "credential": "kUmedgnWMTl01F6F" },
+            { urls: "turn:asia-east.relay.metered.ca:443", "username": "b53f27633883eac1523a1f09", "credential": "kUmedgnWMTl01F6F" },
+            { urls: "turns:asia-east.relay.metered.ca:443?transport=tcp", "username": "b53f27633883eac1523a1f09", "credential": "kUmedgnWMTl01F6F" }
         ]
     };
 
@@ -81,7 +84,7 @@ const VideoChat = (props) => {
             stream.getTracks().forEach((track) => peerConnection.current.addTrack(track, stream));
             setLocalStream(stream);
         } catch (error) {
-            console.error('initializeWebRTC', error)
+            //console.error('initializeWebRTC', error)
         }
     };
 
@@ -227,7 +230,7 @@ const VideoChat = (props) => {
             setLocalStream(null);
         }
 
-        GlobalNavigation.goBack()
+        navigation.navigate('VideoHome', { deviceInfo: localDevice })
     };
 
     const handleLeaveRoom = async () => {
@@ -326,13 +329,16 @@ const VideoChat = (props) => {
     const toggleCamera = async () => {
         try {
 
+            console.log(localDevice)
+
             if (!localDevice.grantedCamera) {
                 return;
             }
 
             localStream.getVideoTracks().forEach(track => {
-                track.enabled = !track.enabled;
+                track.enabled = !localDevice.camera;
             });
+
             setLocalDevice(prev => ({ ...prev, camera: !localDevice.camera }));
         } catch (err) {
 
@@ -346,11 +352,12 @@ const VideoChat = (props) => {
                 return;
             }
 
-            const audioTrack = localStream.getAudioTracks()[0];
-            if (audioTrack) {
-                audioTrack.enabled = !audioTrack.enabled;
-                setLocalDevice(prev => ({ ...prev, audio: !localDevice.audio }));
-            }
+            setLocalDevice(prev => ({ ...prev, audio: !localDevice.audio }));
+
+            localStream.getAudioTracks().forEach(track => {
+                track.enabled = !track.enabled;
+            });
+
         } catch (err) {
             // Handle Error
             console.log('Error toggling audio:', err);
@@ -429,7 +436,8 @@ const VideoChat = (props) => {
                     }
 
                     {localStream &&
-                        <View style={remoteStream ? styles.localVideo : { flex: 1 }}>
+                        <View style={!remoteStream ? { flex: 1 }
+                            : [styles.localVideo]}>
                             {localDevice.camera && localDevice.grantedCamera ?
                                 <RTCView
                                     streamURL={localStream.toURL()}
@@ -581,7 +589,8 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#202020'
+        backgroundColor: '#202020',
+
     },
     imageHolder: {
         width: 120,

@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Image } from 'react-native';
-import { SafeAreaView, ScrollView, StatusBar, StyleSheet, View, Text, ImageBackground, FlatList, Dimensions, TouchableOpacity, } from "react-native";
+import { SafeAreaView, ScrollView, StatusBar, StyleSheet, View, Text, ImageBackground, FlatList, Dimensions, TouchableOpacity, Image, } from "react-native";
 import { FloatingAction } from "react-native-floating-action";
 import { useNavigation } from "@react-navigation/native";
 import { SimplePaginationDot } from '../components';
@@ -18,6 +17,9 @@ import Toast from "react-native-toast-message";
 import HealthPlanSection from "../components/HealthPlanSection";
 import Draggable from "react-native-draggable";
 import WeightPlanSection from "../components/WeightPlanSection";
+import CenterSheet from "../components/CenterSheet";
+import Button from "../components/Button";
+import InputWithRightIcon from "../components/InputWithRightIcon";
 
 const { width } = Dimensions.get("screen");
 const { width: windowWidth } = Dimensions.get('window');
@@ -31,6 +33,13 @@ const Home = ({ navigation, route }) => {
   const [userInfo, setUserInfo] = useState(null);
   const { userId } = useUser()
   const { state, dispatch } = useNotification();
+  const [showChatPopup, setShowChatPopup] = useState(false)
+  const [roomId, setRoomId] = useState('')
+  const [validation, setValidation] = useState({
+    valid: true,
+    message: ''
+  })
+
   const slideForward = () => {
     const nextIndex = (currentIndex + 1) % data.length;
     carouselRef.current.scrollToIndex(nextIndex);
@@ -130,6 +139,15 @@ const Home = ({ navigation, route }) => {
     );
   }
   const ListCategories = () => {
+
+    const itemOnClick = (item) => {
+      if (item.nav === 'Chat') {
+        return setShowChatPopup(true)
+      } else {
+        return navigation.navigate(item.nav)
+      }
+    }
+
     return (
       <View style={style.categoryContainer}>
         {categoryIcons.map((item, index) => (
@@ -139,7 +157,7 @@ const Home = ({ navigation, route }) => {
               alignItems: 'center',
               margin: 6
             }}
-              onPress={() => navigation.navigate(item.nav)}
+              onPress={() => itemOnClick(item)}
             >
               <Image source={item.path} style={{ width: 31, height: 31, marginBottom: 3 }} />
               <Text style={{ textAlign: 'center', lineHeight: 20 }}>{item.text}</Text>
@@ -231,6 +249,19 @@ const Home = ({ navigation, route }) => {
       </ImageBackground>
     );
   };
+
+  const onChangeRoomId = (text) => {
+    setRoomId(text);
+    setValidation({
+      valid: !text.includes(' '),
+      message: 'Mã phòng không được có khoảng trống.'
+    })
+  }
+
+  const joinChatRoom = () => {
+    setShowChatPopup(false)
+    return navigation.navigate('Chat', { roomId: roomId })
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#faf9fe' }}>
@@ -350,16 +381,66 @@ const Home = ({ navigation, route }) => {
         isCircle
       >
         <FloatingAction
-          iconHeight={70}
-          iconWidth={70}
+          iconHeight={54}
+          iconWidth={54}
           actions={[]}
           onPressMain={() => navigation.navigate("Chatbot")}
-          overlayColor={"#FFFFF"}
-          floatingIcon={{
-            uri: 'https://img.freepik.com/free-vector/chatbot-chat-message-vectorart_78370-4104.jpg?size=626&ext=jpg&ga=GA1.1.34619204.1714543244&semt=sph',
-          }}
+          floatingIcon={require('../assets/images/chatbot.png')}
+
+        /*
+        floatingIcon={{
+           uri: 'https://img.freepik.com/free-vector/chatbot-chat-message-vectorart_78370-4104.jpg?size=626&ext=jpg&ga=GA1.1.34619204.1714543244&semt=sph',
+         }}
+        */
         />
       </Draggable>
+
+      {/* Start Chat Popup */}
+      <CenterSheet
+        style={{ marginHorizontal: 16 }}
+        visible={showChatPopup}
+        onClose={() => setShowChatPopup(false)}>
+        <View>
+
+          <FeatherIcon
+            name="x"
+            size={24}
+            color={COLORS.textLabel}
+            style={{ position: 'absolute', right: 0 }}
+            onPress={() => setShowChatPopup(false)}
+          />
+
+
+          <Image
+            source={require('../assets/images/chat.png')}
+            style={{ width: 72, height: 72, marginLeft: 'auto', marginRight: 'auto', marginTop: 16 }}
+          />
+          <Text style={{ fontWeight: 'bold', fontSize: 16, textAlign: 'center', marginVertical: 16 }}>{'Tham gia trò chuyện'}</Text>
+          <Text style={{ textAlign: 'center', marginHorizontal: 16, lineHeight: 24, fontSize: 14 }}>{`Tham gia ngay để được giải đáp các thắc mắc về vấn đề sức khỏe`}</Text>
+          <InputWithRightIcon
+            placeholder={'Nhập mã phòng'}
+            value={roomId}
+            valid={validation.valid}
+            errorMsg={validation.message}
+            iconVisible={roomId.length > 0}
+            onChangeText={(text) => onChangeRoomId(text)}
+            textStyle={{ textAlign: 'center' }}
+          />
+          <Button
+            filled
+            title={'Tham gia'}
+            disabled={!validation.valid || roomId.length < 1}
+            onPress={joinChatRoom}
+            style={{
+              borderWith: 0,
+              marginVertical: 16,
+              borderRadius: 6,
+              opacity: (!validation.valid || roomId.length < 1) ? 0.6 : 1
+            }}
+          />
+        </View>
+      </CenterSheet>
+      {/* End Chat Popup */}
     </SafeAreaView >
   );
 };

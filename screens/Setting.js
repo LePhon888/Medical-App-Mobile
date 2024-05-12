@@ -96,7 +96,7 @@ export default function Setting({ navigation, route }) {
       await Apis.delete(`${endpoints["userDevice"]}/delete/user/${userId}`)
       await AsyncStorage.removeItem("token");
       await AsyncStorage.removeItem("user");
-
+      storeUserId(null)
       dispatch({
         type: "logout",
       });

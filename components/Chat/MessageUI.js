@@ -20,13 +20,13 @@ import COLORS from '../../constants/colors';
  * @returns 
  */
 
-const MessageUI = ({ isBotMode, setTitle }) => {
+const MessageUI = ({ isBotMode, setTitle, room }) => {
 
     const [inputText, setInputText] = useState('')
     const [listMessage, setListMessage] = useState([])
     const [message, setMessage] = useState(null)
     const { userId } = useUser()
-    const [roomId, setRoomId] = useState('PUBLIC')
+    const [roomId, setRoomId] = useState(room)
     const [socketConnected, setSocketConnected] = useState(false)
     const [showEmojiPicker, setShowEmojiPicker] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -34,9 +34,10 @@ const MessageUI = ({ isBotMode, setTitle }) => {
     const prevSender = useRef(null)
 
     const [remoteUser, setRemoteUser] = useState({
-        userName: '',
+        userName: 'Medcare AI',
         fromUser: 'AI',
-        avatar: 'https://img.freepik.com/free-vector/chatbot-chat-message-vectorart_78370-4104.jpg?size=626&ext=jpg&ga=GA1.1.34619204.1714543244&semt=sph',
+        avatar: 'https://res.cloudinary.com/dkttl75tl/image/upload/v1715450898/chatbot_muwxkd.png',
+        //avatar: 'https://img.freepik.com/free-vector/chatbot-chat-message-vectorart_78370-4104.jpg?size=626&ext=jpg&ga=GA1.1.34619204.1714543244&semt=sph',
         typing: false,
     })
 
@@ -52,7 +53,7 @@ const MessageUI = ({ isBotMode, setTitle }) => {
         return inputText.trim().length === 0
     }
     const formatTimestamp = (timestamp) => {
-        return moment(timestamp).format('HH:mm');
+        return moment(timestamp).locale('en').format('HH:mm A');
     };
 
     const isShowTimestamp = (timestamp) => {
@@ -84,12 +85,18 @@ const MessageUI = ({ isBotMode, setTitle }) => {
                 break
             case 'leaveRoom':
                 if (payload.data.userId !== userId) {
-                    Toast.show({ type: 'info', text1: `${payload.data.userName} vừa thoát khỏi phòng` })
+                    Toast.show({ type: 'info', text1: `${payload.data.userName} đã thoát khỏi phòng` })
                 }
+                sendMessage(
+                    'system',
+                    '',
+                    `${payload.data.userName} đã thoát khỏi phòng`,
+                    true
+                )
                 break
             case 'joinRoom':
                 if (payload.data.userId !== userId) {
-                    Toast.show({ type: 'info', text1: `${payload.data.userName} vừa tham gia phòng` });
+                    Toast.show({ type: 'info', text1: `${payload.data.userName} đã tham gia phòng` });
                 }
                 break
             default:
@@ -193,49 +200,58 @@ const MessageUI = ({ isBotMode, setTitle }) => {
                 'Chào mừng bạn đến với hệ thống trò chuyện y tế của chúng tôi. Hãy đặt câu hỏi hoặc chia sẻ thông tin y tế của bạn để chúng tôi có thể hỗ trợ bạn tốt nhất.',
                 false)
         }
+
+        if (!isBotMode && socketConnected) {
+            sendMessage(
+                'system',
+                '',
+                `${userDetail.current.name} đã tham gia phòng`,
+                true
+            )
+        }
+
     }, [socketConnected])
 
     const renderMessageItem = ({ item }) => {
         return (
             <View>
-                { /* Show timestamp of message */}
-                {/*item.timestamp && item.isShowTimestamp &&
-                    <View style={styles.timestampContainer}>
-                        <Text style={styles.timestampText}>{formatTimestamp(item.timestamp)}</Text>
-                    </View>
-                */}
+
                 { /* If the message is from current user */
-                    item.fromUser === userId ?
-                        <View>
-                            {item.isBreak &&
-                                <Text style={[styles.timestamp, { alignSelf: 'flex-end' }]}>{formatTimestamp(item.timestamp)}</Text>
-                            }
-                            <View style={[styles.messageContentContainer, styles.fromUser]}>
-                                <Text style={styles.messageText}>{item.text}</Text>
-                            </View>
+                    item.fromUser === 'system' ?
+                        <View style={styles.timestampContainer}>
+                            <Text style={styles.timestampText}>{item.text}</Text>
                         </View>
-
-                        :  /* ELse if the message is from other user */
-                        <View>
-                            {item.isBreak &&
-                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                    <Text style={styles.remoteUserName}>{remoteUser.userName}</Text>
-                                    <Text style={styles.timestamp}>{formatTimestamp(item.timestamp)}</Text>
-                                </View>
-                            }
-
-                            <View style={styles.fromOtherContainer}>
-                                <View style={[styles.imageContainer, { opacity: item.isBreak ? 1 : 0 }]}>
-                                    <Image
-                                        style={styles.avatarImage}
-                                        source={{ uri: item.avatar || `https://cdn-icons-png.flaticon.com/512/9131/9131529.png` }}
-                                    />
-                                </View>
-                                <View style={[styles.messageContentContainer, styles.fromOther]}>
+                        : item.fromUser === userId ?
+                            <View>
+                                {item.isBreak &&
+                                    <Text style={[styles.timestamp, { alignSelf: 'flex-end' }]}>{formatTimestamp(item.timestamp)}</Text>
+                                }
+                                <View style={[styles.messageContentContainer, styles.fromUser]}>
                                     <Text style={styles.messageText}>{item.text}</Text>
                                 </View>
                             </View>
-                        </View>
+
+                            :  /* ELse if the message is from other user */
+                            <View>
+                                {item.isBreak &&
+                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                        <Text style={styles.remoteUserName}>{remoteUser.userName}</Text>
+                                        <Text style={styles.timestamp}>{formatTimestamp(item.timestamp)}</Text>
+                                    </View>
+                                }
+
+                                <View style={styles.fromOtherContainer}>
+                                    <View style={[styles.imageContainer, { opacity: item.isBreak ? 1 : 0 }]}>
+                                        <Image
+                                            style={styles.avatarImage}
+                                            source={{ uri: item.avatar || `https://cdn-icons-png.flaticon.com/512/9131/9131529.png` }}
+                                        />
+                                    </View>
+                                    <View style={[styles.messageContentContainer, styles.fromOther]}>
+                                        <Text style={styles.messageText}>{item.text}</Text>
+                                    </View>
+                                </View>
+                            </View>
                 }
             </View>
         );
@@ -326,8 +342,8 @@ const styles = StyleSheet.create({
     },
     imageContainer: {
         marginTop: 5,
-        width: 32,
-        height: 32,
+        width: 40,
+        height: 40,
     },
     avatarImage: {
         flex: 1,
@@ -385,12 +401,12 @@ const styles = StyleSheet.create({
     },
     timestampContainer: {
         alignSelf: 'center',
-        marginVertical: 10,
+        marginVertical: 16,
     },
     timestampText: {
         color: '#5c5c5c',
-        fontWeight: 'bold',
-        fontSize: 14,
+        fontWeight: '500',
+        fontSize: 10,
     },
     timestamp: {
         color: '#5e5e5e',

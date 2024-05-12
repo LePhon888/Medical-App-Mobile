@@ -8,6 +8,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // export const SERVER = "http://192.168.1.8:8080";
 const CHATBOT = "http://34.125.230.219:8000";
 export const SERVER = "http://34.125.230.219:8080";
+//const SERVER = "http://medicalapp.com";
 
 export const endpoints = {
   login: `${SERVER}/api/auth/login`,
