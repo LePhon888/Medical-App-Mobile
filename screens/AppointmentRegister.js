@@ -24,7 +24,7 @@ export default function AppointmentRegister({ navigation, route }) {
     const maxDate = new Date(minDate.getFullYear() + 1, 11, 31);
     const [active, setActive] = useState(false);
     const [value, setValue] = useState(0);
-    const [hour, setHour] = useState(0);
+    const [hour, setHour] = useState([]);
     const [selectHour, setSelectHour] = useState(null);
     const [user, setUser] = useState(null);
     const [reason, setReason] = useState('');
@@ -126,6 +126,8 @@ export default function AppointmentRegister({ navigation, route }) {
         fetchAppointmentHour(formattedDate);
         setSelectedStartDate(date.toString());
     }
+
+
     if (payment?.data.url) {
         return (<WebView ref={webviewRef} source={{ uri: payment?.data.url }} style={{ flex: 1 }} onNavigationStateChange={onNavigationStateChange} />)
     }
@@ -249,7 +251,7 @@ export default function AppointmentRegister({ navigation, route }) {
                                     })}
                                 </View>
                                 <View style={{ marginVertical: 10, flexDirection: 'row', flexWrap: 'wrap' }}>
-                                    {hour.map((item, index) => {
+                                    {hour?.map((item, index) => {
                                         const currentHour = moment().format('HH:mm');
                                         const currentDate = moment().startOf('day');
                                         const compareDate = moment(selectedStartDate).startOf('day');

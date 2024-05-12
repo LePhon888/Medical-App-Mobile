@@ -27,7 +27,6 @@ import { useUser } from "../context/UserContext";
 export default function NewsDetail({ navigation, route }) {
   const news = route.params.item;
   const isSaved = route.params.isSaved;
-  console.log('isSaved', isSaved)
   const { width } = useWindowDimensions();
   const source = { html: `${news?.content}` };
   const initialFontSize = 16;
@@ -39,6 +38,7 @@ export default function NewsDetail({ navigation, route }) {
   const [newsByCategory, setNewsByCategory] = useState([]);
   const [isSavedPost, setIsSavedPost] = useState(isSaved);
   const { userId } = useUser()
+  const [clickCount, setClickCount] = useState(0);
   const scrollViewRef = useRef(null);
 
   const handleSave = async (postId) => {
