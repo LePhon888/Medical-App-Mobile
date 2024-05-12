@@ -17,11 +17,9 @@ const SavedNews = ({ navigation }) => {
     const [savedPosts, setSavedPosts] = useState([])
     const [loading, setLoading] = useState(true)
     const fetchNews = async () => {
-        console.log('aaaaaaaa')
         try {
             setLoading(true)
             const res = await Apis.get(endpoints.savePost + '/' + userId)
-            console.log("res.data", res.data.length)
             setNews(res.data)
             setLoading(false)
         } catch (error) {
