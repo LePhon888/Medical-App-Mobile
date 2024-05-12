@@ -12,7 +12,7 @@ import { Cache } from 'react-native-cache';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUser } from '../context/UserContext';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 
 const CARD_WIDTH = Math.min(Dimensions.get('screen').width * 0.84, 400);
 
@@ -28,6 +28,22 @@ export default function News({ navigation }) {
   const [savedPosts, setSavedPosts] = useState([]);
   const { userId } = useUser()
 
+  const fetchSavedNews = async () => {
+    try {
+      const res = await Apis.get(endpoints.savePost + '/' + userId)
+      setSavedPosts(res.data);
+    } catch (error) {
+      console.error("Error fetching saved news:", error);
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchSavedNews();
+      return () => { };
+    }, [])
+  );
+
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -41,8 +57,10 @@ export default function News({ navigation }) {
 
   const fetchPosts = async () => {
     try {
+      setLoading(true);
       const response = await Apis.get(`${endpoints.news}/random?page=${page}&size=${5}`);
       setPosts(prevPosts => [...prevPosts, ...response.data.content]);
+      setLoading(false);
     } catch (error) {
       console.error('Error fetching posts:', error);
     } finally {
@@ -70,12 +88,6 @@ export default function News({ navigation }) {
     fetchPosts();
   }, [page]);
 
-  useFocusEffect(
-    React.useCallback(() => {
-      fetchPosts();
-      return () => { };
-    }, [])
-  );
 
   const handleScroll = event => {
     const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
@@ -132,7 +144,7 @@ export default function News({ navigation }) {
               return (
                 <TouchableOpacity
                   key={index}
-                  onPress={() => navigation.navigate("NewsDetail", { item, isSaved: savedPosts.includes(item.id) })}
+                  onPress={() => navigation.navigate("NewsDetail", { item, isSaved: savedPosts.map(item => parseInt(item?.post?.id)).includes(item?.id) })}
                 >
                   <View style={styles.card}>
                     <View style={styles.cardBody}>
@@ -231,7 +243,7 @@ export default function News({ navigation }) {
                         position: 'relative',
                         height: 300
                       }}
-                        onPress={() => navigation.navigate("NewsDetail", { item, isSaved: savedPosts.includes(item.id) })}
+                        onPress={() => navigation.navigate("NewsDetail", { item, isSaved: savedPosts.map(item => parseInt(item?.post?.id)).includes(item?.id) })}
                       >
                         <Image
                           alt=""
@@ -302,7 +314,7 @@ export default function News({ navigation }) {
                       }}
                     >
                       <TouchableOpacity
-                        onPress={() => navigation.navigate("NewsDetail", { item, isSaved: savedPosts.includes(item.id) })}
+                        onPress={() => navigation.navigate("NewsDetail", { item, isSaved: savedPosts.map(item => parseInt(item?.post?.id)).includes(item.id) })}
                         style={styles.cardNews}>
                         <Image
                           alt=""
