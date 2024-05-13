@@ -14,7 +14,6 @@ import BulletContent from '../components/Doctor/BulletContent';
 import SkeletonLoading from '../components/Doctor/DoctorDetailLoading';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RatingContent from '../components/Doctor/RatingContent';
-import ToastConfig from '../components/ToastConfig';
 import { useDoctorRating } from '../context/DoctorRatingContext';
 import { useUser } from '../context/UserContext';
 import getNewAccessToken from '../utils/getNewAccessToken';
@@ -116,7 +115,10 @@ const DoctorDetail = ({ navigation, route }) => {
                 }
 
             } catch (error) {
-                Toast.show(ToastConfig("error", "Lỗi", "Không thể lấy dữ liệu bác sĩ"));
+                Toast.show({
+                    type: "error",
+                    text1: "Lỗi hệ thống. Không thể lấy dữ liệu bác sĩ"
+                });
                 console.error('Error fetching 123 data:', error);
             }
         };

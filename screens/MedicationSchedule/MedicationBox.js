@@ -393,7 +393,7 @@ const MedicationBox = ({ navigation, route }) => {
                                     renderItem={({ item, section }) => {
                                         if (visibleSections[section.title]) {
                                             return (
-                                                <View style={{ ...styles.listItem, borderColor: '#d3d3d3' }}>
+                                                <View style={{ ...styles.listItem, borderColor: '#d3d3d3' }} key={item.id}>
                                                     <View>
                                                         <Text style={styles.medicineName}>{item.medicineName}</Text>
                                                         <Text style={styles.usage}>

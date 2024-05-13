@@ -47,10 +47,13 @@ const ForgotPassword = ({ navigation }) => {
 
         if (field === 'newPassword') {
             const valid = value.length >= 6
+            const confirmValid = value === password["confirmPassword"]
             setPassword(prev => ({
                 ...prev,
                 newPasswordValid: valid,
-                newPasswordErrorMsg: 'Mật khẩu phải chứa ít nhất 6 ký tự.'
+                newPasswordErrorMsg: 'Mật khẩu phải chứa ít nhất 6 ký tự.',
+                confirmPasswordValid: confirmValid,
+                confirmPasswordErrorMsg: 'Xác nhận mật khẩu phải khớp với mật khẩu mới.'
             }))
         } else if (field === 'confirmPassword') {
             const valid = value === password["newPassword"]
@@ -77,7 +80,7 @@ const ForgotPassword = ({ navigation }) => {
     };
 
     const addOtpPaste = (text) => {
-        if (text.length > 1) {
+        if (text.length === 6) {
             const extractedDigits = text.match(/\d/g); // Extract digits from clipboard content
             if (extractedDigits) {
                 const newOtp = [...otp];
@@ -280,9 +283,9 @@ const ForgotPassword = ({ navigation }) => {
                                 filled
                                 title={'Gửi'}
                                 onPress={sendOTP}
-                                disabled={email.trim().length <= 0}
+                                disabled={!validation.valid}
                                 style={{
-                                    opacity: email.trim().length <= 0 ? 0.6 : 1
+                                    opacity: !validation.valid ? 0.6 : 1
                                 }}
                             />
                         </View>
@@ -385,9 +388,19 @@ const ForgotPassword = ({ navigation }) => {
                                 filled
                                 title={'Xác nhận'}
                                 onPress={updatePassword}
-                                disabled={(!password.confirmPasswordValid || !password.newPasswordValid)}
+                                disabled={(
+                                    !password.confirmPasswordValid
+                                    || !password.newPasswordValid
+                                    || password.confirmPassword.length < 1
+                                    || password.newPassword.length < 1
+                                )}
                                 style={{
-                                    opacity: (!password.confirmPasswordValid || !password.newPasswordValid) ? 0.6 : 1
+                                    opacity: (
+                                        !password.confirmPasswordValid
+                                        || !password.newPasswordValid
+                                        || password.confirmPassword.length < 1
+                                        || password.newPassword.length < 1
+                                    ) ? 0.6 : 1
                                 }}
                             />
                         </View>

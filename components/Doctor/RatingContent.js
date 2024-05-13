@@ -110,16 +110,16 @@ const RatingContent = ({ doctorId, userId, ratingStats, listRating, doctorRating
     const submit = async () => {
         try {
             setSubmitted(true);
-            const sentimentResponse = await Apis.get(`${endpoints["sentiment"]}/?msg=${ratingSubmitted.comment}`);
-            const sentimentData = sentimentResponse.data;
+            //const sentimentResponse = await Apis.get(`${endpoints["sentiment"]}/?msg=${ratingSubmitted.comment}`);
+            //const sentimentData = sentimentResponse.data;
 
             // Extract the sentiment label
-            const sentimentLabel = Object.keys(sentimentData)[0]; // Assuming there's only one key in the object
+            //const sentimentLabel = Object.keys(sentimentData)[0]; // Assuming there's only one key in the object
 
             // Include the sentiment label in the POST request payload
             const res = await Apis.post(endpoints["rating"], {
                 ...ratingSubmitted,
-                sentiment: sentimentLabel
+                sentiment: ''
             });
 
 

@@ -16,6 +16,8 @@ const InputWithRightIcon = ({
     iconVisible = true,
     valid = true,
     errorMsg = '',
+    textStyle,
+    errorMsgStyle
 }) => {
     const [isFocused, setIsFocused] = useState(false);
     const handleIconPressed = () => {
@@ -30,7 +32,7 @@ const InputWithRightIcon = ({
             <View style={[styles.flexRowCenter, styles.input, { borderColor: !valid ? COLORS.toastError : isFocused ? COLORS.toastInfo : '#ccc' }, { ...style }]}>
                 <TextInput
                     secureTextEntry={secureTextEntry}
-                    style={{ width: '90%' }}
+                    style={{ width: '100%', ...textStyle }}
                     placeholder={placeholder}
                     value={value}
                     onChangeText={(text) => onChangeText(text)}
@@ -47,7 +49,7 @@ const InputWithRightIcon = ({
                 }
             </View>
             {!valid && errorMsg != '' &&
-                <Text style={styles.error}>{errorMsg}</Text>
+                <Text style={[styles.error, { ...errorMsgStyle }]}>{errorMsg}</Text>
             }
         </View>
 
