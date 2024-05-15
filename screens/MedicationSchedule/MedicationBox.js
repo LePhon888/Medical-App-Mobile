@@ -370,7 +370,7 @@ const MedicationBox = ({ navigation, route }) => {
                                 <SectionList
                                     style={{ ...styles.list, marginTop: 30 }}
                                     sections={medicationSchedule}
-                                    keyExtractor={(item, index) => item.id + index}
+                                    keyExtractor={(item, index) => index}
                                     renderSectionHeader={({ section: { title, data } }) => (
                                         <View style={[styles.sectionHeaderContainer]}>
                                             <TouchableOpacity style={styles.flexRowCenter} onPress={() => toggleSectionVisibility(title)}>
