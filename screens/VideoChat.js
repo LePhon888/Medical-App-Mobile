@@ -89,6 +89,9 @@ const VideoChat = ({ navigation, route }) => {
     };
 
 
+    console.log(remoteStream)
+
+
     useEffect(() => {
         initializeWebRTC()
 
@@ -435,28 +438,24 @@ const VideoChat = ({ navigation, route }) => {
                         </View>
                     }
 
-                    {localStream &&
-                        <View style={!remoteStream ? { flex: 1 }
-                            : [styles.localVideo]}>
-                            {localDevice.camera && localDevice.grantedCamera ?
-                                <RTCView
-                                    streamURL={localStream.toURL()}
-                                    style={{ flex: 1, backgroundColor: 'red' }}
-                                    objectFit='cover'
-                                    zOrder={1}
+                    <View style={!remoteStream ? { flex: 1 } : [styles.localVideo]}>
+                        {localStream && localDevice.camera && localDevice.grantedCamera ?
+                            <RTCView
+                                streamURL={localStream.toURL()}
+                                style={{ flex: 1, backgroundColor: 'red' }}
+                                objectFit='cover'
+                                zOrder={1}
+                            />
+                            :
+                            <View style={[styles.imageHolderContainer, remoteStream && { backgroundColor: '#2A2A2A' }]}>
+                                <Image
+                                    style={[styles.imageHolder, remoteStream && { width: 75, height: 75 }]}
+                                    source={{ uri: localDevice.userImage }}
                                 />
-                                :
-                                <View style={[styles.imageHolderContainer, remoteStream && { backgroundColor: '#2A2A2A' }]}>
-                                    <Image
-                                        style={[styles.imageHolder, remoteStream && { width: 75, height: 75 }]}
-                                        source={{ uri: localDevice.userImage }}
-                                    />
-                                </View>
-
-                            }
-                            {!localDevice.audio && <MaterialCommunityIcons name={'microphone-off'} style={styles.microphoneOffIcon} />}
-                        </View>
-                    }
+                            </View>
+                        }
+                        {!localDevice.audio && <MaterialCommunityIcons name={'microphone-off'} style={styles.microphoneOffIcon} />}
+                    </View>
                 </View>
 
 

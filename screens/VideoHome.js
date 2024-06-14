@@ -18,8 +18,8 @@ export default function VideoHome(props) {
     const [localDevice, setLocalDevice] = useState({
         camera: true,
         audio: true,
-        grantedAudio: true,
-        grantedCamera: true
+        grantedAudio: false,
+        grantedCamera: false
     })
     const requestPermissionDone = useRef(false)
     const makingLocalStream = useRef(false)
@@ -232,22 +232,20 @@ export default function VideoHome(props) {
 
             <View style={styles.videoContainer}>
 
-                {(!localDevice.grantedCamera || !localDevice.camera) &&
-                    <View style={styles.imageHolderContainer}>
-                        <Image
-                            style={styles.imageHolder}
-                            source={{ uri: userDetail.current?.image }}
-                        />
-                    </View>
-                }
-
-                {localStream && localDevice.camera && localDevice.grantedCamera &&
+                {localStream && localDevice.camera && localDevice.grantedCamera ?
                     <RTCView
                         streamURL={localStream.toURL()}
                         objectFit='cover'
                         style={{ flex: 1 }}
                         zOrder={0}
                     />
+                    :
+                    <View style={styles.imageHolderContainer}>
+                        <Image
+                            style={styles.imageHolder}
+                            source={{ uri: userDetail.current?.image }}
+                        />
+                    </View>
                 }
                 <TouchableOpacity style={styles.cameraButton} onPress={toggleCamera}>
                     <MaterialCommunityIcons name={localDevice.camera ? 'video' : 'video-off'} style={styles.icon} />
