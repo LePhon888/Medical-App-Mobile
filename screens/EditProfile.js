@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
     View,
     Text,
@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     StyleSheet,
     ScrollView,
+    KeyboardAvoidingView,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import COLORS from "../constants/colors";
@@ -20,12 +21,17 @@ import FeatherIcon from "react-native-vector-icons/Feather";
 import HeaderWithBackButton from "../common/HeaderWithBackButton";
 import Button from "../components/Button";
 import getNewAccessToken from "../utils/getNewAccessToken";
+import InputWithRightIcon from "../components/InputWithRightIcon";
+import Toast from "react-native-toast-message";
+import Loading from "../components/Loading";
 
 const EditProfile = ({ route, navigation }) => {
     const [user, setUser] = useState(route.params.userInfo);
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [avatar, setAvatar] = useState(user.image);
     const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false)
+    const scrollViewRef = useRef(null)
 
     const userFields = [
         { field: "firstName", label: "Họ", type: "text" },
@@ -38,7 +44,7 @@ const EditProfile = ({ route, navigation }) => {
             options: ["Nam", "Nữ"],
         },
         { field: "address", label: "Địa chỉ", type: "text" },
-        { field: "password", label: "Mật khẩu", type: "text" },
+        //{ field: "password", label: "Mật khẩu", type: "text" },
         { field: "phoneNumber", label: "Số điện thoại", type: "text" },
     ];
 
@@ -92,6 +98,7 @@ const EditProfile = ({ route, navigation }) => {
         }
 
         try {
+            setLoading(true)
             const e = `${endpoints["user"]}/`;
             const token = await AsyncStorage.getItem("accessToken");
             let res = await Apis.post(e, formData, {
@@ -106,37 +113,36 @@ const EditProfile = ({ route, navigation }) => {
                     updatedUser.image = avatar;
                 }
                 await AsyncStorage.setItem("user", JSON.stringify(updatedUser));
+
+                Toast.show({
+                    type: 'success',
+                    text1: 'Chỉnh sửa thông tin thành công.'
+                })
+
                 navigation.goBack();
             }
         } catch (error) {
             console.log(error);
-            Toast.show("Có lỗi xảy ra, vui lòng thử lại sau", Toast.LONG);
+            Toast.show({
+                type: 'error',
+                text1: 'Hệ thống có lỗi. vui lòng thử lại sau.'
+            })
             if (error.response && error.response.status === 400)
                 setError(error.response.data);
             else setError("Vui lòng chọn ảnh có kích thước nhỏ");
+        } finally {
+            setLoading(false)
         }
-    };
-
-    const Header = () => {
-        return (
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <FeatherIcon color="white" name="chevron-left" size={20} />
-                </TouchableOpacity>
-                <Text style={styles.titleText}>Chỉnh sửa thông tin</Text>
-            </View>
-        );
     };
 
     return (
         <View style={{ backgroundColor: "white", flex: 1 }}>
-            <HeaderWithBackButton />
+            <HeaderWithBackButton title={'Chỉnh sửa thông tin'} />
             {user && (
-                <ScrollView style={styles.formContainer}>
+                <ScrollView style={styles.formContainer} keyboardShouldPersistTaps="always" ref={scrollViewRef}>
                     <TouchableOpacity
                         style={styles.imageContainer}
-                        onPress={openImagePicker}
-                    >
+                        onPress={openImagePicker}>
                         <Image
                             alt=""
                             source={{
@@ -146,28 +152,28 @@ const EditProfile = ({ route, navigation }) => {
                             }}
                             style={styles.profileAvatar}
                         />
+                        <Text style={{ marginTop: 8, fontSize: 16 }}>{'Chọn ảnh'}</Text>
                     </TouchableOpacity>
                     {userFields.map((fieldInfo) => {
                         const { field, label, type, options } = fieldInfo;
                         return (
                             <View key={field} style={styles.fieldContainer}>
-                                <Text style={styles.label}>{label}:</Text>
+                                <Text style={styles.label}>{label}</Text>
                                 {type === "text" ? (
-                                    <TextInput
-                                        style={styles.input}
+                                    <InputWithRightIcon
                                         value={user[field] || ""}
                                         onChangeText={(text) => handleInputChange(field, text)}
-                                        secureTextEntry={field === "password" && true}
                                         placeholder={`Nhập ${label.toLocaleLowerCase()}....`}
+                                        iconVisible={user[field] && user[field].length > 0}
                                     />
                                 ) : type === "date" ? (
                                     <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-                                        <TextInput
-                                            style={styles.input}
+                                        <InputWithRightIcon
                                             value={moment(user[field]).format("DD/MM/YYYY") || ""}
                                             placeholder={`Nhập ${label.toLocaleLowerCase()}....`}
                                             onChangeText={(text) => handleInputChange(field, text)}
                                             editable={false}
+                                            iconName="calendar"
                                         />
                                     </TouchableOpacity>
                                 ) : type === "select" ? (
@@ -211,10 +217,10 @@ const EditProfile = ({ route, navigation }) => {
 
                 </ScrollView>
             )}
-
             {showDatePicker && (
                 <RNDateTimePicker value={new Date()} onChange={handleDateChange} />
             )}
+            {loading && <Loading />}
         </View>
     );
 };
@@ -241,6 +247,8 @@ const styles = StyleSheet.create({
     },
     label: {
         fontSize: 16,
+        color: COLORS.textLabel,
+        fontWeight: '500'
     },
     input: {
         borderWidth: 1,

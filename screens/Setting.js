@@ -73,12 +73,12 @@ export default function Setting({ navigation, route }) {
 
   useEffect(() => {
     const getUserAndToken = async () => {
-      if (isFocused) {
+      if (isFocused && userId) {
         try {
-          const currentUser = await AsyncStorage.getItem("user");
-          setUserInfo(JSON.parse(currentUser));
-          if (currentUser) {
-            setSelectedImage(JSON.parse(currentUser).image);
+          const res = await Apis.get(`${endpoints["user"]}/${userId}`)
+          setUserInfo(res.data);
+          if (res.data) {
+            setSelectedImage(res.data.image);
           }
         } catch (error) {
           console.error(error);
