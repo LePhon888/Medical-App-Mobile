@@ -70,10 +70,7 @@ export default function NewsDetail({ navigation, route }) {
     <FontAwesome
       onPress={() => { setIsSavedPost(!isSavedPost); handleSave(news.id) }}
       name={isSavedPost ? "bookmark" : "bookmark-o"} size={22} style={{ color: isSavedPost ? COLORS.primary : COLORS.black }} />
-    // <FeatherIcon color="#242329" name="share" size={19} />
   ];
-  // var htmlRegexG = /<(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+>/g;
-  // var modifiedContent = news.content.replace(htmlRegexG, '').replace(/undefined/g, '').replace(/&nbsp;/g, '').replace(/\s+/g, ' ');
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -86,61 +83,7 @@ export default function NewsDetail({ navigation, route }) {
     fetchData();
   }, [news.category?.id, news?.id])
 
-  // useEffect(() => {
-  //   const soundObject = new Sound(news.audio ?? '', '', (error) => {
-  //     setSound(soundObject);
-  //   });
 
-  //   return () => {
-  //     soundObject.release();
-  //   };
-  // }, []);
-
-  // useEffect(() => {
-  //   if (isPlaying && sound) {
-  //     sound.play((success) => {
-  //       if (!success) {
-  //         console.log('Sound did not play successfully');
-  //       } else {
-  //         console.log('Sound play successfully');
-  //       }
-  //     });
-  //   } else if (!isPlaying && sound) {
-  //     sound.pause();
-  //   }
-  // }, [isPlaying, sound]);
-
-  // useEffect(() => {
-  //   const fetchAudio = async () => {
-  //     const url = 'https://api.fpt.ai/hmi/tts/v5';
-  //     const headers = {
-  //       'api-key': '7MLI6gmBdIcwO9ASonzUQ8X4Ecb3XrKa',
-  //       'speed': '',
-  //       'voice': 'linhsan'
-  //     };
-  //     const data = modifiedContent.slice(0, 5000);
-  //     try {
-  //       const response = await axios.post(url, data, { headers });
-  //       console.log('responseresponseresponse', response.data.async);
-  //       await axios.put(endpoints.news + '/' + news.id + '?audio=' + response.data.async);
-  //       setAudio(response.data.async);
-  //     } catch (error) {
-  //       console.error('Error:', error);
-  //     }
-  //   };
-  //   fetchAudio();
-  // }, []);
-  // useEffect(() => {
-  //   const findAudio = async () => {
-  //     try {
-  //       const res = await axios.get(audio);
-  //       res.status === 200 ? console.log('URL found') : console.log('URL not found');
-  //     } catch (error) {
-  //       error.response && error.response.status === 404 ? console.log('URL not found') : console.error('Error:', error);
-  //     }
-  //   };
-  //   findAudio();
-  // }, [audio]);
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <View >
