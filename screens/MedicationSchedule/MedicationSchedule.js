@@ -621,7 +621,7 @@ const styles = StyleSheet.create({
     },
     buttonNext: {
         marginTop: 30,
-        backgroundColor: '#2d86f3',
+        backgroundColor: COLORS.primary,
         padding: 12,
         borderRadius: 5,
         marginBottom: 15
@@ -630,7 +630,7 @@ const styles = StyleSheet.create({
         color: 'white',
         textAlign: 'center',
         fontSize: 16,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
     },
     weekDays: {
         borderColor: "#ccc",

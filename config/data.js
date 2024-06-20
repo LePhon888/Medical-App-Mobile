@@ -11,25 +11,25 @@ export const data = [
 ];
 export const categoryIcons = [
     {
-        path: require('../assets/images/drugs.png'),
-        text: 'Thư viện thuốc',
-        nav: 'MedicineList'
+        path: require('../assets/images/medical-history.png'),
+        text: 'Lịch sử đăng ký',
+        nav: 'AppointmentList'
     },
     {
         path: require('../assets/images/weighing-management.png'),
-        text: 'Theo dõi cân nặng',
+        text: 'Sức khỏe bản thân',
         nav: 'Weight'
 
+    },
+    {
+        path: require('../assets/images/child.png'),
+        text: 'Sức khỏe con bạn',
+        nav: 'SelectChild'
     },
     {
         path: require('../assets/images/bookmark.png'),
         text: 'Bài viết đã lưu',
         nav: 'SavedNews'
-    },
-    {
-        path: require('../assets/images/medical-history.png'),
-        text: 'Lịch sử đăng ký',
-        nav: 'AppointmentList'
     },
     {
         path: require('../assets/images/membership.png'),
