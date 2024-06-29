@@ -166,7 +166,7 @@ const DateRangePicker = ({ startDateIn, endDateIn, onSelectedDateRange, style })
             </View>
 
             <Picker
-                style={{ display: 'none' }}
+                style={{ opacity: 0 }}
                 ref={pickerRef}
                 selectedValue={month}
                 onValueChange={(itemValue, itemIndex) => setMonth(itemValue)}>
