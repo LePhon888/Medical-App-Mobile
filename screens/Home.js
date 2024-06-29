@@ -150,21 +150,17 @@ const Home = ({ navigation, route }) => {
 
     return (
       <View style={style.categoryContainer}>
-        {categoryIcons.map((item, index) => (
-          <View key={index} style={style.iconContainer}>
-            <TouchableOpacity style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              margin: 6
-            }}
-              onPress={() => itemOnClick(item)}
-            >
+        {userInfo && categoryIcons.map((item, index) => {
+          if (item.role && item.role !== userInfo.userRole) {
+            return null
+          } return <View key={index} style={style.iconContainer}>
+            <TouchableOpacity style={{ justifyContent: 'center', alignItems: 'center', margin: 6 }}
+              onPress={() => itemOnClick(item)}>
               <Image source={item.path} style={{ width: 31, height: 31, marginBottom: 3 }} />
               <Text style={{ textAlign: 'center', lineHeight: 20 }}>{item.text}</Text>
             </TouchableOpacity>
           </View>
-        ))
-        }
+        })}
       </View >
     );
   };

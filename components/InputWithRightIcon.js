@@ -1,5 +1,5 @@
 import { memo, useState } from "react";
-import { Text, TextInput, View } from "react-native";
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { StyleSheet } from "react-native";
 import Feather from "react-native-vector-icons/Feather";
 import COLORS from "../constants/colors";
@@ -19,6 +19,7 @@ const InputWithRightIcon = ({
     textStyle,
     errorMsgStyle,
     editable = true,
+    onPress,
 }) => {
     const [isFocused, setIsFocused] = useState(false);
     const handleIconPressed = () => {
@@ -28,8 +29,15 @@ const InputWithRightIcon = ({
             onIconPressed()
         }
     }
+
+    const handleOnPress = () => {
+        if (onPress) {
+            onPress()
+        }
+    }
+
     return (
-        <View>
+        <View onTouchEndCapture={handleOnPress}>
             <View style={[styles.flexRowCenter, styles.input, { borderColor: !valid ? COLORS.toastError : isFocused ? COLORS.toastInfo : '#ccc' }, { ...style }]}>
                 <TextInput
                     secureTextEntry={secureTextEntry}

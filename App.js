@@ -33,6 +33,8 @@ import optionCache from "./utils/optionCache";
 import { DoctorRatingProvider } from "./context/DoctorRatingContext";
 import AddGroupMedicine from "./screens/MedicationSchedule/AddGroupMedicine";
 import ForgotPassword from "./screens/ForgotPassword";
+import DoctorOffDutyScheduleList from "./screens/DoctorOffDutyScheduleList";
+import DoctorCreateOffDutySchedule from "./screens/DoctorCreateOffDutySchedule";
 
 const Stack = createNativeStackNavigator();
 export const UserContext = createContext();
@@ -118,6 +120,8 @@ export default function App({ navigation }) {
                 <Stack.Screen name="SavedNews" component={SavedNews} options={{ headerShown: false }} />
                 <Stack.Screen name="HealthChild" component={HealthChild} options={{ headerShown: false }} />
                 <Stack.Screen name="SelectChild" component={SelectChild} options={{ headerShown: false }} />
+                <Stack.Screen name="DoctorOffDutyScheduleList" component={DoctorOffDutyScheduleList} options={{ headerShown: false }} />
+                <Stack.Screen name="DoctorCreateOffDutySchedule" component={DoctorCreateOffDutySchedule} options={{ headerShown: false }} />
               </Stack.Navigator>
             </NavigationContainer>
             <ToastConfig />
