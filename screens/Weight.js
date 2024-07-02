@@ -146,6 +146,7 @@ export default function Weight({ navigation }) {
                             curved
                             rotateLabel
                             hideDataPoints
+                            disableScroll={false}
                             color1={COLORS.primary}
                             color2={COLORS.white}
                             startFillColor={COLORS.primary}
