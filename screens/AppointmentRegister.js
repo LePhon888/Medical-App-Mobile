@@ -89,7 +89,6 @@ export default function AppointmentRegister({ navigation, route }) {
 
     const webviewRef = useRef(null);
 
-
     const onNavigationStateChange = (navState) => {
         if (navState.url.startsWith('http://192.168')) {
             // webviewRef.current.stopLoading();
