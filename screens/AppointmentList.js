@@ -84,6 +84,23 @@ export default function AppointmentList({ navigation }) {
   if (payment?.data.url) {
     return (<WebView ref={webviewRef} source={{ uri: payment?.data.url }} style={{ flex: 1 }} onNavigationStateChange={onNavigationStateChange} />)
   }
+
+  const validatePayment = async (item) => {
+    const token = await AsyncStorage.getItem("accessToken");
+    const response = await Apis.get(endpoints.appointmentHour + '?date=' + item.date + '&doctorId=' + item.doctor.id,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    !response.data.map(item => item.id).includes(item.hour.id.toString()) ? onSubmit(item) : Toast.show({
+      type: 'error',
+      text1: 'Khung giờ đã được đặt bởi người khác',
+      visibilityTime: 2000,
+      autoHide: true,
+    });
+  }
+
   return (
     <SafeAreaView style={{ backgroundColor: "#fff", flex: 1 }}>
       <HeaderWithBackButton title={'Lịch sử đặt hẹn'} customIcons={[
@@ -157,7 +174,7 @@ export default function AppointmentList({ navigation }) {
                   <Entypo name="users" size={15} style={{ marginTop: 0, color: '#0984e3' }} />
                   <Text style={{ marginLeft: 6, fontWeight: 500, fontSize: 13, color: '#0984e3' }}>Đi đến phòng gọi Video</Text>
                 </TouchableOpacity> : <TouchableOpacity style={{ flexDirection: 'row' }}
-                  onPress={() => onSubmit(item)}>
+                  onPress={() => validatePayment(item)}>
                   <Entypo name="align-right" size={16} style={{ marginTop: 1, color: '#0984e3' }} />
                   <Text style={{ marginLeft: 5, fontWeight: 500, fontSize: 13, color: '#0984e3' }}>Thanh toán ngay</Text>
                 </TouchableOpacity>}
