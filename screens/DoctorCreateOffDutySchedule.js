@@ -104,7 +104,7 @@ const DoctorCreateOffDutySchedule = ({ navigation }) => {
         <View style={styles.screen}>
             <View style={styles.header}>
                 <HeaderWithBackButton
-                    title={"Thêm lịch nghỉ"}
+                    title={"Thêm lịch bận"}
                 />
             </View>
             <ScrollView style={styles.form}>

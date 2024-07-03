@@ -141,7 +141,7 @@ const DoctorOffDutyScheduleList = ({ navigation }) => {
         <View style={styles.screen}>
             <View style={styles.header}>
                 <HeaderWithBackButton
-                    title={"Danh sách lịch nghỉ"}
+                    title={"Danh sách lịch bận"}
                 />
                 <TouchableOpacity
                     onPress={() => navigation.navigate('DoctorCreateOffDutySchedule')}
@@ -216,7 +216,7 @@ const DoctorOffDutyScheduleList = ({ navigation }) => {
                             />
                         </View>
 
-                        <Text style={{ marginHorizontal: 16, textAlign: 'center', fontWeight: '600', color: COLORS.textLabel }}>{'Bạn có chắc chắn muốn xóa lịch nghỉ này?'}</Text>
+                        <Text style={{ marginHorizontal: 16, textAlign: 'center', fontWeight: '600', color: COLORS.textLabel }}>{'Bạn có chắc chắn muốn xóa lịch bận này?'}</Text>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 32, }}>
                             <TouchableOpacity style={{ ...styles.btn, borderColor: COLORS.toastInfo }} onPress={() => toggleConfirmPopup(null)}>
                                 <Text style={{ ...styles.btnText, color: COLORS.toastInfo }}>{'Đóng'}</Text>
