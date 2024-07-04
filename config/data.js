@@ -37,8 +37,8 @@ export const categoryIcons = [
         nav: 'Doctors'
     },
     {
-        path: require('../assets/images/membership.png'),
-        text: 'Đăng ký lịch nghỉ',
+        path: require('../assets/images/schedule.png'),
+        text: 'Đăng ký lịch bận',
         nav: 'DoctorOffDutyScheduleList',
         role: 'ROLE_DOCTOR' // add field role to show/hide this item
     },

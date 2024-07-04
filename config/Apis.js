@@ -5,12 +5,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 //const SERVER = "http://localhost:8080";
 
-// export const SERVER = "http://192.168.1.7:8080";
-// const CHATBOT = "http://34.66.33.6:8000";
+// export const SERVER = "http://192.168.1.15:8080";
 const CHATBOT = "https://medcare.rickycloud.uk/chatbot";
-
-// export const SERVER = "http://34.66.33.6:8080";
 export const SERVER = "https://medcare.rickycloud.uk/backend";
+//const SERVER = "http://medicalapp.com";
 
 export const endpoints = {
   login: `${SERVER}/api/auth/login`,
