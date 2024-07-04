@@ -25,6 +25,7 @@ const WeightPlanSection = ({ navigation }) => {
             fetchNewWeight();
         }
     }, [isFocused]);
+
     return (
         <View style={{ paddingHorizontal: 16, marginBottom: 20 }}>
             <View style={styles.section}>
@@ -48,8 +49,8 @@ const WeightPlanSection = ({ navigation }) => {
                 <View style={styles.medicationReminderStats}>
                     <View style={{ width: '30%', alignItems: 'center' }}>
                         <Text style={{ fontSize: 16, color: '#898989', borderBottomWidth: 0.2, borderColor: '#c0bcbc', paddingBottom: 5 }}>Cân nặng</Text>
-                        <Text style={{ fontWeight: 600, fontSize: 18, paddingTop: 5 }}>{newWeight?.weight} 68</Text>
-                        <Text style={{ color: '#898989', marginTop: 5 }}>{newWeight?.weight} (kg)</Text>
+                        <Text style={{ fontWeight: 600, fontSize: 18, paddingTop: 5 }}>{newWeight?.number}</Text>
+                        <Text style={{ color: '#898989', marginTop: 5 }}>(kg)</Text>
                     </View>
                     <View style={{ width: '40%', alignItems: 'center' }}>
                         <Text style={{ fontSize: 16, color: '#898989', borderBottomWidth: 0.2, borderColor: '#c0bcbc', paddingBottom: 5 }}>BMI</Text>
