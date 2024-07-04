@@ -4,8 +4,11 @@ import Feather from "react-native-vector-icons/Feather"
 import COLORS from '../constants/colors'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Apis, { endpoints } from '../config/Apis'
+import { useIsFocused } from "@react-navigation/native";
 
 const WeightPlanSection = ({ navigation }) => {
+
+    const isFocused = useIsFocused()
     const [newWeight, setNewWeight] = useState(null);
 
     useEffect(() => {
@@ -18,8 +21,10 @@ const WeightPlanSection = ({ navigation }) => {
                 console.error('Error fetching new weight:', error);
             }
         }
-        fetchNewWeight();
-    }, []);
+        if (isFocused) {
+            fetchNewWeight();
+        }
+    }, [isFocused]);
     return (
         <View style={{ paddingHorizontal: 16, marginBottom: 20 }}>
             <View style={styles.section}>
