@@ -26,8 +26,6 @@ const WeightPlanSection = ({ navigation }) => {
         }
     }, [isFocused]);
 
-    console.log(newWeight);
-
     return (
         <View style={{ paddingHorizontal: 16, marginBottom: 20 }}>
             <View style={styles.section}>
